@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 var DB *sql.DB // O ponteiro para a DB em si
