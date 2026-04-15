@@ -24,4 +24,5 @@ var (
 	// Erros de Deleção (D)
 	ErroDeletePostgres              = errors.New("erro ao deletar item")
 	ErroDeleteNenhumUsuarioPostgres = errors.New("nenhum usuário encontrado com o ID ")
+	ErroDeleteNenhumaProvaPostgres  = errors.New("nenhuma prova encontrada com o ID")
 )
