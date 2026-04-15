@@ -1,7 +1,6 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -17,9 +16,9 @@ func CriarEntradaProva(prova models.Provas) (int32, error) {
 	return id, nil
 }
 
-func LerTodasProvas(db *sql.DB) ([]models.Provas, error) {
+func LerTodasProvas() ([]models.Provas, error) {
 	var provas []models.Provas
-	rows, err := db.Query("SELECT * FROM provas")
+	rows, err := DB.Query("SELECT id,nome_prova,turma_prova,materia_prova FROM provas")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
