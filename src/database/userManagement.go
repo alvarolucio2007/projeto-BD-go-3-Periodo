@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"os"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
@@ -38,4 +37,11 @@ func LerTodosUsuarios(db *sql.DB) ([]models.Usuario, error) {
 	}
 	return usuarios, nil
 }
-func 
+
+func UpdateUsuarios(id int32, dados models.Usuario) error {
+	query := `UPDATE usuarios SET username=$1, password=$2, role=$3 WHERE id=$4`
+	if _, err := DB.Exec(query, dados.Username, dados.Password, dados.Role, id); err != nil {
+		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
+	}
+	return nil
+}
