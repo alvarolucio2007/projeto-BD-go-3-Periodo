@@ -1,3 +1,4 @@
+// Package database gerencia a abertura e operações com a Base de Dados
 package database
 
 import (
@@ -9,21 +10,21 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-var DB *sql.DB
+var DB *sql.DB // O ponteiro para a DB em si
 
-func ConectarDatabasePostgres() (*sql.DB, error) {
+func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a saúde do Postgres imediatamente após conectar.
 	var err error
-	const dsn string = "host=pg_projeto_db user=user password=password dbname=shortener sslmode=disable"
-	DB, err = sql.Open("pgx", dsn)
+	const dsn string = "host=pg_projeto_db user=user password=password dbname=shortener sslmode=disable" // Tenta se conectar à DB com essas credenciais.
+	DB, err = sql.Open("pgx", dsn)                                                                       // O sql.Open apenas valida os argumentos, não abre uma conexão.
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroAberturaPostgres, err)
 	}
-	for i := range 5 {
-		if err = DB.Ping(); err == nil {
+	for i := range 5 { // Checa 5 vezes em 10 segundos (1 vez a cada 2 segundos) para que se certifique que a DB não está viva.
+		if err = DB.Ping(); err == nil { // Pinga a DB, para checar a vida dela, se não retorna erro, retorna o ponteiro da DB
 			return DB, nil
 		}
-		log.Printf("Aguardando Postgres: (Tentativa %d/5)", i+1)
+		log.Printf("Aguardando Postgres: (Tentativa %d/5)", i+1) // Se não, tenta novamente em 2s
 		time.Sleep(2 * time.Second)
 	}
-	return nil, fmt.Errorf("%w: %v", models.ErroConexaoPostgres, err)
+	return nil, fmt.Errorf("%w: %v", models.ErroConexaoPostgres, err) // Após 10s, o sistema decide que a DB está realmente morta e retorna o erro.
 }
