@@ -6,18 +6,20 @@ import "errors"
 // Erros PostgreSQL
 var (
 	// Erros Setup e migração
-	ErroAberturaPostgres       = errors.New("erro ao tentar abrir o Postgres: ")
-	ErroConexaoPostgres        = errors.New("erro ao tentar conectar ao Postgres: ")
-	ErroLeituraArquivoMigracao = errors.New("erro ao tentar ler o arquivo de migração do Postgres: ")
-	ErroMigracaoPostgres       = errors.New("erro ao tentar migrar o Postgres: ")
+	ErroAberturaPostgres       = errors.New("erro ao tentar abrir o Postgres")
+	ErroConexaoPostgres        = errors.New("erro ao tentar conectar ao Postgres")
+	ErroLeituraArquivoMigracao = errors.New("erro ao tentar ler o arquivo de migração do Postgres")
+	ErroMigracaoPostgres       = errors.New("erro ao tentar migrar o Postgres")
 
-	// Erros de Criação
-	ErroEntradaPostgres = errors.New("erro ao criar a entrada: ")
+	// Erros de Criação (C)
+	ErroEntradaPostgres = errors.New("erro ao criar a entrada")
 
-	// Erros de Deleção
-	ErroDeletePostgres = errors.New("erro ao deletar item: ")
+	// Erros de Procura (R)
+	ErroBuscaPostgresNEncontrado = errors.New("não foram encontrados itens")
+	ErroBuscaPostgres            = errors.New("erro ao tentar buscar")
 
-	// Erros de Procura
-	ErroBuscaPostgresNEncontrado = errors.New("não foram encontrados itens: ")
-	ErroBuscaPostgres            = errors.New("erro ao tentar buscar: ")
+	// Erros de Atualização (U)
+	ErroAtualizacaoPostgres = errors.New("erro ao tentar atualizar o item")
+	// Erros de Deleção (D)
+	ErroDeletePostgres = errors.New("erro ao deletar item")
 )
