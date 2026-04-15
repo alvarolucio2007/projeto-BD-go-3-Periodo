@@ -7,10 +7,10 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-func CriarEntradaUsuario(username string, password string, role string) (int32, error) {
+func CriarEntradaUsuario(user models.Usuario) (int32, error) {
 	var id int32
 	query := "INSERT INTO usuario (username,password,role) VALUES ($1,$2,$3) RETURNING id;"
-	err := DB.QueryRow(query, username, password, role).Scan(&id)
+	err := DB.QueryRow(query, user.Username, user.Password, user.Role).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("%w: %v", models.ErroEntradaPostgres, err)
 	}
