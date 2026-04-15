@@ -52,7 +52,7 @@ func DeleteProvas(id int32) error {
 		return fmt.Errorf("%w: %v", models.ErroDeletePostgres, err)
 	}
 	if count, _ := res.RowsAffected(); count == 0 {
-		return fmt.Errorf("%w: %d", models.ErroDeleteNenhumUsuarioPostgres, id)
+		return fmt.Errorf("%w: %d", models.ErroDeleteNenhumaProvaPostgres, id)
 	}
 	return nil
 }
