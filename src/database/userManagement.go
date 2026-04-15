@@ -19,7 +19,7 @@ func CriarEntradaUsuario(user models.Usuario) (int32, error) {
 
 func LerTodosUsuarios(db *sql.DB) ([]models.Usuario, error) {
 	var usuarios []models.Usuario
-	rows, err := db.Query("SELECT * FROM usuarios")
+	rows, err := db.Query("SELECT id,username,password,role FROM usuarios")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
