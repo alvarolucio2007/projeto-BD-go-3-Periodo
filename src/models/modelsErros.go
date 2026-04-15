@@ -22,5 +22,6 @@ var (
 	ErroAtualizacaoPostgres = errors.New("erro ao tentar atualizar o item")
 
 	// Erros de Deleção (D)
-	ErroDeletePostgres = errors.New("erro ao deletar item")
+	ErroDeletePostgres              = errors.New("erro ao deletar item")
+	ErroDeleteNenhumUsuarioPostgres = errors.New("nenhum usuário encontrado com o ID ")
 )
