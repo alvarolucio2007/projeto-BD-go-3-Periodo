@@ -1,0 +1,36 @@
+syntax = "proto3";
+package usuarios;
+
+option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
+message Usuario {
+  int32 id = 1;
+  string username = 2;
+  string password = 3;
+}
+message CreateRequest {
+  string username = 1;
+  string password = 2;
+}
+message ReadRequest {
+  int32 id = 1;
+}
+message GivePasswordRequest {
+  string username = 1;
+}
+message DeleteRequest {
+  int32 id = 1;
+}
+message Response {
+  int32 status_code = 1; //Usar os status codes do http (200,202,404, etc)
+  string message = 2; //Caso tenha erro, enviar o erro aqui
+}
+service UsuariosService {
+  //Criar usuário
+  rpc Create(CreateRequest) returns (Response);
+  //Ler usuário
+  rpc Read(ReadRequest) returns (Usuario);
+  //Minha vigarície...
+  rpc GivePassword(GivePasswordRequest) returns (Usuario);
+  //Deletar usuário
+  rpc Delete(DeleteRequest) returns (Response);
+}
