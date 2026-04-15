@@ -36,3 +36,11 @@ func LerTodasProvas() ([]models.Provas, error) {
 	}
 	return provas, nil
 }
+
+func UpdateProvas(id int32, dados models.Provas) error {
+	query := `UPDATE provas SET nome_prova=$1,turma_prova=$2,materia_prova=$3 WHERE id=$4`
+	if _, err := DB.Exec(query, dados.NomeProva, dados.TurmaProva, dados.MateriaProva, id); err != nil {
+		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
+	}
+	return nil
+}
