@@ -14,3 +14,23 @@ func CriarEntradaNotas(user models.Notas) (int32, error) {
 	}
 	return id, nil
 }
+
+func LerTodasNotas() ([]models.Notas, error) {
+	var notas []models.Notas
+	rows, err := DB.Query("SELECT id,usuario_id,prova_id,nota_prova FROM provas")
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var n models.Notas
+		if err := rows.Scan(&n.ID, n.UsuarioID, n.ProvaID, n.NotaProva); err != nil {
+			return nil, fmt.Errorf("%w, %v", models.ErroBuscaEscanearPostgres, err)
+		}
+		notas = append(notas, n)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return notas, nil
+}
