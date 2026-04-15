@@ -23,3 +23,18 @@ message ReadNotaRequest {
 message NotasResponse {
   repeated Nota notas = 1;
 }
+message UpdateNotaRequest {
+  int32 nota_id = 1;
+  float valor_nota = 2;
+  Usuario aluno = 3;
+  Prova prova = 4;
+}
+message DeleteNotaRequest {
+  int32 nota_id = 1;
+}
+service NotaService {
+  rpc Create(CreateNotaRequest) returns (Nota);
+  rpc Read(ReadNotaRequest) returns (NotasResponse);
+  rpc Update(UpdateNotaRequest) returns (Nota);
+  rpc Delete(DeleteNotaRequest) returns (google.protobuf.Empty);
+}
