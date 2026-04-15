@@ -1,5 +1,5 @@
-// Package extAPi cuida da API RESTful externa, para o HTMX.
-package extAPI
+// Package api cuida da API RESTful externa, para o HTMX.
+package api
 
 import "net/http"
 
