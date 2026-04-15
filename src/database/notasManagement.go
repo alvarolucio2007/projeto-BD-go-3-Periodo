@@ -37,7 +37,7 @@ func LerTodasNotas() ([]models.Notas, error) {
 
 func UpdateNotas(id int32, dados models.Notas) error {
 	query := `UPDATE notas SET usuario_id=$1,prova_id=$2,nota_prova=$3 WHERE id=$4;`
-	if _, err := DB.Exec(query, dados.UsuarioID, dados.ProvaID, dados.NotaProva); err != nil {
+	if _, err := DB.Exec(query, dados.UsuarioID, dados.ProvaID, dados.NotaProva, id); err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
 	}
 	return nil
