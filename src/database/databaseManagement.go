@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -27,4 +28,17 @@ func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a sa
 		time.Sleep(2 * time.Second)
 	}
 	return nil, fmt.Errorf("%w: %v", models.ErroConexaoPostgres, err) // Após 10s, o sistema decide que a DB está realmente morta e retorna o erro.
+}
+
+func MigrarPostgres() error {
+	query, err := os.ReadFile("sql/init.sql")
+	if err != nil {
+		return fmt.Errorf("%w: %v", models.ErroLeituraArquivoMigracao, err)
+	}
+	_, err = DB.Exec(string(query))
+	if err != nil {
+		return fmt.Errorf("%w: %v", models.ErroMigracaoPostgres, err)
+	}
+	log.Println("Migração realizada com sucesso.")
+	return nil
 }
