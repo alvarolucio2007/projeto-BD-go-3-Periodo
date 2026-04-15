@@ -12,8 +12,7 @@ var (
 	ErroMigracaoPostgres       = errors.New("erro ao tentar migrar o Postgres: ")
 
 	// Erros de Criação
-	ErroEntradaPostgres       = errors.New("erro ao criar a entrada: ")
-	ErroLeituraArquivoEntrada = errors.New("erro ao tentar ler o arquivo de criação: ")
+	ErroEntradaPostgres = errors.New("erro ao criar a entrada: ")
 
 	// Erros de Deleção
 	ErroDeletePostgres = errors.New("erro ao deletar item: ")
@@ -21,4 +20,5 @@ var (
 	// Erros de Procura
 	ErroBuscaPostgresNEncontrado = errors.New("não foram encontrados itens: ")
 	ErroBuscaPostgres            = errors.New("erro ao tentar buscar: ")
+	ErroBuscaEscanearPostgres    = errors.New("erro ao escanear usuário: ")
 )
