@@ -44,3 +44,15 @@ func UpdateProvas(id int32, dados models.Provas) error {
 	}
 	return nil
 }
+
+func DeleteProvas(id int32) error {
+	query := `DELETE FROM provas WHERE id=$1`
+	res, err := DB.Exec(query, id)
+	if err != nil {
+		return fmt.Errorf("%w: %v", models.ErroDeletePostgres, err)
+	}
+	if count, _ := res.RowsAffected(); count == 0 {
+		return fmt.Errorf("%w: %d", models.ErroDeleteNenhumUsuarioPostgres, id)
+	}
+	return nil
+}
