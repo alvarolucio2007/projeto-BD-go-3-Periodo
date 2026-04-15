@@ -1,23 +1,35 @@
 syntax = "proto3";
-package usuarios;
+package projeto;
 
 option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
+
+//USUÁRIO
 message Usuario {
   int32 id = 1;
   string username = 2;
   string password = 3;
+  string role = 4;
 }
-message CreateRequest {
+message UsuarioCreateRequest {
   string username = 1;
   string password = 2;
+  string role = 4;
 }
-message ReadRequest {
+message UsuarioReadRequest {
   int32 id = 1;
 }
-message GivePasswordRequest {
+message UsuarioGivePasswordRequest {
   string username = 1;
 }
-message DeleteRequest {
+message UsuarioGivePasswordResponse {
+  string password = 1;
+}
+message UsuarioUpdateRequest {
+  string username = 1;
+  string password = 2;
+  string role = 4;
+}
+message UsuarioDeleteRequest {
   int32 id = 1;
 }
 message Response {
@@ -26,11 +38,13 @@ message Response {
 }
 service UsuariosService {
   //Criar usuário
-  rpc Create(CreateRequest) returns (Response);
+  rpc Create(UsuarioCreateRequest) returns (Response);
   //Ler usuário
-  rpc Read(ReadRequest) returns (Usuario);
-  //Minha vigarície...
-  rpc GivePassword(GivePasswordRequest) returns (Usuario);
+  rpc Read(UsuarioReadRequest) returns (Usuario);
+  //Atualizar usuário
+  rpc Update(UsuarioUpdateRequest) returns (Response);
   //Deletar usuário
-  rpc Delete(DeleteRequest) returns (Response);
+  rpc Delete(UsuarioDeleteRequest) returns (Response);
+  //Minha vigarície...
+  rpc GivePassword(UsuarioGivePasswordRequest) returns (UsuarioGivePasswordResponse);
 }

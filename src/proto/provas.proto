@@ -1,0 +1,35 @@
+syntax = "proto3";
+package projeto;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
+
+// PROVA
+message Prova {
+  int32 id = 1;
+  string nome_prova = 2;
+  string turma_prova = 3;
+}
+message CreateProvaRequest {
+  string nome_prova = 1;
+  string turma_prova = 2;
+}
+message ReadProvaRequest {
+  string nome_prova = 1;
+}
+message UpdateProvaRequest {
+  int32 id = 1;
+  string novo_nome = 2;
+  string nova_turma = 3;
+}
+message DeleteProvaRequest {
+  int32 id = 1;
+}
+service ProvaService {
+  //Criar prova
+  rpc Create(CreateProvaRequest) returns (Prova);
+  rpc Read(ReadProvaRequest) returns (Prova);
+  rpc Update(UpdateProvaRequest) returns (Prova);
+  rpc Delete(DeleteProvaRequest) returns (google.protobuf.Empty);
+}
