@@ -20,5 +20,4 @@ var (
 	// Erros de Procura
 	ErroBuscaPostgresNEncontrado = errors.New("não foram encontrados itens: ")
 	ErroBuscaPostgres            = errors.New("erro ao tentar buscar: ")
-	ErroBuscaEscanearPostgres    = errors.New("erro ao escanear usuário: ")
 )
