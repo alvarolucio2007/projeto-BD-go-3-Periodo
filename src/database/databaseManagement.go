@@ -14,8 +14,8 @@ var DB *sql.DB // O ponteiro para a DB em si
 
 func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a saúde do Postgres imediatamente após conectar.
 	var err error
-	const dsn string = "host=pg_projeto_db user=user password=password dbname=shortener sslmode=disable" // Tenta se conectar à DB com essas credenciais.
-	DB, err = sql.Open("pgx", dsn)                                                                       // O sql.Open apenas valida os argumentos, não abre uma conexão.
+	const dsn string = "host=pg_projeto_db user=user password=password dbname=pg_projeto_db sslmode=disable" // Tenta se conectar à DB com essas credenciais.
+	DB, err = sql.Open("pgx", dsn)                                                                           // O sql.Open apenas valida os argumentos, não abre uma conexão.
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroAberturaPostgres, err)
 	}
