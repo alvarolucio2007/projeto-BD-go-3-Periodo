@@ -24,7 +24,7 @@ func LerTodasNotas() ([]models.Notas, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var n models.Notas
-		if err := rows.Scan(&n.ID, n.UsuarioID, n.ProvaID, n.NotaProva); err != nil {
+		if err := rows.Scan(&n.ID, &n.UsuarioID, &n.ProvaID, &n.NotaProva); err != nil {
 			return nil, fmt.Errorf("%w, %v", models.ErroBuscaEscanearPostgres, err)
 		}
 		notas = append(notas, n)
