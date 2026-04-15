@@ -1,3 +1,4 @@
+// Package models modela tanto erros quanto entradas no Postgres/gPRC e afins, para que seja mais manutenível.
 package models
 
 import "log"
