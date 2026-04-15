@@ -9,7 +9,7 @@ import (
 
 func CriarEntradaUsuario(user models.Usuario) (int32, error) {
 	var id int32
-	query := "INSERT INTO usuario (username,password,role) VALUES ($1,$2,$3) RETURNING id;"
+	query := "INSERT INTO usuarios (username,password,role) VALUES ($1,$2,$3) RETURNING id;"
 	err := DB.QueryRow(query, user.Username, user.Password, user.Role).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("%w: %v", models.ErroEntradaPostgres, err)
