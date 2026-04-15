@@ -17,7 +17,7 @@ func CriarEntradaNotas(user models.Notas) (int32, error) {
 
 func LerTodasNotas() ([]models.Notas, error) {
 	var notas []models.Notas
-	rows, err := DB.Query("SELECT id,usuario_id,prova_id,nota_prova FROM provas")
+	rows, err := DB.Query("SELECT id,usuario_id,prova_id,nota_prova FROM notas")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
