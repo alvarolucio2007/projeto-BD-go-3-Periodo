@@ -37,6 +37,28 @@ func LerTodasProvas() ([]models.Provas, error) {
 	return provas, nil
 }
 
+func ProcurarProvaNome(nome string) ([]models.Provas, error) {
+	var provas []models.Provas
+	query := "SELECT id,nome_prova,turma_prova,materia_prova,data_prova FROM provas WHERE nome_prova=ILIKE $1"
+	rows, err := DB.Query(query, "%"+nome+"%")
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var p models.Provas
+		err := rows.Scan(&p.ID, &p.NomeProva, &p.TurmaProva, &p.MateriaProva, &p.DataProva)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %v", models.ErroBuscaEscanearPostgres, err)
+		}
+		provas = append(provas, p)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return provas, nil
+}
+
 func UpdateProvas(id int32, dados models.Provas) error {
 	query := `UPDATE provas SET nome_prova=$1,turma_prova=$2,materia_prova=$3,data_prova=$4 WHERE id=$5;`
 	if _, err := DB.Exec(query, dados.NomeProva, dados.TurmaProva, dados.MateriaProva, dados.DataProva, id); err != nil {
