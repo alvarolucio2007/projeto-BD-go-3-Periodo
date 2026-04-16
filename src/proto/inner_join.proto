@@ -2,8 +2,6 @@ syntax = "proto3";
 package projeto;
 
 import "google/protobuf/empty.proto";
-import "provas.proto";
-import "usuarios.proto";
 
 option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
 message InnerJoinResponse {
