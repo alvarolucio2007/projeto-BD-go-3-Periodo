@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS provas(
   nome_prova VARCHAR(50) NOT NULL,
   turma_prova VARCHAR(50) NOT NULL,
   materia_prova VARCHAR(50) NOT NULL,
-  data_aplicacao DATE NOT NULL
+  data_prova DATE NOT NULL
 );
 CREATE TABLE IF NOT EXISTS notas(
   id SERIAL PRIMARY KEY,
