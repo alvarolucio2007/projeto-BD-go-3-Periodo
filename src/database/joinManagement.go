@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 
@@ -8,9 +9,9 @@ import (
 )
 
 type LeftJoinType struct {
-	username  string
-	nomeProva string
-	notaProva float32
+	Username  string
+	NomeProva sql.NullFloat64
+	NotaProva sql.NullString
 }
 
 func LeftJoin() ([]LeftJoinType, error) {
@@ -27,7 +28,7 @@ func LeftJoin() ([]LeftJoinType, error) {
 	var listaLeftJoins []LeftJoinType
 	for rows.Next() {
 		var r LeftJoinType
-		if err := rows.Scan(&r.username, &r.notaProva, &r.nomeProva); err != nil {
+		if err := rows.Scan(&r.Username, &r.NotaProva, &r.NomeProva); err != nil {
 			return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinScanPostgres, err)
 		}
 		listaLeftJoins = append(listaLeftJoins, r)
