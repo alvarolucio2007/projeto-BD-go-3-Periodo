@@ -25,4 +25,9 @@ var (
 	ErroDeletePostgres              = errors.New("erro ao deletar item")
 	ErroDeleteNenhumUsuarioPostgres = errors.New("nenhum usuário encontrado com o ID ")
 	ErroDeleteNenhumaProvaPostgres  = errors.New("nenhuma prova encontrada com o ID")
+
+	// Erros de Left Join
+	ErroLeftJoinLerArquivoPostgres = errors.New("erro ao ler arquivo de left join")
+	ErroLeftJoinExecutarPostgres   = errors.New("erro ao executar o comando de left join")
+	ErroLeftJoinScanPostgres       = errors.New("erro ao dar scan no resultado do left join")
 )
