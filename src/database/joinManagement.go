@@ -30,11 +30,11 @@ func LeftJoin() ([]LeftJoinType, error) {
 	defer rows.Close()
 	var listaLeftJoins []LeftJoinType
 	for rows.Next() {
-		var r LeftJoinType
-		if err := rows.Scan(&r.Username, &r.NomeProva, &r.NotaProva, &r.DataAplicacao); err != nil {
+		var l LeftJoinType
+		if err := rows.Scan(&l.Username, &l.NomeProva, &l.NotaProva, &l.DataAplicacao); err != nil {
 			return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinScanPostgres, err)
 		}
-		listaLeftJoins = append(listaLeftJoins, r)
+		listaLeftJoins = append(listaLeftJoins, l)
 	}
 	return listaLeftJoins, nil
 }
