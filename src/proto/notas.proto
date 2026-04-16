@@ -26,8 +26,8 @@ message NotasResponse {
 message UpdateNotaRequest {
   int32 nota_id = 1;
   float valor_nota = 2;
-  Usuario aluno = 3;
-  Prova prova = 4;
+  uint32 aluno_id = 3;
+  uint32 prova_id = 4;
 }
 message DeleteNotaRequest {
   int32 nota_id = 1;
