@@ -36,8 +36,30 @@ func LeftJoin() ([]LeftJoinType, error) {
 	return listaLeftJoins, nil
 }
 
-type FullJoinType struct {
+type InnerJoinType struct {
 	Username  string
 	NomeProva string
 	NotaProva float32
+}
+
+func InnerJoin() ([]InnerJoinType, error) {
+	queryByte, err := os.ReadFile("src/sql/fullJoin.sql")
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinLerArquivoPostgres, err)
+	}
+	queryString := string(queryByte)
+	rows, err := DB.Query(queryString)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinExecutarPostgres, err)
+	}
+	defer rows.Close()
+	var listaInnerJoins []InnerJoinType
+	for rows.Next() {
+		var i InnerJoinType
+		if err := rows.Scan(&i.Username, &i.NomeProva, &i.NomeProva); err != nil {
+			return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinScanPosgres, err)
+		}
+		listaInnerJoins = append(listaInnerJoins, i)
+	}
+	return listaInnerJoins, nil
 }
