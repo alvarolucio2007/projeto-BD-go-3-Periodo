@@ -2,8 +2,8 @@ package database
 
 import (
 	"database/sql"
+	_ "embed"
 	"fmt"
-	"os"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
@@ -14,13 +14,14 @@ type LeftJoinType struct {
 	NotaProva sql.NullFloat64
 }
 
+//go:embed sql/innerJoin.sql
+var innerJoinSQL string
+
+//go:embed sql/leftJoin.sql
+var leftJoinSQL string
+
 func LeftJoin() ([]LeftJoinType, error) {
-	queryByte, err := os.ReadFile("src/sql/leftJoin.sql")
-	if err != nil {
-		return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinLerArquivoPostgres, err)
-	}
-	queryString := string(queryByte)
-	rows, err := DB.Query(queryString)
+	rows, err := DB.Query(leftJoinSQL)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinExecutarPostgres, err)
 	}
@@ -43,12 +44,7 @@ type InnerJoinType struct {
 }
 
 func InnerJoin() ([]InnerJoinType, error) {
-	queryByte, err := os.ReadFile("src/sql/fullJoin.sql")
-	if err != nil {
-		return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinLerArquivoPostgres, err)
-	}
-	queryString := string(queryByte)
-	rows, err := DB.Query(queryString)
+	rows, err := DB.Query(innerJoinSQL)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinExecutarPostgres, err)
 	}
