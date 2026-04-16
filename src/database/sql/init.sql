@@ -9,13 +9,15 @@ CREATE TABLE IF NOT EXISTS provas(
   id SERIAL PRIMARY KEY,
   nome_prova VARCHAR(50) NOT NULL,
   turma_prova VARCHAR(50) NOT NULL,
-  materia_prova VARCHAR(50) NOT NULL
+  materia_prova VARCHAR(50) NOT NULL,
+  data_aplicacao DATE NOT NULL
 );
 CREATE TABLE IF NOT EXISTS notas(
   id SERIAL PRIMARY KEY,
   usuario_id INTEGER NOT NULL,
   prova_id INTEGER NOT NULL,
   nota_prova NUMERIC(3,1) CHECK(nota_prova>=0 AND nota_prova<=10),
+  data_criacao DATE NOT NULL,
   CONSTRAINT fk_aluno FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
   CONSTRAINT fk_prova FOREIGN KEY(prova_id) REFERENCES provas(id) ON DELETE CASCADE,
   CONSTRAINT nota_unica_por_aluno UNIQUE (usuario_id,prova_id)
