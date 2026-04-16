@@ -37,6 +37,28 @@ func LerTodosUsuarios() ([]models.Usuario, error) {
 	return usuarios, nil
 }
 
+func ProcurarUsuario(nome string) ([]models.Usuario, error) {
+	var usuarios []models.Usuario
+	query := "SELECT id, username,password, role FROM usuarios WHERE username=$1"
+	rows, err := DB.Query(query, nome)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var u models.Usuario
+		err := rows.Scan(&u.ID, &u.Username, &u.Password, &u.Role)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %v", models.ErroBuscaEscanearPostgres, err)
+		}
+		usuarios = append(usuarios, u)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return usuarios, nil
+}
+
 func UpdateUsuarios(dados models.Usuario) error {
 	query := `UPDATE usuarios SET username=$1, password=$2, role=$3 WHERE id=$4`
 	if _, err := DB.Exec(query, dados.Username, dados.Password, dados.Role, dados.ID); err != nil {
