@@ -1,4 +1,4 @@
-package maintest
+package testpostgres
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
 )
 
-func TestPostgres(t *testing.T) {
+func TestPostgresInicial(t *testing.T) {
 	t.Run("Conexão e Migração", func(t *testing.T) {
 		testConexaoMigracao(t)
 	})
