@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -15,27 +16,42 @@ func CriarEntradaNotas(user models.Notas) (int32, error) {
 	return id, nil
 }
 
-func LerTodasNotas() ([]models.Notas, error) {
-	var notas []models.Notas
-	rows, err := DB.Query("SELECT id,usuario_id,prova_id,nota_prova FROM notas")
+func BuscarNotas(username string) ([]models.InnerJoinType, error) {
+	var notas []models.InnerJoinType
+
+	// SQL Base
+	query := `SELECT u.username, p.nome_prova, n.nota_prova, p.data_prova
+        FROM notas n
+        INNER JOIN usuarios u ON u.id = n.usuario_id
+        INNER JOIN provas p ON p.id = n.prova_id`
+
+	var rows *sql.Rows
+	var err error
+
+	if username != "" {
+		query += ` WHERE u.username = $1`
+		rows, err = DB.Query(query, username)
+	} else {
+		rows, err = DB.Query(query)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
 	defer rows.Close()
+
 	for rows.Next() {
-		var n models.Notas
-		if err := rows.Scan(&n.ID, &n.UsuarioID, &n.ProvaID, &n.NotaProva); err != nil {
+		var n models.InnerJoinType
+		// O Scan agora é sempre o mesmo!
+		if err := rows.Scan(&n.Username, &n.NomeProva, &n.NotaProva, &n.DataAplicacao); err != nil {
 			return nil, fmt.Errorf("%w, %v", models.ErroBuscaEscanearPostgres, err)
 		}
 		notas = append(notas, n)
 	}
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
 	return notas, nil
 }
 
-func UpdateNotas(id int32, dados models.Notas) error {
+func UpdateNotas(id uint32, dados models.Notas) error {
 	query := `UPDATE notas SET usuario_id=$1,prova_id=$2,nota_prova=$3 WHERE id=$4;`
 	if _, err := DB.Exec(query, dados.UsuarioID, dados.ProvaID, dados.NotaProva, id); err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
@@ -43,7 +59,7 @@ func UpdateNotas(id int32, dados models.Notas) error {
 	return nil
 }
 
-func DeleteNotas(id int32) error {
+func DeleteNotas(id uint32) error {
 	query := `DELETE FROM notas where id=$1`
 	res, err := DB.Exec(query, id)
 	if err != nil {
