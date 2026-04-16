@@ -29,8 +29,8 @@ func BuscarNotas(username string) ([]models.InnerJoinType, error) {
 	var err error
 
 	if username != "" {
-		query += ` WHERE u.username = $1`
-		rows, err = DB.Query(query, username)
+		query += ` WHERE u.username = ILIKE $1`
+		rows, err = DB.Query(query, "%"+username+"%")
 	} else {
 		rows, err = DB.Query(query)
 	}
