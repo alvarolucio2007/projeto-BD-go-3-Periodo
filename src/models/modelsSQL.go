@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Usuario struct {
 	ID       uint32
@@ -20,4 +23,16 @@ type Notas struct {
 	UsuarioID uint32
 	ProvaID   uint32
 	NotaProva float32
+}
+type InnerJoinType struct {
+	Username      string
+	NomeProva     string
+	NotaProva     float32
+	DataAplicacao time.Time
+}
+type LeftJoinType struct {
+	Username      string
+	NomeProva     sql.NullString
+	NotaProva     sql.NullFloat64
+	DataAplicacao time.Time
 }
