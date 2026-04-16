@@ -39,8 +39,8 @@ func LerTodosUsuarios() ([]models.Usuario, error) {
 
 func ProcurarUsuario(nome string) ([]models.Usuario, error) {
 	var usuarios []models.Usuario
-	query := "SELECT id, username,password, role FROM usuarios WHERE username=$1"
-	rows, err := DB.Query(query, nome)
+	query := "SELECT id, username,password, role FROM usuarios WHERE username= ILIKE $1"
+	rows, err := DB.Query(query, "%"+nome+"%")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
