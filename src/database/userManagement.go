@@ -1,7 +1,6 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -17,9 +16,9 @@ func CriarEntradaUsuario(user models.Usuario) (int32, error) {
 	return id, nil
 }
 
-func LerTodosUsuarios(db *sql.DB) ([]models.Usuario, error) {
+func LerTodosUsuarios() ([]models.Usuario, error) {
 	var usuarios []models.Usuario
-	rows, err := db.Query("SELECT id,username,password,role FROM usuarios")
+	rows, err := DB.Query("SELECT id,username,password,role FROM usuarios")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
