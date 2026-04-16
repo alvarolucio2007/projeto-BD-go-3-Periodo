@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Usuario struct {
 	ID       int32
 	Username string
@@ -11,6 +13,7 @@ type Provas struct {
 	NomeProva    string
 	TurmaProva   string
 	MateriaProva string
+	DataProva    time.Time
 }
 type Notas struct {
 	ID        int32
