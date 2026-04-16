@@ -1,10 +1,8 @@
 package database
 
 import (
-	"database/sql"
 	_ "embed"
 	"fmt"
-	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
@@ -15,22 +13,15 @@ var innerJoinSQL string
 //go:embed sql/leftJoin.sql
 var leftJoinSQL string
 
-type LeftJoinType struct {
-	Username      string
-	NomeProva     sql.NullString
-	NotaProva     sql.NullFloat64
-	DataAplicacao time.Time
-}
-
-func LeftJoin() ([]LeftJoinType, error) {
+func LeftJoin() ([]models.LeftJoinType, error) {
 	rows, err := DB.Query(leftJoinSQL)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinExecutarPostgres, err)
 	}
 	defer rows.Close()
-	var listaLeftJoins []LeftJoinType
+	var listaLeftJoins []models.LeftJoinType
 	for rows.Next() {
-		var l LeftJoinType
+		var l models.LeftJoinType
 		if err := rows.Scan(&l.Username, &l.NomeProva, &l.NotaProva, &l.DataAplicacao); err != nil {
 			return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinScanPostgres, err)
 		}
@@ -39,22 +30,15 @@ func LeftJoin() ([]LeftJoinType, error) {
 	return listaLeftJoins, nil
 }
 
-type InnerJoinType struct {
-	Username      string
-	NomeProva     string
-	NotaProva     float32
-	DataAplicacao time.Time
-}
-
-func InnerJoin() ([]InnerJoinType, error) {
+func InnerJoin() ([]models.InnerJoinType, error) {
 	rows, err := DB.Query(innerJoinSQL)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinExecutarPostgres, err)
 	}
 	defer rows.Close()
-	var listaInnerJoins []InnerJoinType
+	var listaInnerJoins []models.InnerJoinType
 	for rows.Next() {
-		var i InnerJoinType
+		var i models.InnerJoinType
 		if err := rows.Scan(&i.Username, &i.NomeProva, &i.NotaProva, &i.DataAplicacao); err != nil {
 			return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinScanPosgres, err)
 		}
