@@ -7,30 +7,30 @@ import "usuarios.proto";
 
 option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
 message Nota {
-  int32 nota_id = 1;
+  uint32 nota_id = 1;
   float valor_nota = 2;
   Usuario aluno = 3;
   Prova prova = 4;
 }
 message CreateNotaRequest {
-  int32 usuario_id = 1;
-  int32 prova_id = 2;
+  uint32 usuario_id = 1;
+  uint32 prova_id = 2;
   float nota_prova = 3;
 }
 message ReadNotaRequest {
-  int32 usuario_id = 1;
+  uint32 usuario_id = 1;
 }
 message NotasResponse {
   repeated Nota notas = 1;
 }
 message UpdateNotaRequest {
-  int32 nota_id = 1;
+  uint32 nota_id = 1;
   float valor_nota = 2;
   uint32 aluno_id = 3;
   uint32 prova_id = 4;
 }
 message DeleteNotaRequest {
-  int32 nota_id = 1;
+  uint32 nota_id = 1;
 }
 service NotaService {
   rpc Create(CreateNotaRequest) returns (Nota);

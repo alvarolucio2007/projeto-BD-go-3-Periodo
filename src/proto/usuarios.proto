@@ -5,7 +5,7 @@ option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/prot
 
 //USUÁRIO
 message Usuario {
-  int32 id = 1;
+  uint32 id = 1;
   string username = 2;
   string password = 3;
   string role = 4;
@@ -16,7 +16,7 @@ message UsuarioCreateRequest {
   string role = 4;
 }
 message UsuarioReadRequest {
-  int32 id = 1;
+  uint32 id = 1;
 }
 message UsuarioGivePasswordRequest {
   string username = 1;
@@ -30,10 +30,10 @@ message UsuarioUpdateRequest {
   string role = 4;
 }
 message UsuarioDeleteRequest {
-  int32 id = 1;
+  uint32 id = 1;
 }
 message Response {
-  int32 status_code = 1; //Usar os status codes do http (200,202,404, etc)
+  uint32 status_code = 1; //Usar os status codes do http (200,202,404, etc)
   string message = 2; //Caso tenha erro, enviar o erro aqui
 }
 service UsuariosService {

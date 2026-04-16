@@ -26,13 +26,13 @@ message ReadAllProvaRequest {
   uint32 id_usuario = 1;
 }
 message UpdateProvaRequest {
-  int32 id = 1;
+  uint32 id = 1;
   string novo_nome = 2;
   string nova_turma = 3;
   google.protobuf.Timestamp data_prova = 4;
 }
 message DeleteProvaRequest {
-  int32 id = 1;
+  uint32 id = 1;
 }
 service ProvaService {
   //Criar prova
