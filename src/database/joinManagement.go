@@ -10,8 +10,8 @@ import (
 
 type LeftJoinType struct {
 	Username  string
-	NomeProva sql.NullFloat64
-	NotaProva sql.NullString
+	NomeProva sql.NullString
+	NotaProva sql.NullFloat64
 }
 
 func LeftJoin() ([]LeftJoinType, error) {
@@ -56,7 +56,7 @@ func InnerJoin() ([]InnerJoinType, error) {
 	var listaInnerJoins []InnerJoinType
 	for rows.Next() {
 		var i InnerJoinType
-		if err := rows.Scan(&i.Username, &i.NomeProva, &i.NomeProva); err != nil {
+		if err := rows.Scan(&i.Username, &i.NomeProva, &i.NotaProva); err != nil {
 			return nil, fmt.Errorf("%w: %v", models.ErroInnerJoinScanPosgres, err)
 		}
 		listaInnerJoins = append(listaInnerJoins, i)
