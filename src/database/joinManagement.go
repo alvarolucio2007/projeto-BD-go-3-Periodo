@@ -35,3 +35,9 @@ func LeftJoin() ([]LeftJoinType, error) {
 	}
 	return listaLeftJoins, nil
 }
+
+type FullJoinType struct {
+	Username  string
+	NomeProva string
+	NotaProva float32
+}
