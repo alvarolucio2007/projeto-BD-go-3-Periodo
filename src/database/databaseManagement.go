@@ -31,12 +31,12 @@ func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a sa
 	return nil, fmt.Errorf("%w: %v", models.ErroConexaoPostgres, err) // Após 10s, o sistema decide que a DB está realmente morta e retorna o erro.
 }
 
-func MigrarPostgres() error {
+func MigrarPostgres(db *sql.DB) error {
 	query, err := os.ReadFile("sql/init.sql")
 	if err != nil {
 		return fmt.Errorf("%w: %v", models.ErroLeituraArquivoMigracao, err)
 	}
-	_, err = DB.Exec(string(query))
+	_, err = db.Exec(string(query))
 	if err != nil {
 		return fmt.Errorf("%w: %v", models.ErroMigracaoPostgres, err)
 	}
