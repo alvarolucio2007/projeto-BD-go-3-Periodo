@@ -28,7 +28,7 @@ func LeftJoin() ([]LeftJoinType, error) {
 	var listaLeftJoins []LeftJoinType
 	for rows.Next() {
 		var r LeftJoinType
-		if err := rows.Scan(&r.Username, &r.NotaProva, &r.NomeProva); err != nil {
+		if err := rows.Scan(&r.Username, &r.NomeProva, &r.NotaProva); err != nil {
 			return nil, fmt.Errorf("%w: %v", models.ErroLeftJoinScanPostgres, err)
 		}
 		listaLeftJoins = append(listaLeftJoins, r)
