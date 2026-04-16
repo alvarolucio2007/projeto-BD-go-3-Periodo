@@ -1,0 +1,14 @@
+syntax = "proto3";
+package projeto;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
+message LeftJoinResponse {
+  string username = 1;
+  optional string nome_prova = 2;
+  optional float nota_prova = 3;
+}
+service LeftJoinService {
+  rpc LeftJoin(google.protobuf.Empty) returns (stream LeftJoinResponse);
+}
