@@ -30,4 +30,9 @@ var (
 	ErroLeftJoinLerArquivoPostgres = errors.New("erro ao ler arquivo de left join")
 	ErroLeftJoinExecutarPostgres   = errors.New("erro ao executar o comando de left join")
 	ErroLeftJoinScanPostgres       = errors.New("erro ao dar scan no resultado do left join")
+
+	// Erros de Inner Join
+	ErroInnerJoinLerArquivoPostgres = errors.New("erro ao ler arquivo de inner join")
+	ErroInnerJoinExecutarPostgres   = errors.New("erro ao executar o comando de inner join")
+	ErroInnerJoinScanPosgres        = errors.New("erro ao dar scan no resultado do inner join")
 )
