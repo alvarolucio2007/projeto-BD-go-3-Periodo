@@ -10,10 +10,10 @@ import (
 
 func TestPostgresProva(t *testing.T) {
 	t.Run("Criar prova", func(t *testing.T) {
-		// Teste criação...
+		TestCriarProva(t)
 	})
 	t.Run("Ler todas as provas", func(t *testing.T) {
-		// Teste leitura geral...
+		TestLerTodasProvas(t)
 	})
 	t.Run("Procurar prova específica", func(t *testing.T) {
 		// Teste procura...
@@ -27,9 +27,9 @@ func TestPostgresProva(t *testing.T) {
 }
 
 var listaProvas = []models.Provas{
-	{ID: 1, NomeProva: "Primeiro", TurmaProva: "Primeira turma", MateriaProva: "Primeira matéria", DataProva: time.Date(2026, 4, 17, 12, 0, 0, 0, time.UTC)},
-	{ID: 2, NomeProva: "Segundo", TurmaProva: "Segunda turma", MateriaProva: "Segunda Matéria", DataProva: time.Date(2026, 4, 18, 12, 0, 0, 0, time.UTC)},
-	{ID: 3, NomeProva: "Terceiro", TurmaProva: "Terceira turma", MateriaProva: "Terceira Matéria", DataProva: time.Date(2026, 4, 19, 12, 0, 0, 0, time.UTC)},
+	{ID: 1, NomeProva: "Primeiro", TurmaProva: "Primeira turma", MateriaProva: "Primeira matéria", DataProva: time.Date(2026, 4, 17, 12, 0, 0, 0, time.Local)},
+	{ID: 2, NomeProva: "Segundo", TurmaProva: "Segunda turma", MateriaProva: "Segunda Matéria", DataProva: time.Date(2026, 4, 18, 12, 0, 0, 0, time.Local)},
+	{ID: 3, NomeProva: "Terceiro", TurmaProva: "Terceira turma", MateriaProva: "Terceira Matéria", DataProva: time.Date(2026, 4, 19, 12, 0, 0, 0, time.Local)},
 }
 
 func TestCriarProva(t *testing.T) {
@@ -44,6 +44,20 @@ func TestCriarProva(t *testing.T) {
 			}
 			if id != uint32(i+1) {
 				t.Errorf("ID é diferente do esperado! Esperava %d, recebi %d", i+1, id)
+			}
+		}
+	})
+}
+
+func TestLerTodasProvas(t *testing.T) {
+	t.Run("Ler todos as provas", func(t *testing.T) {
+		for i, p := range listaProvas {
+			listaRecebida, err := database.LerTodasProvas()
+			if err != nil {
+				t.Errorf("Erro ao receber dados: %v", err)
+			}
+			if listaRecebida[i] != p {
+				t.Errorf("Os dados não batem! Recebi %v e esperava %v", listaRecebida[i], p)
 			}
 		}
 	})
