@@ -109,3 +109,45 @@ func TestBuscarNotas(t *testing.T) {
 		}
 	})
 }
+
+func TestAtualizarNotas(t *testing.T) {
+	// 1. Limpa e prepara o cenário
+	database.DB.Exec("TRUNCATE TABLE notas, provas, usuarios RESTART IDENTITY CASCADE")
+
+	// 2. Cria o registro que será atualizado
+	uID, _ := database.CriarEntradaUsuario(models.Usuario{Username: "usuário", Role: "aluno"})
+	pID, _ := database.CriarEntradaProva(models.Provas{NomeProva: "Prova"})
+
+	notaOriginal := models.Notas{UsuarioID: uID, ProvaID: pID, NotaProva: 5.0}
+	idNota, err := database.CriarEntradaNotas(notaOriginal)
+	if err != nil {
+		t.Fatalf("Erro ao criar nota inicial: %v", err)
+	}
+
+	t.Run("Atualizar uma nota", func(t *testing.T) {
+		// 3. Define os novos dados
+		novaNotaValor := float32(9.5)
+		modeloAtualizado := models.Notas{
+			ID:        idNota, // Importante: usar o ID que o banco gerou
+			UsuarioID: uID,
+			ProvaID:   pID,
+			NotaProva: novaNotaValor,
+		}
+
+		// 4. Executa o Update
+		if err := database.UpdateNotas(idNota, modeloAtualizado); err != nil {
+			t.Errorf("Erro ao editar nota: %v", err)
+		}
+
+		// 5. Busca novamente para conferir
+		resultados, err := database.BuscarNotas("usuário")
+		if err != nil || len(resultados) == 0 {
+			t.Fatalf("Erro ao buscar nota após update ou resultado vazio")
+		}
+
+		// 6. O Assert real: a nota agora é 9.5?
+		if resultados[0].NotaProva != novaNotaValor {
+			t.Errorf("A nota não foi atualizada! Esperava %v, recebi %v", novaNotaValor, resultados[0].NotaProva)
+		}
+	})
+}
