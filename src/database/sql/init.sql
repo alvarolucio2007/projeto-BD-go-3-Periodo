@@ -1,3 +1,4 @@
+DROP TYPE IF EXISTS role_usuario CASCADE;
 CREATE TYPE role_usuario AS ENUM ('admin','professor','aluno');
 CREATE TABLE IF NOT EXISTS usuarios(
   id SERIAL PRIMARY KEY,
