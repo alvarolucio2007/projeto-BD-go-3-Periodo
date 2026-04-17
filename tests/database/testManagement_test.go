@@ -19,7 +19,7 @@ func TestPostgresProva(t *testing.T) {
 		TestProcurarProvaNome(t)
 	})
 	t.Run("Editar prova", func(t *testing.T) {
-		// Teste atualização...
+		TestAtualizarProva(t)
 	})
 	t.Run("Deletar prova", func(t *testing.T) {
 		// Teste deleção...
@@ -73,6 +73,19 @@ func TestProcurarProvaNome(t *testing.T) {
 			if listaRecebida[0] != p {
 				t.Errorf("Os dados não batem! Recebi %v e esperava %v", listaRecebida[0], p)
 			}
+		}
+	})
+}
+
+func TestAtualizarProva(t *testing.T) {
+	t.Run("Atualizar uma prova", func(t *testing.T) {
+		modeloTeste := models.Provas{ID: 1, NomeProva: "Teste", TurmaProva: "Teste2", MateriaProva: "Teste3", DataProva: time.Date(2026, 4, 16, 12, 0, 0, 0, time.Local)}
+		if err := database.UpdateProvas(listaUsuario[0].ID, modeloTeste); err != nil {
+			t.Errorf("Erro ao editar prova: %v", err)
+		}
+		provas, _ := database.ProcurarProvaNome(modeloTeste.NomeProva)
+		if provas[0] != modeloTeste {
+			t.Errorf("Usuário não foi editado corretamente! Esperado: %v, Recebido: %v", modeloTeste, provas[0])
 		}
 	})
 }
