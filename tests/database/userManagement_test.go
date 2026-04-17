@@ -8,7 +8,7 @@ import (
 )
 
 func TestPostgresUsuario(t *testing.T) {
-	t.Run("Criar entrada", func(t *testing.T) {
+	t.Run("Criar usuário", func(t *testing.T) {
 		TestCriarUsuario(t)
 	})
 	t.Run("Ler todos os usuários", func(t *testing.T) {
