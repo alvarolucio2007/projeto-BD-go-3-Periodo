@@ -39,7 +39,7 @@ func LerTodasProvas() ([]models.Provas, error) {
 
 func ProcurarProvaNome(nome string) ([]models.Provas, error) {
 	var provas []models.Provas
-	query := "SELECT id,nome_prova,turma_prova,materia_prova,data_prova FROM provas WHERE nome_prova=ILIKE $1"
+	query := "SELECT id,nome_prova,turma_prova,materia_prova,data_prova FROM provas WHERE nome_prova ILIKE $1"
 	rows, err := DB.Query(query, "%"+nome+"%")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
