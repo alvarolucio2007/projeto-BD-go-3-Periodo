@@ -94,7 +94,7 @@ func TestDeletarProva(t *testing.T) {
 	t.Run("Deletar uma prova", func(t *testing.T) {
 		for _, p := range listaProvas {
 			if err := database.DeleteProvas(p.ID); err != nil {
-				t.Errorf("Erro ao deletar o usuário: %v", err)
+				t.Errorf("Erro ao deletar a prova: %v", err)
 			}
 		}
 		resultado, err := database.LerTodasProvas()
