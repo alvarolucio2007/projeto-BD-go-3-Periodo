@@ -22,7 +22,7 @@ func TestPostgresProva(t *testing.T) {
 		TestAtualizarProva(t)
 	})
 	t.Run("Deletar prova", func(t *testing.T) {
-		// Teste deleção...
+		TestDeletarProva(t)
 	})
 }
 
@@ -80,12 +80,29 @@ func TestProcurarProvaNome(t *testing.T) {
 func TestAtualizarProva(t *testing.T) {
 	t.Run("Atualizar uma prova", func(t *testing.T) {
 		modeloTeste := models.Provas{ID: 1, NomeProva: "Teste", TurmaProva: "Teste2", MateriaProva: "Teste3", DataProva: time.Date(2026, 4, 16, 12, 0, 0, 0, time.Local)}
-		if err := database.UpdateProvas(listaUsuario[0].ID, modeloTeste); err != nil {
+		if err := database.UpdateProvas(listaProvas[0].ID, modeloTeste); err != nil {
 			t.Errorf("Erro ao editar prova: %v", err)
 		}
 		provas, _ := database.ProcurarProvaNome(modeloTeste.NomeProva)
 		if provas[0] != modeloTeste {
 			t.Errorf("Usuário não foi editado corretamente! Esperado: %v, Recebido: %v", modeloTeste, provas[0])
+		}
+	})
+}
+
+func TestDeletarProva(t *testing.T) {
+	t.Run("Deletar uma prova", func(t *testing.T) {
+		for _, p := range listaProvas {
+			if err := database.DeleteProvas(p.ID); err != nil {
+				t.Errorf("Erro ao deletar o usuário: %v", err)
+			}
+		}
+		resultado, err := database.LerTodasProvas()
+		if err != nil {
+			t.Errorf("Erro ao pegar a lista vazia das provas. %v", err)
+		}
+		if len(resultado) != 0 {
+			t.Errorf("Ainda há resultados na DB: achados %v", resultado)
 		}
 	})
 }
