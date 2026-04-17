@@ -35,4 +35,16 @@ var listaProvas = []models.Provas{
 func TestCriarProva(t *testing.T) {
 	database.ConectarPostgres()
 	database.DB.Exec("DROP TABLE IF EXISTS provas CASCADE")
+	database.MigrarPostgres()
+	t.Run("Criar prova", func(t *testing.T) {
+		for i, p := range listaProvas {
+			id, err := database.CriarEntradaProva(p)
+			if err != nil {
+				t.Errorf("Erro ao adicionar prova: %v", err)
+			}
+			if id != uint32(i+1) {
+				t.Errorf("ID é diferente do esperado! Esperava %d, recebi %d", i+1, id)
+			}
+		}
+	})
 }
