@@ -8,8 +8,8 @@ import (
 
 func CriarEntradaProva(prova models.Provas) (uint32, error) {
 	var id uint32
-	query := "INSERT INTO provas (nome_prova,turma_prova,materia_prova,data_) VALUES ($1,$2,$3) RETURNING id;"
-	err := DB.QueryRow(query, prova.NomeProva, prova.TurmaProva, prova.MateriaProva).Scan(&id)
+	query := "INSERT INTO provas (nome_prova,turma_prova,materia_prova,data_prova) VALUES ($1,$2,$3,$4) RETURNING id;"
+	err := DB.QueryRow(query, prova.NomeProva, prova.TurmaProva, prova.MateriaProva, prova.DataProva).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("%w: %v", models.ErroEntradaPostgres, err)
 	}
