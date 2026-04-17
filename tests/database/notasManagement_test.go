@@ -16,10 +16,10 @@ func TestPostgresNotas(t *testing.T) {
 		TestBuscarNotas(t)
 	})
 	t.Run("Atualizar nota", func(t *testing.T) {
-		//
+		TestAtualizarNotas(t)
 	})
 	t.Run("Deletar nota", func(t *testing.T) {
-		//
+		TestDeletarNotas(t)
 	})
 }
 
@@ -148,6 +148,24 @@ func TestAtualizarNotas(t *testing.T) {
 		// 6. O Assert real: a nota agora é 9.5?
 		if resultados[0].NotaProva != novaNotaValor {
 			t.Errorf("A nota não foi atualizada! Esperava %v, recebi %v", novaNotaValor, resultados[0].NotaProva)
+		}
+	})
+}
+
+func TestDeletarNotas(t *testing.T) {
+	t.Run("Deletar uma nota", func(t *testing.T) {
+		usuario := models.Usuario{Username: "Delete", Role: "aluno"}
+		prova := models.Provas{NomeProva: "Delete"}
+		uID, _ := database.CriarEntradaUsuario(usuario)
+		pID, _ := database.CriarEntradaProva(prova)
+		notaValor := float32(10.0)
+		notaID, _ := database.CriarEntradaNotas(models.Notas{UsuarioID: uID, ProvaID: pID, NotaProva: notaValor})
+		if err := database.DeleteNotas(notaID); err != nil {
+			t.Errorf("Erro ao deletar nota %v", err)
+		}
+		resultado, _ := database.BuscarNotas(usuario.Username)
+		if len(resultado) != 0 {
+			t.Errorf("Nota não deletada! Notas encontradas: %v", len(resultado))
 		}
 	})
 }
