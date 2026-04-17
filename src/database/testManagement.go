@@ -6,8 +6,8 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-func CriarEntradaProva(prova models.Provas) (int32, error) {
-	var id int32
+func CriarEntradaProva(prova models.Provas) (uint32, error) {
+	var id uint32
 	query := "INSERT INTO provas (nome_prova,turma_prova,materia_prova,data_) VALUES ($1,$2,$3) RETURNING id;"
 	err := DB.QueryRow(query, prova.NomeProva, prova.TurmaProva, prova.MateriaProva).Scan(&id)
 	if err != nil {
@@ -59,7 +59,7 @@ func ProcurarProvaNome(nome string) ([]models.Provas, error) {
 	return provas, nil
 }
 
-func UpdateProvas(id int32, dados models.Provas) error {
+func UpdateProvas(id uint32, dados models.Provas) error {
 	query := `UPDATE provas SET nome_prova=$1,turma_prova=$2,materia_prova=$3,data_prova=$4 WHERE id=$5;`
 	if _, err := DB.Exec(query, dados.NomeProva, dados.TurmaProva, dados.MateriaProva, dados.DataProva, id); err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
@@ -67,7 +67,7 @@ func UpdateProvas(id int32, dados models.Provas) error {
 	return nil
 }
 
-func DeleteProvas(id int32) error {
+func DeleteProvas(id uint32) error {
 	query := `DELETE FROM provas WHERE id=$1`
 	res, err := DB.Exec(query, id)
 	if err != nil {
