@@ -26,9 +26,9 @@ func TestPostgresUsuario(t *testing.T) {
 }
 
 var listaUsuario = []models.Usuario{
-	{Username: "Primeiro", Password: "Senha", Role: "Admin"},
-	{Username: "Segundo", Password: "SenhaDois", Role: "Estudante"},
-	{Username: "Terceiro", Password: "SenhaTres", Role: "Professor"},
+	{ID: 1, Username: "Primeiro", Password: "Senha", Role: "Admin"},
+	{ID: 2, Username: "Segundo", Password: "SenhaDois", Role: "Estudante"},
+	{ID: 3, Username: "Terceiro", Password: "SenhaTres", Role: "Professor"},
 }
 
 func TestCriarUsuario(t *testing.T) {
@@ -40,6 +40,17 @@ func TestCriarUsuario(t *testing.T) {
 			}
 			if id != uint32(i+1) {
 				t.Errorf("ID é diferente do esperado! Esperava %d, recebi %d", id, i+1)
+			}
+		}
+	})
+	t.Run("Ler todos os usuários", func(t *testing.T) {
+		for i, u := range listaUsuario {
+			listaRecebida, err := database.LerTodosUsuarios()
+			if err != nil {
+				t.Errorf("Erro ao receber dados: %v", err)
+			}
+			if listaRecebida[i] != u {
+				t.Errorf("Os dados não batem! Recebi %v e esperava %v", listaRecebida[i], u)
 			}
 		}
 	})
