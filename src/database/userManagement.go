@@ -39,7 +39,7 @@ func LerTodosUsuarios() ([]models.Usuario, error) {
 
 func ProcurarUsuario(nome string) ([]models.Usuario, error) {
 	var usuarios []models.Usuario
-	query := "SELECT id, username,password, role FROM usuarios WHERE username= ILIKE $1"
+	query := "SELECT id, username,password, role FROM usuarios WHERE username ILIKE $1;"
 	rows, err := DB.Query(query, "%"+nome+"%")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
@@ -59,10 +59,15 @@ func ProcurarUsuario(nome string) ([]models.Usuario, error) {
 	return usuarios, nil
 }
 
-func UpdateUsuarios(dados models.Usuario) error {
+func UpdateUsuarios(id uint32, dados models.Usuario) error {
 	query := `UPDATE usuarios SET username=$1, password=$2, role=$3 WHERE id=$4`
-	if _, err := DB.Exec(query, dados.Username, dados.Password, dados.Role, dados.ID); err != nil {
+	res, err := DB.Exec(query, dados.Username, dados.Password, dados.Role, id)
+	if err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
+	}
+	count, _ := res.RowsAffected()
+	if count == 0 {
+		return models.ErroAtualizacaoPostgres
 	}
 	return nil
 }
