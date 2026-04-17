@@ -7,10 +7,10 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-func CriarEntradaNotas(user models.Notas) (int32, error) {
-	var id int32
+func CriarEntradaNotas(nota models.Notas) (uint32, error) {
+	var id uint32
 	query := "INSERT INTO notas (usuario_id,prova_id,nota_prova) VALUES ($1,$2,$3) RETURNING id;"
-	if err := DB.QueryRow(query, user.UsuarioID, user.ProvaID, user.NotaProva).Scan(&id); err != nil {
+	if err := DB.QueryRow(query, nota.UsuarioID, nota.ProvaID, nota.NotaProva).Scan(&id); err != nil {
 		return 0, fmt.Errorf("%w: %v", models.ErroEntradaPostgres, err)
 	}
 	return id, nil
@@ -29,7 +29,7 @@ func BuscarNotas(username string) ([]models.InnerJoinType, error) {
 	var err error
 
 	if username != "" {
-		query += ` WHERE u.username = ILIKE $1`
+		query += ` WHERE u.username ILIKE $1`
 		rows, err = DB.Query(query, "%"+username+"%")
 	} else {
 		rows, err = DB.Query(query)
