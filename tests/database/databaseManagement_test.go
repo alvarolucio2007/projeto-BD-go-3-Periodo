@@ -9,13 +9,13 @@ import (
 
 func TestPostgresInicial(t *testing.T) {
 	t.Run("Conexão e Migração", func(t *testing.T) {
-		testConexaoMigracao(t)
+		TestConexaoMigracao(t)
 	})
 }
 
 var db *sql.DB
 
-func testConexaoMigracao(t *testing.T) {
+func TestConexaoMigracao(t *testing.T) {
 	var err error
 	t.Run("Conectar DB", func(t *testing.T) {
 		db, err = database.ConectarPostgres()
@@ -24,11 +24,8 @@ func testConexaoMigracao(t *testing.T) {
 		}
 	})
 	t.Run("Migrar DB", func(t *testing.T) {
-		if err = database.MigrarPostgres(db); err != nil {
+		if err = database.MigrarPostgres(); err != nil {
 			t.Errorf("Erro ao migrar database: %v", err)
 		}
 	})
-}
-
-func testUser(t *testing.T) {
 }
