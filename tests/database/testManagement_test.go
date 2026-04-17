@@ -16,7 +16,7 @@ func TestPostgresProva(t *testing.T) {
 		TestLerTodasProvas(t)
 	})
 	t.Run("Procurar prova específica", func(t *testing.T) {
-		// Teste procura...
+		TestProcurarProvaNome(t)
 	})
 	t.Run("Editar prova", func(t *testing.T) {
 		// Teste atualização...
@@ -58,6 +58,20 @@ func TestLerTodasProvas(t *testing.T) {
 			}
 			if listaRecebida[i] != p {
 				t.Errorf("Os dados não batem! Recebi %v e esperava %v", listaRecebida[i], p)
+			}
+		}
+	})
+}
+
+func TestProcurarProvaNome(t *testing.T) {
+	t.Run("Procurar uma prova", func(t *testing.T) {
+		for _, p := range listaProvas {
+			listaRecebida, err := database.ProcurarProvaNome(p.NomeProva)
+			if err != nil {
+				t.Errorf("Erro ao receber dados: %v", err)
+			}
+			if listaRecebida[0] != p {
+				t.Errorf("Os dados não batem! Recebi %v e esperava %v", listaRecebida[0], p)
 			}
 		}
 	})
