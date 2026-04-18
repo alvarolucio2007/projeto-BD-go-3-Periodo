@@ -10,6 +10,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func (s *ServerUser) Create(ctx context.Context, in *proto.UsuarioCreateRequest) (*proto.UsuarioCreateResponse, error) {
@@ -30,7 +31,7 @@ func (s *ServerUser) Read(ctx context.Context, in *proto.UsuarioReadRequest) (*p
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Erro ao procurar no postgres: %v", err)
 	}
-	var listaProtobuf []*proto.Usuario
+	listaProtobuf := make([]*proto.Usuario, 0, len(user))
 	for _, u := range user {
 		listaProtobuf = append(listaProtobuf, &proto.Usuario{
 			Id:       uint32(u.ID),
@@ -42,4 +43,14 @@ func (s *ServerUser) Read(ctx context.Context, in *proto.UsuarioReadRequest) (*p
 	return &proto.UsuarioReadResponse{
 		Usuarios: listaProtobuf,
 	}, nil
+}
+
+func (s *ServerUser) Update(ctx context.Context, in *proto.UsuarioUpdateRequest) (*emptypb.Empty, error) {
+	log.Printf("função atualizar usuário foi chamada com %v\n", in)
+	modeloUsuario := models.Usuario{Username: in.Username, Password: in.Password, Role: in.Role}
+	err := database.UpdateUsuarios(in.Id, modeloUsuario)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "erro ao atualizar no Postgres: %v", err)
+	}
+	return &emptypb.Empty{}, nil
 }
