@@ -15,7 +15,7 @@ message Prova {
   google.protobuf.Timestamp data_prova = 5;
 }
 message ProvaLista {
-  repeated Prova prova_lista = 1;
+  repeated Prova provas = 1;
 }
 message CreateProvaRequest {
   string nome_prova = 1;
@@ -30,9 +30,6 @@ message ReadProvaRequest {
   string nome_prova = 1;
   uint32 id_usuario = 2;
 }
-message ReadAllProvaRequest {
-  uint32 id_usuario = 1;
-}
 message UpdateProvaRequest {
   uint32 id = 1;
   string novo_nome = 2;
@@ -46,7 +43,7 @@ service ProvaService {
   //Criar prova
   rpc Create(CreateProvaRequest) returns (CreateProvaResponse);
   //Ler prova (tanto pesquisar quanto listar todas)
-  rpc ReadAll(ReadAllProvaRequest) returns (ProvaLista);
+  rpc ReadAll(google.protobuf.Empty) returns (ProvaLista);
   rpc Read(ReadProvaRequest) returns (ProvaLista);
   //Atualizar prova
   rpc Update(UpdateProvaRequest) returns (Prova);
