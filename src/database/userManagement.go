@@ -18,19 +18,6 @@ func CriarEntradaUsuario(user models.Usuario) (uint32, error) {
 	return uint32(id), nil
 }
 
-func RetornarSenhaUsuario(username string) (string, error) {
-	var senha string
-	query := "SELECT password FROM usuarios WHERE username ILIKE $1 "
-	err := DB.QueryRow(query, username).Scan(&senha)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return "", models.ErroUsuarioNaoEncontrado
-		}
-		return "", fmt.Errorf("%w: %v", models.ErroBuscaSenha, err)
-	}
-	return senha, nil
-}
-
 func AutenticarUsuario(username string, senha string) (bool, string, error) {
 	var senhaRecebida string
 	query := "SELECT password FROM usuarios WHERE username ILIKE $1"
