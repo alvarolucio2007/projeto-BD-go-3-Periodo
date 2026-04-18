@@ -11,7 +11,8 @@ message Prova {
   int32 id = 1;
   string nome_prova = 2;
   string turma_prova = 3;
-  google.protobuf.Timestamp data_prova = 4;
+  string materia_prova = 4;
+  google.protobuf.Timestamp data_prova = 5;
 }
 message ProvaLista {
   repeated Prova prova_lista = 1;
@@ -19,7 +20,11 @@ message ProvaLista {
 message CreateProvaRequest {
   string nome_prova = 1;
   string turma_prova = 2;
-  google.protobuf.Timestamp data_prova = 3;
+  string materia_prova = 3;
+  google.protobuf.Timestamp data_prova = 4;
+}
+message CreateProvaResponse {
+  uint32 id_prova = 1;
 }
 message ReadProvaRequest {
   string nome_prova = 1;
@@ -39,7 +44,7 @@ message DeleteProvaRequest {
 }
 service ProvaService {
   //Criar prova
-  rpc Create(CreateProvaRequest) returns (Prova);
+  rpc Create(CreateProvaRequest) returns (CreateProvaResponse);
   //Ler prova (tanto pesquisar quanto listar todas)
   rpc ReadAll(ReadAllProvaRequest) returns (ProvaLista);
   rpc Read(ReadProvaRequest) returns (ProvaLista);
