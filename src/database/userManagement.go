@@ -82,7 +82,12 @@ func ProcurarUsuario(nome string) ([]models.Usuario, error) {
 }
 
 func UpdateUsuarios(id uint32, dados models.Usuario) error {
-	query := `UPDATE usuarios SET username=$1, password=$2, role=$3 WHERE id=$4`
+	query := `UPDATE usuarios 
+        SET 
+            username = COALESCE(NULLIF($1, ''), username),
+            password = COALESCE(NULLIF($2, ''), password),
+            role     = COALESCE(NULLIF($3, ''), role)
+        WHERE id = $4`
 	res, err := DB.Exec(query, dados.Username, dados.Password, dados.Role, id)
 	if err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
