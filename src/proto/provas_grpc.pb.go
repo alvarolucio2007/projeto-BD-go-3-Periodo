@@ -21,8 +21,8 @@ type ProvaServiceClient interface {
 	// Criar prova
 	Create(ctx context.Context, in *CreateProvaRequest, opts ...grpc.CallOption) (*Prova, error)
 	// Ler prova (tanto pesquisar quanto listar todas)
-	ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (ProvaService_ReadAllClient, error)
-	Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (ProvaService_ReadClient, error)
+	ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
+	Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
 	// Atualizar prova
 	Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*Prova, error)
 	// Deletar prova
@@ -46,68 +46,22 @@ func (c *provaServiceClient) Create(ctx context.Context, in *CreateProvaRequest,
 	return out, nil
 }
 
-func (c *provaServiceClient) ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (ProvaService_ReadAllClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProvaService_serviceDesc.Streams[0], "/projeto.ProvaService/ReadAll", opts...)
+func (c *provaServiceClient) ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error) {
+	out := new(ProvaLista)
+	err := c.cc.Invoke(ctx, "/projeto.ProvaService/ReadAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &provaServiceReadAllClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
+	return out, nil
 }
 
-type ProvaService_ReadAllClient interface {
-	Recv() (*Prova, error)
-	grpc.ClientStream
-}
-
-type provaServiceReadAllClient struct {
-	grpc.ClientStream
-}
-
-func (x *provaServiceReadAllClient) Recv() (*Prova, error) {
-	m := new(Prova)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *provaServiceClient) Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (ProvaService_ReadClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProvaService_serviceDesc.Streams[1], "/projeto.ProvaService/Read", opts...)
+func (c *provaServiceClient) Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error) {
+	out := new(ProvaLista)
+	err := c.cc.Invoke(ctx, "/projeto.ProvaService/Read", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &provaServiceReadClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ProvaService_ReadClient interface {
-	Recv() (*Prova, error)
-	grpc.ClientStream
-}
-
-type provaServiceReadClient struct {
-	grpc.ClientStream
-}
-
-func (x *provaServiceReadClient) Recv() (*Prova, error) {
-	m := new(Prova)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 func (c *provaServiceClient) Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*Prova, error) {
@@ -135,8 +89,8 @@ type ProvaServiceServer interface {
 	// Criar prova
 	Create(context.Context, *CreateProvaRequest) (*Prova, error)
 	// Ler prova (tanto pesquisar quanto listar todas)
-	ReadAll(*ReadAllProvaRequest, ProvaService_ReadAllServer) error
-	Read(*ReadProvaRequest, ProvaService_ReadServer) error
+	ReadAll(context.Context, *ReadAllProvaRequest) (*ProvaLista, error)
+	Read(context.Context, *ReadProvaRequest) (*ProvaLista, error)
 	// Atualizar prova
 	Update(context.Context, *UpdateProvaRequest) (*Prova, error)
 	// Deletar prova
@@ -151,11 +105,11 @@ type UnimplementedProvaServiceServer struct {
 func (UnimplementedProvaServiceServer) Create(context.Context, *CreateProvaRequest) (*Prova, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedProvaServiceServer) ReadAll(*ReadAllProvaRequest, ProvaService_ReadAllServer) error {
-	return status.Errorf(codes.Unimplemented, "method ReadAll not implemented")
+func (UnimplementedProvaServiceServer) ReadAll(context.Context, *ReadAllProvaRequest) (*ProvaLista, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAll not implemented")
 }
-func (UnimplementedProvaServiceServer) Read(*ReadProvaRequest, ProvaService_ReadServer) error {
-	return status.Errorf(codes.Unimplemented, "method Read not implemented")
+func (UnimplementedProvaServiceServer) Read(context.Context, *ReadProvaRequest) (*ProvaLista, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
 func (UnimplementedProvaServiceServer) Update(context.Context, *UpdateProvaRequest) (*Prova, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
@@ -194,46 +148,40 @@ func _ProvaService_Create_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProvaService_ReadAll_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ReadAllProvaRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _ProvaService_ReadAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAllProvaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(ProvaServiceServer).ReadAll(m, &provaServiceReadAllServer{stream})
-}
-
-type ProvaService_ReadAllServer interface {
-	Send(*Prova) error
-	grpc.ServerStream
-}
-
-type provaServiceReadAllServer struct {
-	grpc.ServerStream
-}
-
-func (x *provaServiceReadAllServer) Send(m *Prova) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ProvaService_Read_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ReadProvaRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+	if interceptor == nil {
+		return srv.(ProvaServiceServer).ReadAll(ctx, in)
 	}
-	return srv.(ProvaServiceServer).Read(m, &provaServiceReadServer{stream})
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projeto.ProvaService/ReadAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProvaServiceServer).ReadAll(ctx, req.(*ReadAllProvaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-type ProvaService_ReadServer interface {
-	Send(*Prova) error
-	grpc.ServerStream
-}
-
-type provaServiceReadServer struct {
-	grpc.ServerStream
-}
-
-func (x *provaServiceReadServer) Send(m *Prova) error {
-	return x.ServerStream.SendMsg(m)
+func _ProvaService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadProvaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProvaServiceServer).Read(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projeto.ProvaService/Read",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProvaServiceServer).Read(ctx, req.(*ReadProvaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ProvaService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -281,6 +229,14 @@ var _ProvaService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ProvaService_Create_Handler,
 		},
 		{
+			MethodName: "ReadAll",
+			Handler:    _ProvaService_ReadAll_Handler,
+		},
+		{
+			MethodName: "Read",
+			Handler:    _ProvaService_Read_Handler,
+		},
+		{
 			MethodName: "Update",
 			Handler:    _ProvaService_Update_Handler,
 		},
@@ -289,17 +245,6 @@ var _ProvaService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ProvaService_Delete_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "ReadAll",
-			Handler:       _ProvaService_ReadAll_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "Read",
-			Handler:       _ProvaService_Read_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "provas.proto",
 }

@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type InnerJoinServiceClient interface {
-	InnerJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (InnerJoinService_InnerJoinClient, error)
+	InnerJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*InnerJoinResponse, error)
 }
 
 type innerJoinServiceClient struct {
@@ -29,43 +29,20 @@ func NewInnerJoinServiceClient(cc grpc.ClientConnInterface) InnerJoinServiceClie
 	return &innerJoinServiceClient{cc}
 }
 
-func (c *innerJoinServiceClient) InnerJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (InnerJoinService_InnerJoinClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_InnerJoinService_serviceDesc.Streams[0], "/projeto.InnerJoinService/InnerJoin", opts...)
+func (c *innerJoinServiceClient) InnerJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*InnerJoinResponse, error) {
+	out := new(InnerJoinResponse)
+	err := c.cc.Invoke(ctx, "/projeto.InnerJoinService/InnerJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &innerJoinServiceInnerJoinClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type InnerJoinService_InnerJoinClient interface {
-	Recv() (*InnerJoinResponse, error)
-	grpc.ClientStream
-}
-
-type innerJoinServiceInnerJoinClient struct {
-	grpc.ClientStream
-}
-
-func (x *innerJoinServiceInnerJoinClient) Recv() (*InnerJoinResponse, error) {
-	m := new(InnerJoinResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // InnerJoinServiceServer is the server API for InnerJoinService service.
 // All implementations must embed UnimplementedInnerJoinServiceServer
 // for forward compatibility
 type InnerJoinServiceServer interface {
-	InnerJoin(*emptypb.Empty, InnerJoinService_InnerJoinServer) error
+	InnerJoin(context.Context, *emptypb.Empty) (*InnerJoinResponse, error)
 	mustEmbedUnimplementedInnerJoinServiceServer()
 }
 
@@ -73,8 +50,8 @@ type InnerJoinServiceServer interface {
 type UnimplementedInnerJoinServiceServer struct {
 }
 
-func (UnimplementedInnerJoinServiceServer) InnerJoin(*emptypb.Empty, InnerJoinService_InnerJoinServer) error {
-	return status.Errorf(codes.Unimplemented, "method InnerJoin not implemented")
+func (UnimplementedInnerJoinServiceServer) InnerJoin(context.Context, *emptypb.Empty) (*InnerJoinResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InnerJoin not implemented")
 }
 func (UnimplementedInnerJoinServiceServer) mustEmbedUnimplementedInnerJoinServiceServer() {}
 
@@ -89,37 +66,33 @@ func RegisterInnerJoinServiceServer(s *grpc.Server, srv InnerJoinServiceServer) 
 	s.RegisterService(&_InnerJoinService_serviceDesc, srv)
 }
 
-func _InnerJoinService_InnerJoin_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(emptypb.Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _InnerJoinService_InnerJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(InnerJoinServiceServer).InnerJoin(m, &innerJoinServiceInnerJoinServer{stream})
-}
-
-type InnerJoinService_InnerJoinServer interface {
-	Send(*InnerJoinResponse) error
-	grpc.ServerStream
-}
-
-type innerJoinServiceInnerJoinServer struct {
-	grpc.ServerStream
-}
-
-func (x *innerJoinServiceInnerJoinServer) Send(m *InnerJoinResponse) error {
-	return x.ServerStream.SendMsg(m)
+	if interceptor == nil {
+		return srv.(InnerJoinServiceServer).InnerJoin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projeto.InnerJoinService/InnerJoin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(InnerJoinServiceServer).InnerJoin(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _InnerJoinService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "projeto.InnerJoinService",
 	HandlerType: (*InnerJoinServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "InnerJoin",
-			Handler:       _InnerJoinService_InnerJoin_Handler,
-			ServerStreams: true,
+			MethodName: "InnerJoin",
+			Handler:    _InnerJoinService_InnerJoin_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "inner_join.proto",
 }

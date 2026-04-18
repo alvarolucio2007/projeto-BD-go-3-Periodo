@@ -7,6 +7,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -18,15 +19,15 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UsuariosServiceClient interface {
 	// Criar usuário
-	Create(ctx context.Context, in *UsuarioCreateRequest, opts ...grpc.CallOption) (*Response, error)
+	Create(ctx context.Context, in *UsuarioCreateRequest, opts ...grpc.CallOption) (*UsuarioCreateResponse, error)
 	// Ler usuário
 	Read(ctx context.Context, in *UsuarioReadRequest, opts ...grpc.CallOption) (*Usuario, error)
 	// Atualizar usuário
-	Update(ctx context.Context, in *UsuarioUpdateRequest, opts ...grpc.CallOption) (*Response, error)
+	Update(ctx context.Context, in *UsuarioUpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletar usuário
-	Delete(ctx context.Context, in *UsuarioDeleteRequest, opts ...grpc.CallOption) (*Response, error)
-	// Minha vigarície...
-	GivePassword(ctx context.Context, in *UsuarioGivePasswordRequest, opts ...grpc.CallOption) (*UsuarioGivePasswordResponse, error)
+	Delete(ctx context.Context, in *UsuarioDeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Autenticar usuário
+	Auth(ctx context.Context, in *UsuarioLoginRequest, opts ...grpc.CallOption) (*UsuarioLoginResponse, error)
 }
 
 type usuariosServiceClient struct {
@@ -37,8 +38,8 @@ func NewUsuariosServiceClient(cc grpc.ClientConnInterface) UsuariosServiceClient
 	return &usuariosServiceClient{cc}
 }
 
-func (c *usuariosServiceClient) Create(ctx context.Context, in *UsuarioCreateRequest, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *usuariosServiceClient) Create(ctx context.Context, in *UsuarioCreateRequest, opts ...grpc.CallOption) (*UsuarioCreateResponse, error) {
+	out := new(UsuarioCreateResponse)
 	err := c.cc.Invoke(ctx, "/projeto.UsuariosService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -55,8 +56,8 @@ func (c *usuariosServiceClient) Read(ctx context.Context, in *UsuarioReadRequest
 	return out, nil
 }
 
-func (c *usuariosServiceClient) Update(ctx context.Context, in *UsuarioUpdateRequest, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *usuariosServiceClient) Update(ctx context.Context, in *UsuarioUpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/projeto.UsuariosService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -64,8 +65,8 @@ func (c *usuariosServiceClient) Update(ctx context.Context, in *UsuarioUpdateReq
 	return out, nil
 }
 
-func (c *usuariosServiceClient) Delete(ctx context.Context, in *UsuarioDeleteRequest, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *usuariosServiceClient) Delete(ctx context.Context, in *UsuarioDeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/projeto.UsuariosService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,9 +74,9 @@ func (c *usuariosServiceClient) Delete(ctx context.Context, in *UsuarioDeleteReq
 	return out, nil
 }
 
-func (c *usuariosServiceClient) GivePassword(ctx context.Context, in *UsuarioGivePasswordRequest, opts ...grpc.CallOption) (*UsuarioGivePasswordResponse, error) {
-	out := new(UsuarioGivePasswordResponse)
-	err := c.cc.Invoke(ctx, "/projeto.UsuariosService/GivePassword", in, out, opts...)
+func (c *usuariosServiceClient) Auth(ctx context.Context, in *UsuarioLoginRequest, opts ...grpc.CallOption) (*UsuarioLoginResponse, error) {
+	out := new(UsuarioLoginResponse)
+	err := c.cc.Invoke(ctx, "/projeto.UsuariosService/Auth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,15 +88,15 @@ func (c *usuariosServiceClient) GivePassword(ctx context.Context, in *UsuarioGiv
 // for forward compatibility
 type UsuariosServiceServer interface {
 	// Criar usuário
-	Create(context.Context, *UsuarioCreateRequest) (*Response, error)
+	Create(context.Context, *UsuarioCreateRequest) (*UsuarioCreateResponse, error)
 	// Ler usuário
 	Read(context.Context, *UsuarioReadRequest) (*Usuario, error)
 	// Atualizar usuário
-	Update(context.Context, *UsuarioUpdateRequest) (*Response, error)
+	Update(context.Context, *UsuarioUpdateRequest) (*emptypb.Empty, error)
 	// Deletar usuário
-	Delete(context.Context, *UsuarioDeleteRequest) (*Response, error)
-	// Minha vigarície...
-	GivePassword(context.Context, *UsuarioGivePasswordRequest) (*UsuarioGivePasswordResponse, error)
+	Delete(context.Context, *UsuarioDeleteRequest) (*emptypb.Empty, error)
+	// Autenticar usuário
+	Auth(context.Context, *UsuarioLoginRequest) (*UsuarioLoginResponse, error)
 	mustEmbedUnimplementedUsuariosServiceServer()
 }
 
@@ -103,20 +104,20 @@ type UsuariosServiceServer interface {
 type UnimplementedUsuariosServiceServer struct {
 }
 
-func (UnimplementedUsuariosServiceServer) Create(context.Context, *UsuarioCreateRequest) (*Response, error) {
+func (UnimplementedUsuariosServiceServer) Create(context.Context, *UsuarioCreateRequest) (*UsuarioCreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedUsuariosServiceServer) Read(context.Context, *UsuarioReadRequest) (*Usuario, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
-func (UnimplementedUsuariosServiceServer) Update(context.Context, *UsuarioUpdateRequest) (*Response, error) {
+func (UnimplementedUsuariosServiceServer) Update(context.Context, *UsuarioUpdateRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedUsuariosServiceServer) Delete(context.Context, *UsuarioDeleteRequest) (*Response, error) {
+func (UnimplementedUsuariosServiceServer) Delete(context.Context, *UsuarioDeleteRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedUsuariosServiceServer) GivePassword(context.Context, *UsuarioGivePasswordRequest) (*UsuarioGivePasswordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GivePassword not implemented")
+func (UnimplementedUsuariosServiceServer) Auth(context.Context, *UsuarioLoginRequest) (*UsuarioLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
 func (UnimplementedUsuariosServiceServer) mustEmbedUnimplementedUsuariosServiceServer() {}
 
@@ -203,20 +204,20 @@ func _UsuariosService_Delete_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsuariosService_GivePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UsuarioGivePasswordRequest)
+func _UsuariosService_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UsuarioLoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsuariosServiceServer).GivePassword(ctx, in)
+		return srv.(UsuariosServiceServer).Auth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/projeto.UsuariosService/GivePassword",
+		FullMethod: "/projeto.UsuariosService/Auth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsuariosServiceServer).GivePassword(ctx, req.(*UsuarioGivePasswordRequest))
+		return srv.(UsuariosServiceServer).Auth(ctx, req.(*UsuarioLoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -242,8 +243,8 @@ var _UsuariosService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _UsuariosService_Delete_Handler,
 		},
 		{
-			MethodName: "GivePassword",
-			Handler:    _UsuariosService_GivePassword_Handler,
+			MethodName: "Auth",
+			Handler:    _UsuariosService_Auth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

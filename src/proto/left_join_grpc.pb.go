@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LeftJoinServiceClient interface {
-	LeftJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (LeftJoinService_LeftJoinClient, error)
+	LeftJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LeftJoinResponse, error)
 }
 
 type leftJoinServiceClient struct {
@@ -29,43 +29,20 @@ func NewLeftJoinServiceClient(cc grpc.ClientConnInterface) LeftJoinServiceClient
 	return &leftJoinServiceClient{cc}
 }
 
-func (c *leftJoinServiceClient) LeftJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (LeftJoinService_LeftJoinClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_LeftJoinService_serviceDesc.Streams[0], "/projeto.LeftJoinService/LeftJoin", opts...)
+func (c *leftJoinServiceClient) LeftJoin(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LeftJoinResponse, error) {
+	out := new(LeftJoinResponse)
+	err := c.cc.Invoke(ctx, "/projeto.LeftJoinService/LeftJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &leftJoinServiceLeftJoinClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type LeftJoinService_LeftJoinClient interface {
-	Recv() (*LeftJoinResponse, error)
-	grpc.ClientStream
-}
-
-type leftJoinServiceLeftJoinClient struct {
-	grpc.ClientStream
-}
-
-func (x *leftJoinServiceLeftJoinClient) Recv() (*LeftJoinResponse, error) {
-	m := new(LeftJoinResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // LeftJoinServiceServer is the server API for LeftJoinService service.
 // All implementations must embed UnimplementedLeftJoinServiceServer
 // for forward compatibility
 type LeftJoinServiceServer interface {
-	LeftJoin(*emptypb.Empty, LeftJoinService_LeftJoinServer) error
+	LeftJoin(context.Context, *emptypb.Empty) (*LeftJoinResponse, error)
 	mustEmbedUnimplementedLeftJoinServiceServer()
 }
 
@@ -73,8 +50,8 @@ type LeftJoinServiceServer interface {
 type UnimplementedLeftJoinServiceServer struct {
 }
 
-func (UnimplementedLeftJoinServiceServer) LeftJoin(*emptypb.Empty, LeftJoinService_LeftJoinServer) error {
-	return status.Errorf(codes.Unimplemented, "method LeftJoin not implemented")
+func (UnimplementedLeftJoinServiceServer) LeftJoin(context.Context, *emptypb.Empty) (*LeftJoinResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeftJoin not implemented")
 }
 func (UnimplementedLeftJoinServiceServer) mustEmbedUnimplementedLeftJoinServiceServer() {}
 
@@ -89,37 +66,33 @@ func RegisterLeftJoinServiceServer(s *grpc.Server, srv LeftJoinServiceServer) {
 	s.RegisterService(&_LeftJoinService_serviceDesc, srv)
 }
 
-func _LeftJoinService_LeftJoin_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(emptypb.Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _LeftJoinService_LeftJoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(LeftJoinServiceServer).LeftJoin(m, &leftJoinServiceLeftJoinServer{stream})
-}
-
-type LeftJoinService_LeftJoinServer interface {
-	Send(*LeftJoinResponse) error
-	grpc.ServerStream
-}
-
-type leftJoinServiceLeftJoinServer struct {
-	grpc.ServerStream
-}
-
-func (x *leftJoinServiceLeftJoinServer) Send(m *LeftJoinResponse) error {
-	return x.ServerStream.SendMsg(m)
+	if interceptor == nil {
+		return srv.(LeftJoinServiceServer).LeftJoin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projeto.LeftJoinService/LeftJoin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LeftJoinServiceServer).LeftJoin(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _LeftJoinService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "projeto.LeftJoinService",
 	HandlerType: (*LeftJoinServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "LeftJoin",
-			Handler:       _LeftJoinService_LeftJoin_Handler,
-			ServerStreams: true,
+			MethodName: "LeftJoin",
+			Handler:    _LeftJoinService_LeftJoin_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "left_join.proto",
 }
