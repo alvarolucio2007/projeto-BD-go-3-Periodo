@@ -19,6 +19,7 @@ message UsuarioLoginRequest {
 message UsuarioLoginResponse {
   bool status = 1;
   string mensagem = 2;
+  string role = 3;
 }
 message UsuarioCreateRequest {
   string username = 1;
