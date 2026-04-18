@@ -27,7 +27,7 @@ message UsuarioCreateRequest {
   string role = 3;
 }
 message UsuarioCreateResponse {
-  string message = 1;
+  uint32 id = 1;
 }
 message UsuarioReadRequest {
   string nome = 1;
@@ -36,7 +36,7 @@ message UsuarioReadResponse {
   repeated Usuario usuarios = 1;
 }
 message UsuarioUpdateRequest {
-  uint32 id=1;
+  uint32 id = 1;
   string username = 2;
   string password = 3;
   string role = 4;
