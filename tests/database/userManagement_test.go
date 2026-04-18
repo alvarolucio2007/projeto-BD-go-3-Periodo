@@ -11,6 +11,9 @@ func TestPostgresUsuario(t *testing.T) {
 	t.Run("Criar usuário", func(t *testing.T) {
 		TestCriarUsuario(t)
 	})
+	t.Run("Autenticar usuário", func(t *testing.T) {
+		TestAutenticarUsuario(t)
+	})
 	t.Run("Ler todos os usuários", func(t *testing.T) {
 		TestLerTodosUsuarios(t)
 	})
@@ -45,6 +48,18 @@ func TestCriarUsuario(t *testing.T) {
 			if id != uint32(i+1) {
 				t.Errorf("ID é diferente do esperado! Esperava %d, recebi %d", i+1, id)
 			}
+		}
+	})
+}
+
+func TestAutenticarUsuario(t *testing.T) {
+	t.Run("Autenticar usuário", func(t *testing.T) {
+		status, _, err := database.AutenticarUsuario(listaUsuario[0].Username, listaUsuario[0].Password)
+		if err != nil {
+			t.Errorf("Erro ao autenticar o usuário, %v", err)
+		}
+		if !status {
+			t.Errorf("Erro: Status errado. Esperado: %v, Recebido: %v", true, status)
 		}
 	})
 }
