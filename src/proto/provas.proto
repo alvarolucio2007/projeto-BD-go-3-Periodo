@@ -13,6 +13,9 @@ message Prova {
   string turma_prova = 3;
   google.protobuf.Timestamp data_prova = 4;
 }
+message ProvaLista {
+  repeated Prova prova_lista = 1;
+}
 message CreateProvaRequest {
   string nome_prova = 1;
   string turma_prova = 2;
@@ -38,8 +41,8 @@ service ProvaService {
   //Criar prova
   rpc Create(CreateProvaRequest) returns (Prova);
   //Ler prova (tanto pesquisar quanto listar todas)
-  rpc ReadAll(ReadAllProvaRequest) returns (stream Prova);
-  rpc Read(ReadProvaRequest) returns (stream Prova);
+  rpc ReadAll(ReadAllProvaRequest) returns (ProvaLista);
+  rpc Read(ReadProvaRequest) returns (ProvaLista);
   //Atualizar prova
   rpc Update(UpdateProvaRequest) returns (Prova);
   //Deletar prova
