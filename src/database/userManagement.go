@@ -75,6 +75,9 @@ func ProcurarUsuario(nome string) ([]models.Usuario, error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+	if len(usuarios) == 0 {
+		return nil, fmt.Errorf("%w", errors.New("nenhum usuário encontrado"))
+	}
 	return usuarios, nil
 }
 
