@@ -21,7 +21,7 @@ type ProvaServiceClient interface {
 	// Criar prova
 	Create(ctx context.Context, in *CreateProvaRequest, opts ...grpc.CallOption) (*CreateProvaResponse, error)
 	// Ler prova (tanto pesquisar quanto listar todas)
-	ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
+	ReadAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ProvaLista, error)
 	Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
 	// Atualizar prova
 	Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*Prova, error)
@@ -46,7 +46,7 @@ func (c *provaServiceClient) Create(ctx context.Context, in *CreateProvaRequest,
 	return out, nil
 }
 
-func (c *provaServiceClient) ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error) {
+func (c *provaServiceClient) ReadAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ProvaLista, error) {
 	out := new(ProvaLista)
 	err := c.cc.Invoke(ctx, "/projeto.ProvaService/ReadAll", in, out, opts...)
 	if err != nil {
@@ -89,7 +89,7 @@ type ProvaServiceServer interface {
 	// Criar prova
 	Create(context.Context, *CreateProvaRequest) (*CreateProvaResponse, error)
 	// Ler prova (tanto pesquisar quanto listar todas)
-	ReadAll(context.Context, *ReadAllProvaRequest) (*ProvaLista, error)
+	ReadAll(context.Context, *emptypb.Empty) (*ProvaLista, error)
 	Read(context.Context, *ReadProvaRequest) (*ProvaLista, error)
 	// Atualizar prova
 	Update(context.Context, *UpdateProvaRequest) (*Prova, error)
@@ -105,7 +105,7 @@ type UnimplementedProvaServiceServer struct {
 func (UnimplementedProvaServiceServer) Create(context.Context, *CreateProvaRequest) (*CreateProvaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedProvaServiceServer) ReadAll(context.Context, *ReadAllProvaRequest) (*ProvaLista, error) {
+func (UnimplementedProvaServiceServer) ReadAll(context.Context, *emptypb.Empty) (*ProvaLista, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadAll not implemented")
 }
 func (UnimplementedProvaServiceServer) Read(context.Context, *ReadProvaRequest) (*ProvaLista, error) {
@@ -149,7 +149,7 @@ func _ProvaService_Create_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _ProvaService_ReadAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReadAllProvaRequest)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -161,7 +161,7 @@ func _ProvaService_ReadAll_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/projeto.ProvaService/ReadAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProvaServiceServer).ReadAll(ctx, req.(*ReadAllProvaRequest))
+		return srv.(ProvaServiceServer).ReadAll(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
