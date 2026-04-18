@@ -10,6 +10,14 @@ message Usuario {
   string password = 3;
   string role = 4;
 }
+message UsuarioLoginRequest {
+  string username = 1;
+  string password = 2;
+}
+message UsuarioLoginResponse {
+  bool status = 1;
+  string mensagem = 2;
+}
 message UsuarioCreateRequest {
   string username = 1;
   string password = 2;
@@ -17,12 +25,6 @@ message UsuarioCreateRequest {
 }
 message UsuarioReadRequest {
   uint32 id = 1;
-}
-message UsuarioGivePasswordRequest {
-  string username = 1;
-}
-message UsuarioGivePasswordResponse {
-  string password = 1;
 }
 message UsuarioUpdateRequest {
   string username = 1;
@@ -45,6 +47,6 @@ service UsuariosService {
   rpc Update(UsuarioUpdateRequest) returns (Response);
   //Deletar usuário
   rpc Delete(UsuarioDeleteRequest) returns (Response);
-  //Minha vigarície...
-  rpc GivePassword(UsuarioGivePasswordRequest) returns (UsuarioGivePasswordResponse);
+  //Autenticar usuário
+  rpc Auth(UsuarioLoginRequest) returns (UsuarioLoginResponse);
 }
