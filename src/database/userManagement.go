@@ -18,21 +18,22 @@ func CriarEntradaUsuario(user models.Usuario) (uint32, error) {
 	return uint32(id), nil
 }
 
-func AutenticarUsuario(username string, senha string) (bool, string, error) {
+func AutenticarUsuario(username string, senha string) (bool, string, string, error) {
 	var senhaRecebida string
-	query := "SELECT password FROM usuarios WHERE username ILIKE $1"
-	err := DB.QueryRow(query, username).Scan(&senhaRecebida)
+	var role string
+	query := "SELECT password ,role FROM usuarios WHERE username ILIKE $1"
+	err := DB.QueryRow(query, username).Scan(&senhaRecebida, &role)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return false, "Nem conta tem! Vai criar!", nil
+			return false, "Nem conta tem! Vai criar!", "", nil
 		}
-		return false, "", fmt.Errorf("%w: %v", models.ErroLoginUsuario, err)
+		return false, "", "", fmt.Errorf("%w: %v", models.ErroLoginUsuario, err)
 	}
 	if senha != senhaRecebida {
 		msg := fmt.Sprintf("EI N DIZ PRA NGM MAS A SENHA DE '%s' É '%s', SEGREDO NOSSO BLZ?", username, senhaRecebida)
-		return false, msg, nil
+		return false, msg, "", nil
 	}
-	return true, "Logou, obrigado pelos seus dados, vou vender pra data brokers romenos e turcos (talvez uns chineses também vou decidir)", nil
+	return true, "Logou, obrigado pelos seus dados, vou vender pra data brokers romenos e turcos (talvez uns chineses também vou decidir)", role, nil
 }
 
 func LerTodosUsuarios() ([]models.Usuario, error) {
