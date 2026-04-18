@@ -1,6 +1,8 @@
 syntax = "proto3";
 package projeto;
 
+import "google/protobuf/empty.proto";
+
 option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
 
 //USUÁRIO
@@ -21,32 +23,32 @@ message UsuarioLoginResponse {
 message UsuarioCreateRequest {
   string username = 1;
   string password = 2;
-  string role = 4;
+  string role = 3;
+}
+message UsuarioCreateResponse {
+  string message = 1;
 }
 message UsuarioReadRequest {
   uint32 id = 1;
 }
 message UsuarioUpdateRequest {
-  string username = 1;
-  string password = 2;
+  uint32 id = 1;
+  string username = 2;
+  string password = 3;
   string role = 4;
 }
 message UsuarioDeleteRequest {
   uint32 id = 1;
 }
-message Response {
-  uint32 status_code = 1; //Usar os status codes do http (200,202,404, etc)
-  string message = 2; //Caso tenha erro, enviar o erro aqui
-}
 service UsuariosService {
   //Criar usuário
-  rpc Create(UsuarioCreateRequest) returns (Response);
+  rpc Create(UsuarioCreateRequest) returns (UsuarioCreateResponse);
   //Ler usuário
   rpc Read(UsuarioReadRequest) returns (Usuario);
   //Atualizar usuário
-  rpc Update(UsuarioUpdateRequest) returns (Response);
+  rpc Update(UsuarioUpdateRequest) returns (google.protobuf.Empty);
   //Deletar usuário
-  rpc Delete(UsuarioDeleteRequest) returns (Response);
+  rpc Delete(UsuarioDeleteRequest) returns (google.protobuf.Empty);
   //Autenticar usuário
   rpc Auth(UsuarioLoginRequest) returns (UsuarioLoginResponse);
 }
