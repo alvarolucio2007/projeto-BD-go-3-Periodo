@@ -17,9 +17,29 @@ func (s *ServerUser) Create(ctx context.Context, in *proto.UsuarioCreateRequest)
 	modeloUsuario := models.Usuario{Username: in.Username, Password: in.Password, Role: in.Role}
 	id, err := database.CriarEntradaUsuario(modeloUsuario)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Erro ao inserir no postres: %v", err)
+		return nil, status.Errorf(codes.Internal, "Erro ao inserir no postgres: %v", err)
 	}
 	return &proto.UsuarioCreateResponse{
 		Message: fmt.Sprintf("ID: %d", id),
+	}, nil
+}
+
+func (s *ServerUser) Read(ctx context.Context, in *proto.UsuarioReadRequest) (*proto.UsuarioReadResponse, error) {
+	log.Printf("função ler usuário foi chamada com %v\n", in)
+	user, err := database.ProcurarUsuario(in.Nome)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro ao procurar no postgres: %v", err)
+	}
+	var listaProtobuf []*proto.Usuario
+	for _, u := range user {
+		listaProtobuf = append(listaProtobuf, &proto.Usuario{
+			Id:       uint32(u.ID),
+			Username: u.Username,
+			Password: u.Password,
+			Role:     u.Role,
+		})
+	}
+	return &proto.UsuarioReadResponse{
+		Usuarios: listaProtobuf,
 	}, nil
 }
