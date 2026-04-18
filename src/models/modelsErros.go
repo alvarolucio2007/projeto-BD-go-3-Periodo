@@ -10,6 +10,11 @@ var (
 	ErroConexaoPostgres        = errors.New("erro ao tentar conectar ao Postgres")
 	ErroLeituraArquivoMigracao = errors.New("erro ao tentar ler o arquivo de migração do Postgres")
 	ErroMigracaoPostgres       = errors.New("erro ao tentar migrar o Postgres")
+	// Erro Login usuário
+	ErroLoginUsuario = errors.New("erro ao tentar fazer login")
+	// Erro busca de senha KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+	ErroBuscaSenha           = errors.New("erro ao buscar a senha no postgres")
+	ErroUsuarioNaoEncontrado = errors.New("usuário não encontrado")
 
 	// Erros de Criação (C)
 	ErroEntradaPostgres = errors.New("erro ao tentar criar a entrada")
