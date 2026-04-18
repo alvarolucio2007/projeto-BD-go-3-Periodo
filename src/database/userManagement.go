@@ -1,6 +1,8 @@
 package database
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -14,6 +16,36 @@ func CriarEntradaUsuario(user models.Usuario) (uint32, error) {
 		return 0, fmt.Errorf("%w: %v", models.ErroEntradaPostgres, err)
 	}
 	return uint32(id), nil
+}
+
+func RetornarSenhaUsuario(username string) (string, error) {
+	var senha string
+	query := "SELECT password FROM usuarios WHERE username ILIKE $1 "
+	err := DB.QueryRow(query, username).Scan(&senha)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", models.ErroUsuarioNaoEncontrado
+		}
+		return "", fmt.Errorf("%w: %v", models.ErroBuscaSenha, err)
+	}
+	return senha, nil
+}
+
+func AutenticarUsuario(username string, senha string) (bool, string, error) {
+	var senhaRecebida string
+	query := "SELECT password FROM usuarios WHERE username ILIKE $1"
+	err := DB.QueryRow(query, username).Scan(&senhaRecebida)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, "Nem conta tem! Vai criar!", nil
+		}
+		return false, "", fmt.Errorf("%w: %v", models.ErroLoginUsuario, err)
+	}
+	if senha != senhaRecebida {
+		msg := fmt.Sprintf("EI N DIZ PRA NGM MAS A SENHA DE '%s' É '%s', SEGREDO NOSSO BLZ?", username, senhaRecebida)
+		return false, msg, nil
+	}
+	return true, "Logou, obrigado pelos seus dados, vou vender pra data brokers romenos e turcos (talvez uns chineses também vou decidir)", nil
 }
 
 func LerTodosUsuarios() ([]models.Usuario, error) {
