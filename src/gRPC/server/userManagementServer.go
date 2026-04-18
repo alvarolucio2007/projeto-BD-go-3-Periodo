@@ -54,3 +54,25 @@ func (s *ServerUser) Update(ctx context.Context, in *proto.UsuarioUpdateRequest)
 	}
 	return &emptypb.Empty{}, nil
 }
+
+func (s *ServerUser) Delete(ctx context.Context, in *proto.UsuarioDeleteRequest) (*emptypb.Empty, error) {
+	log.Printf("função deletar usuário foi chamada com %v\n", in)
+	err := database.DeleteUsuarios(in.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro ao deletar no Postgres: %v", err)
+	}
+	return &emptypb.Empty{}, nil
+}
+
+func (s *ServerUser) Auth(ctx context.Context, in *proto.UsuarioLoginRequest) (*proto.UsuarioLoginResponse, error) {
+	log.Printf("Atutenticando usuário %v \n ")
+	stats, msg, role, err := database.AutenticarUsuario(in.Username, in.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro crítico: %v", err)
+	}
+	return &proto.UsuarioLoginResponse{
+		Status:   stats,
+		Mensagem: msg,
+		Role:     role,
+	}, nil
+}
