@@ -1,6 +1,7 @@
 package testpostgres
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
@@ -60,6 +61,18 @@ func TestAutenticarUsuario(t *testing.T) {
 		}
 		if !status {
 			t.Errorf("Erro: Status errado. Esperado: %v, Recebido: %v", true, status)
+		}
+	})
+	t.Run("Autenticar usuário errado", func(t *testing.T) {
+		status, msg, err := database.AutenticarUsuario(listaUsuario[0].Username, listaUsuario[1].Password)
+		if err != nil {
+			t.Errorf("Erro ao autenticar o usuário, %v", err)
+		}
+		if status {
+			t.Errorf("Erro: Status errado. Esperado %v, recebido %v", false, status)
+		}
+		if !strings.Contains(msg, listaUsuario[0].Password) {
+			t.Errorf("A senha real não apareceu na mensagem...")
 		}
 	})
 }
