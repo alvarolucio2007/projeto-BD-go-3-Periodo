@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProvaServiceClient interface {
 	// Criar prova
-	Create(ctx context.Context, in *CreateProvaRequest, opts ...grpc.CallOption) (*Prova, error)
+	Create(ctx context.Context, in *CreateProvaRequest, opts ...grpc.CallOption) (*CreateProvaResponse, error)
 	// Ler prova (tanto pesquisar quanto listar todas)
 	ReadAll(ctx context.Context, in *ReadAllProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
 	Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
@@ -37,8 +37,8 @@ func NewProvaServiceClient(cc grpc.ClientConnInterface) ProvaServiceClient {
 	return &provaServiceClient{cc}
 }
 
-func (c *provaServiceClient) Create(ctx context.Context, in *CreateProvaRequest, opts ...grpc.CallOption) (*Prova, error) {
-	out := new(Prova)
+func (c *provaServiceClient) Create(ctx context.Context, in *CreateProvaRequest, opts ...grpc.CallOption) (*CreateProvaResponse, error) {
+	out := new(CreateProvaResponse)
 	err := c.cc.Invoke(ctx, "/projeto.ProvaService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (c *provaServiceClient) Delete(ctx context.Context, in *DeleteProvaRequest,
 // for forward compatibility
 type ProvaServiceServer interface {
 	// Criar prova
-	Create(context.Context, *CreateProvaRequest) (*Prova, error)
+	Create(context.Context, *CreateProvaRequest) (*CreateProvaResponse, error)
 	// Ler prova (tanto pesquisar quanto listar todas)
 	ReadAll(context.Context, *ReadAllProvaRequest) (*ProvaLista, error)
 	Read(context.Context, *ReadProvaRequest) (*ProvaLista, error)
@@ -102,7 +102,7 @@ type ProvaServiceServer interface {
 type UnimplementedProvaServiceServer struct {
 }
 
-func (UnimplementedProvaServiceServer) Create(context.Context, *CreateProvaRequest) (*Prova, error) {
+func (UnimplementedProvaServiceServer) Create(context.Context, *CreateProvaRequest) (*CreateProvaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedProvaServiceServer) ReadAll(context.Context, *ReadAllProvaRequest) (*ProvaLista, error) {
