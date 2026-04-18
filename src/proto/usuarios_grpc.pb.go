@@ -21,7 +21,7 @@ type UsuariosServiceClient interface {
 	// Criar usuário
 	Create(ctx context.Context, in *UsuarioCreateRequest, opts ...grpc.CallOption) (*UsuarioCreateResponse, error)
 	// Ler usuário
-	Read(ctx context.Context, in *UsuarioReadRequest, opts ...grpc.CallOption) (*Usuario, error)
+	Read(ctx context.Context, in *UsuarioReadRequest, opts ...grpc.CallOption) (*UsuarioReadResponse, error)
 	// Atualizar usuário
 	Update(ctx context.Context, in *UsuarioUpdateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletar usuário
@@ -47,8 +47,8 @@ func (c *usuariosServiceClient) Create(ctx context.Context, in *UsuarioCreateReq
 	return out, nil
 }
 
-func (c *usuariosServiceClient) Read(ctx context.Context, in *UsuarioReadRequest, opts ...grpc.CallOption) (*Usuario, error) {
-	out := new(Usuario)
+func (c *usuariosServiceClient) Read(ctx context.Context, in *UsuarioReadRequest, opts ...grpc.CallOption) (*UsuarioReadResponse, error) {
+	out := new(UsuarioReadResponse)
 	err := c.cc.Invoke(ctx, "/projeto.UsuariosService/Read", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ type UsuariosServiceServer interface {
 	// Criar usuário
 	Create(context.Context, *UsuarioCreateRequest) (*UsuarioCreateResponse, error)
 	// Ler usuário
-	Read(context.Context, *UsuarioReadRequest) (*Usuario, error)
+	Read(context.Context, *UsuarioReadRequest) (*UsuarioReadResponse, error)
 	// Atualizar usuário
 	Update(context.Context, *UsuarioUpdateRequest) (*emptypb.Empty, error)
 	// Deletar usuário
@@ -107,7 +107,7 @@ type UnimplementedUsuariosServiceServer struct {
 func (UnimplementedUsuariosServiceServer) Create(context.Context, *UsuarioCreateRequest) (*UsuarioCreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedUsuariosServiceServer) Read(context.Context, *UsuarioReadRequest) (*Usuario, error) {
+func (UnimplementedUsuariosServiceServer) Read(context.Context, *UsuarioReadRequest) (*UsuarioReadResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
 func (UnimplementedUsuariosServiceServer) Update(context.Context, *UsuarioUpdateRequest) (*emptypb.Empty, error) {
