@@ -2,7 +2,6 @@ package grpcserver
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
@@ -21,7 +20,7 @@ func (s *ServerUser) Create(ctx context.Context, in *proto.UsuarioCreateRequest)
 		return nil, status.Errorf(codes.Internal, "Erro ao inserir no postgres: %v", err)
 	}
 	return &proto.UsuarioCreateResponse{
-		Message: fmt.Sprintf("ID: %d", id),
+		Id: id,
 	}, nil
 }
 
