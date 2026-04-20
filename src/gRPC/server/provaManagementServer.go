@@ -65,3 +65,12 @@ func (s *ServerProva) Read(ctx context.Context, in *proto.ReadProvaRequest) (*pr
 		Provas: listaProvas,
 	}, nil
 }
+
+func (s *ServerProva) Update(ctx context.Context, in *proto.UpdateProvaRequest) error {
+	log.Printf("Função update de prova foi chamado")
+	err := database.UpdateProvas(in.Id, models.Provas{NomeProva: in.NovoNome, TurmaProva: in.NovaTurma, MateriaProva: in.NovaMateria, DataProva: in.DataProva.AsTime()})
+	if err != nil {
+		return status.Errorf(codes.Internal, "erro ao editar a prova: %v", err)
+	}
+	return nil
+}
