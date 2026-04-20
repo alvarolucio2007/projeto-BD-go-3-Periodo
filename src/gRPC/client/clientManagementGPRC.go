@@ -1,3 +1,4 @@
+// Package grpcclient gerencia os clients do gRPC.
 package grpcclient
 
 import (
