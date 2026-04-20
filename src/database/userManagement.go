@@ -33,6 +33,10 @@ func AutenticarUsuario(username string, senha string) (bool, string, string, err
 		msg := fmt.Sprintf("EI N DIZ PRA NGM MAS A SENHA DE '%s' É '%s', SEGREDO NOSSO BLZ?", username, senhaRecebida)
 		return false, msg, "", nil
 	}
+	if role != "admin" {
+		msg := "Acesso negado, apenas admins são aceitos."
+		return false, msg, "", nil
+	}
 	return true, "Logou, obrigado pelos seus dados, vou vender pra data brokers romenos e turcos (talvez uns chineses também vou decidir)", role, nil
 }
 
