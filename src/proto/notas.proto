@@ -25,7 +25,7 @@ message ReadNotaRequest {
   string username = 1;
 }
 message NotasResponse {
-  repeated InnerJoin response = 1;
+  repeated NotaDetalhada response = 1;
 }
 message UpdateNotaRequest {
   uint32 nota_id = 1;
