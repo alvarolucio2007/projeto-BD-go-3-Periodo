@@ -9,6 +9,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -17,7 +18,7 @@ func (s *ServerProva) Create(ctx context.Context, in *proto.CreateProvaRequest) 
 	modeloProva := models.Provas{NomeProva: in.NomeProva, TurmaProva: in.TurmaProva, MateriaProva: in.MateriaProva, DataProva: in.DataProva.AsTime()}
 	id, err := database.CriarEntradaProva(modeloProva)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Erro ao inserir a nota no Postgres: %v", err)
+		return nil, status.Errorf(codes.Internal, "Erro ao inserir a prova no Postgres: %v", err)
 	}
 	return &proto.CreateProvaResponse{
 		IdProva: id,
@@ -46,7 +47,7 @@ func (s *ServerProva) ReadAll(ctx context.Context) (*proto.ProvaLista, error) {
 }
 
 func (s *ServerProva) Read(ctx context.Context, in *proto.ReadProvaRequest) (*proto.ProvaLista, error) {
-	log.Printf("Função ler prova específica foi chamada")
+	log.Printf("Função ler prova específica foi chamada com %v\n")
 	provas, err := database.ProcurarProvaNome(in.NomeProva)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Erro ao procurar a prova: %v", err)
@@ -66,20 +67,20 @@ func (s *ServerProva) Read(ctx context.Context, in *proto.ReadProvaRequest) (*pr
 	}, nil
 }
 
-func (s *ServerProva) Update(ctx context.Context, in *proto.UpdateProvaRequest) error {
-	log.Printf("Função update de prova foi chamado")
+func (s *ServerProva) Update(ctx context.Context, in *proto.UpdateProvaRequest) (*emptypb.Empty, error) {
+	log.Printf("Função update de prova foi chamada com %v\n")
 	err := database.UpdateProvas(in.Id, models.Provas{NomeProva: in.NovoNome, TurmaProva: in.NovaTurma, MateriaProva: in.NovaMateria, DataProva: in.DataProva.AsTime()})
 	if err != nil {
-		return status.Errorf(codes.Internal, "erro ao editar a prova: %v", err)
+		return nil, status.Errorf(codes.Internal, "erro ao editar a prova: %v", err)
 	}
-	return nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *ServerProva) Delete(ctx context.Context, in *proto.DeleteProvaRequest) error {
-	log.Printf("Função delete de prova foi chamado")
+func (s *ServerProva) Delete(ctx context.Context, in *proto.DeleteProvaRequest) (*emptypb.Empty, error) {
+	log.Printf("Função delete de prova foi chamada com %v\n")
 	err := database.DeleteProvas(in.Id)
 	if err != nil {
-		return status.Errorf(codes.Internal, "erro ao deletar prova: %v", err)
+		return nil, status.Errorf(codes.Internal, "erro ao deletar prova: %v", err)
 	}
-	return nil
+	return &emptypb.Empty{}, nil
 }
