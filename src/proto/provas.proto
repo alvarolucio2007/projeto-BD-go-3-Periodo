@@ -33,7 +33,8 @@ message UpdateProvaRequest {
   uint32 id = 1;
   string novo_nome = 2;
   string nova_turma = 3;
-  google.protobuf.Timestamp data_prova = 4;
+  string nova_materia = 4;
+  google.protobuf.Timestamp data_prova = 5;
 }
 message DeleteProvaRequest {
   uint32 id = 1;
@@ -45,7 +46,7 @@ service ProvaService {
   rpc ReadAll(google.protobuf.Empty) returns (ProvaLista);
   rpc Read(ReadProvaRequest) returns (ProvaLista);
   //Atualizar prova
-  rpc Update(UpdateProvaRequest) returns (Prova);
+  rpc Update(UpdateProvaRequest) returns (google.protobuf.Empty);
   //Deletar prova
   rpc Delete(DeleteProvaRequest) returns (google.protobuf.Empty);
 }
