@@ -28,7 +28,6 @@ message CreateProvaResponse {
 }
 message ReadProvaRequest {
   string nome_prova = 1;
-  uint32 id_usuario = 2;
 }
 message UpdateProvaRequest {
   uint32 id = 1;
