@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
-	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -64,7 +64,7 @@ func (s *ServerUser) Delete(ctx context.Context, in *proto.UsuarioDeleteRequest)
 }
 
 func (s *ServerUser) Auth(ctx context.Context, in *proto.UsuarioLoginRequest) (*proto.UsuarioLoginResponse, error) {
-	log.Printf("Atutenticando usuário %v \n ")
+	log.Printf("Atutenticando usuário %v \n ", in)
 	stats, msg, role, err := database.AutenticarUsuario(in.Username, in.Password)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Erro crítico: %v", err)

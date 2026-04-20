@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
-	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -31,9 +31,9 @@ func (s *ServerNota) Read(ctx context.Context, in *proto.ReadNotaRequest) (*prot
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "erro ao procurar todas as notas: %v\n", err)
 	}
-	listaNotas := make([]*proto.InnerJoin, 0, len(notas))
+	listaNotas := make([]*proto.NotaDetalhada, 0, len(notas))
 	for _, n := range notas {
-		listaNotas = append(listaNotas, &proto.InnerJoin{
+		listaNotas = append(listaNotas, &proto.NotaDetalhada{
 			Username:  n.Username,
 			NomeProva: n.NomeProva,
 			NotaProva: n.NotaProva,

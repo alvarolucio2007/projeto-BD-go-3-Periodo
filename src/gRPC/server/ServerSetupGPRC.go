@@ -1,29 +1,30 @@
+// Package grpcserver serve para criar e gerenciar servidores gRPC
 package grpcserver
 
 import (
 	"log"
 	"net"
 
-	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"google.golang.org/grpc"
 )
 
 const addr string = "0.0.0.0:50051"
 
 type ServerUser struct {
-	proto.UnimplementedUsuariosServiceServer
+	proto.UsuariosServiceServer
 }
 type ServerProva struct {
-	proto.UnimplementedProvaServiceServer
+	proto.ProvaServiceServer
 }
 type ServerNota struct {
-	proto.UnimplementedNotaServiceServer
+	proto.NotaServiceServer
 }
 type ServerLeftJoin struct {
-	proto.UnimplementedLeftJoinServiceServer
+	proto.LeftJoinServiceServer
 }
 type ServerInnerJoin struct {
-	proto.UnimplementedInnerJoinServiceServer
+	proto.InnerJoinServiceServer
 }
 
 func StartServerGeralGRPC() {
