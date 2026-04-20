@@ -9,6 +9,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -42,4 +43,14 @@ func (s *ServerNota) Read(ctx context.Context, in *proto.ReadNotaRequest) (*prot
 	return &proto.NotasResponse{
 		Response: listaNotas,
 	}, nil
+}
+
+func (s *ServerNota) Update(ctx context.Context, in *proto.UpdateNotaRequest) (*emptypb.Empty, error) {
+	log.Printf("Função update nota foi chamada com %v\n", in)
+	nota := models.Notas{UsuarioID: in.AlunoId, ProvaID: in.ProvaId, NotaProva: in.ValorNota}
+	err := database.UpdateNotas(in.NotaId, nota)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "erro ao dar update na nota: %v", err)
+	}
+	return &emptypb.Empty{}, nil
 }
