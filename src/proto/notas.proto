@@ -18,6 +18,9 @@ message CreateNotaRequest {
   uint32 prova_id = 2;
   float nota_prova = 3;
 }
+message CreateNotaResponse {
+  uint32 nota_id = 1;
+}
 message ReadNotaRequest {
   uint32 usuario_id = 1;
 }
@@ -34,7 +37,7 @@ message DeleteNotaRequest {
   uint32 nota_id = 1;
 }
 service NotaService {
-  rpc Create(CreateNotaRequest) returns (Nota);
+  rpc Create(CreateNotaRequest) returns (CreateNotaResponse);
   rpc Read(ReadNotaRequest) returns (NotasResponse);
   rpc Update(UpdateNotaRequest) returns (Nota);
   rpc Delete(DeleteNotaRequest) returns (google.protobuf.Empty);
