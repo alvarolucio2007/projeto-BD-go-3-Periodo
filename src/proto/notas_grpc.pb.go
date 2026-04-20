@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type NotaServiceClient interface {
 	Create(ctx context.Context, in *CreateNotaRequest, opts ...grpc.CallOption) (*CreateNotaResponse, error)
 	Read(ctx context.Context, in *ReadNotaRequest, opts ...grpc.CallOption) (*NotasResponse, error)
-	Update(ctx context.Context, in *UpdateNotaRequest, opts ...grpc.CallOption) (*Nota, error)
+	Update(ctx context.Context, in *UpdateNotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Delete(ctx context.Context, in *DeleteNotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
@@ -50,8 +50,8 @@ func (c *notaServiceClient) Read(ctx context.Context, in *ReadNotaRequest, opts 
 	return out, nil
 }
 
-func (c *notaServiceClient) Update(ctx context.Context, in *UpdateNotaRequest, opts ...grpc.CallOption) (*Nota, error) {
-	out := new(Nota)
+func (c *notaServiceClient) Update(ctx context.Context, in *UpdateNotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/projeto.NotaService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (c *notaServiceClient) Delete(ctx context.Context, in *DeleteNotaRequest, o
 type NotaServiceServer interface {
 	Create(context.Context, *CreateNotaRequest) (*CreateNotaResponse, error)
 	Read(context.Context, *ReadNotaRequest) (*NotasResponse, error)
-	Update(context.Context, *UpdateNotaRequest) (*Nota, error)
+	Update(context.Context, *UpdateNotaRequest) (*emptypb.Empty, error)
 	Delete(context.Context, *DeleteNotaRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedNotaServiceServer()
 }
@@ -89,7 +89,7 @@ func (UnimplementedNotaServiceServer) Create(context.Context, *CreateNotaRequest
 func (UnimplementedNotaServiceServer) Read(context.Context, *ReadNotaRequest) (*NotasResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
-func (UnimplementedNotaServiceServer) Update(context.Context, *UpdateNotaRequest) (*Nota, error) {
+func (UnimplementedNotaServiceServer) Update(context.Context, *UpdateNotaRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedNotaServiceServer) Delete(context.Context, *DeleteNotaRequest) (*emptypb.Empty, error) {
