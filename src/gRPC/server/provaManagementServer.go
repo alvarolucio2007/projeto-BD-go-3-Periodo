@@ -25,7 +25,7 @@ func (s *ServerProva) Create(ctx context.Context, in *proto.CreateProvaRequest) 
 	}, nil
 }
 
-func (s *ServerProva) ReadAll(ctx context.Context) (*proto.ProvaLista, error) {
+func (s *ServerProva) ReadAll(ctx context.Context, in *emptypb.Empty) (*proto.ProvaLista, error) {
 	log.Printf("Função ler todas as provas foi chamada")
 	provas, err := database.LerTodasProvas()
 	if err != nil {
