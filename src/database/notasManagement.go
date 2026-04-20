@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -9,8 +10,11 @@ import (
 
 func CriarEntradaNotas(nota models.Notas) (uint32, error) {
 	var id uint32
-	query := "INSERT INTO notas (usuario_id,prova_id,nota_prova) VALUES ($1,$2,$3) RETURNING id;"
+	query := "INSERT INTO notas (usuario_id,prova_id,nota_prova) SELECT ($1,$2,$3) FROM usuarios WHERE id=$1 AND role='aluno' RETURNING id;"
 	if err := DB.QueryRow(query, nota.UsuarioID, nota.ProvaID, nota.NotaProva).Scan(&id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, fmt.Errorf("usuário %d não é aluno ou não existe", nota.UsuarioID)
+		}
 		return 0, fmt.Errorf("%w: %v", models.ErroEntradaPostgres, err)
 	}
 	return id, nil
