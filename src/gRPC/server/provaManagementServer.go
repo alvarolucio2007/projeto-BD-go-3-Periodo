@@ -44,3 +44,24 @@ func (s *ServerProva) ReadAll(ctx context.Context) (*proto.ProvaLista, error) {
 		Provas: listaProvas,
 	}, nil
 }
+
+func (s *ServerProva) Read(ctx context.Context, in *proto.ReadProvaRequest) (*proto.ProvaLista, error) {
+	log.Printf("Função ler prova específica foi chamada")
+	provas, err := database.ProcurarProvaNome(in.NomeProva)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro ao procurar a prova: %v", err)
+	}
+	listaProvas := make([]*proto.Prova, 0, len(provas))
+	for _, p := range provas {
+		listaProvas = append(listaProvas, &proto.Prova{
+			Id:           int32(p.ID),
+			NomeProva:    p.NomeProva,
+			TurmaProva:   p.TurmaProva,
+			MateriaProva: p.MateriaProva,
+			DataProva:    timestamppb.New(p.DataProva),
+		})
+	}
+	return &proto.ProvaLista{
+		Provas: listaProvas,
+	}, nil
+}
