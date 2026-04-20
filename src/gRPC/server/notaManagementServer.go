@@ -9,6 +9,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *ServerNota) Create(ctx context.Context, in *proto.CreateNotaRequest) (*proto.CreateNotaResponse, error) {
@@ -20,5 +21,25 @@ func (s *ServerNota) Create(ctx context.Context, in *proto.CreateNotaRequest) (*
 	}
 	return &proto.CreateNotaResponse{
 		NotaId: id,
+	}, nil
+}
+
+func (s *ServerNota) Read(ctx context.Context, in *proto.ReadNotaRequest) (*proto.NotasResponse, error) {
+	log.Printf("Função read nota foi chamada com %v\n", in)
+	notas, err := database.BuscarNotas(in.Username)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "erro ao procurar todas as notas: %v\n", err)
+	}
+	listaNotas := make([]*proto.InnerJoin, 0, len(notas))
+	for _, n := range notas {
+		listaNotas = append(listaNotas, &proto.InnerJoin{
+			Username:  n.Username,
+			NomeProva: n.NomeProva,
+			NotaProva: n.NotaProva,
+			DataProva: timestamppb.New(n.DataAplicacao),
+		})
+	}
+	return &proto.NotasResponse{
+		Response: listaNotas,
 	}, nil
 }
