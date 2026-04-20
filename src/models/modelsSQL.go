@@ -36,3 +36,8 @@ type LeftJoinType struct {
 	NotaProva     sql.NullFloat64
 	DataAplicacao time.Time
 }
+type AuthResult struct {
+	Status   bool
+	Mensagem string
+	Role     string
+}
