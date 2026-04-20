@@ -22,10 +22,10 @@ message CreateNotaResponse {
   uint32 nota_id = 1;
 }
 message ReadNotaRequest {
-  uint32 usuario_id = 1;
+  string username = 1;
 }
 message NotasResponse {
-  repeated InnerJoinResponse response = 1;
+  repeated InnerJoin response = 1;
 }
 message UpdateNotaRequest {
   uint32 nota_id = 1;
@@ -39,6 +39,6 @@ message DeleteNotaRequest {
 service NotaService {
   rpc Create(CreateNotaRequest) returns (CreateNotaResponse);
   rpc Read(ReadNotaRequest) returns (NotasResponse);
-  rpc Update(UpdateNotaRequest) returns (Nota);
+  rpc Update(UpdateNotaRequest) returns (google.protobuf.Empty);
   rpc Delete(DeleteNotaRequest) returns (google.protobuf.Empty);
 }
