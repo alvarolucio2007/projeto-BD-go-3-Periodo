@@ -24,7 +24,7 @@ type ProvaServiceClient interface {
 	ReadAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ProvaLista, error)
 	Read(ctx context.Context, in *ReadProvaRequest, opts ...grpc.CallOption) (*ProvaLista, error)
 	// Atualizar prova
-	Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*Prova, error)
+	Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletar prova
 	Delete(ctx context.Context, in *DeleteProvaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -64,8 +64,8 @@ func (c *provaServiceClient) Read(ctx context.Context, in *ReadProvaRequest, opt
 	return out, nil
 }
 
-func (c *provaServiceClient) Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*Prova, error) {
-	out := new(Prova)
+func (c *provaServiceClient) Update(ctx context.Context, in *UpdateProvaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/projeto.ProvaService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ type ProvaServiceServer interface {
 	ReadAll(context.Context, *emptypb.Empty) (*ProvaLista, error)
 	Read(context.Context, *ReadProvaRequest) (*ProvaLista, error)
 	// Atualizar prova
-	Update(context.Context, *UpdateProvaRequest) (*Prova, error)
+	Update(context.Context, *UpdateProvaRequest) (*emptypb.Empty, error)
 	// Deletar prova
 	Delete(context.Context, *DeleteProvaRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedProvaServiceServer()
@@ -111,7 +111,7 @@ func (UnimplementedProvaServiceServer) ReadAll(context.Context, *emptypb.Empty) 
 func (UnimplementedProvaServiceServer) Read(context.Context, *ReadProvaRequest) (*ProvaLista, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
-func (UnimplementedProvaServiceServer) Update(context.Context, *UpdateProvaRequest) (*Prova, error) {
+func (UnimplementedProvaServiceServer) Update(context.Context, *UpdateProvaRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedProvaServiceServer) Delete(context.Context, *DeleteProvaRequest) (*emptypb.Empty, error) {
