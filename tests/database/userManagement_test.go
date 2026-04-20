@@ -55,7 +55,7 @@ func TestCriarUsuario(t *testing.T) {
 
 func TestAutenticarUsuario(t *testing.T) {
 	t.Run("Autenticar usuário", func(t *testing.T) {
-		status, _, err := database.AutenticarUsuario(listaUsuario[0].Username, listaUsuario[0].Password)
+		status, _, _, err := database.AutenticarUsuario(listaUsuario[0].Username, listaUsuario[0].Password)
 		if err != nil {
 			t.Errorf("Erro ao autenticar o usuário, %v", err)
 		}
@@ -64,14 +64,14 @@ func TestAutenticarUsuario(t *testing.T) {
 		}
 	})
 	t.Run("Autenticar usuário errado", func(t *testing.T) {
-		status, msg, err := database.AutenticarUsuario(listaUsuario[0].Username, listaUsuario[1].Password)
+		status, _, password, err := database.AutenticarUsuario(listaUsuario[0].Username, listaUsuario[1].Password)
 		if err != nil {
 			t.Errorf("Erro ao autenticar o usuário, %v", err)
 		}
 		if status {
 			t.Errorf("Erro: Status errado. Esperado %v, recebido %v", false, status)
 		}
-		if !strings.Contains(msg, listaUsuario[0].Password) {
+		if !strings.Contains(password, listaUsuario[0].Password) {
 			t.Errorf("A senha real não apareceu na mensagem...")
 		}
 	})
