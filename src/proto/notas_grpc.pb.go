@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NotaServiceClient interface {
-	Create(ctx context.Context, in *CreateNotaRequest, opts ...grpc.CallOption) (*Nota, error)
+	Create(ctx context.Context, in *CreateNotaRequest, opts ...grpc.CallOption) (*CreateNotaResponse, error)
 	Read(ctx context.Context, in *ReadNotaRequest, opts ...grpc.CallOption) (*NotasResponse, error)
 	Update(ctx context.Context, in *UpdateNotaRequest, opts ...grpc.CallOption) (*Nota, error)
 	Delete(ctx context.Context, in *DeleteNotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -32,8 +32,8 @@ func NewNotaServiceClient(cc grpc.ClientConnInterface) NotaServiceClient {
 	return &notaServiceClient{cc}
 }
 
-func (c *notaServiceClient) Create(ctx context.Context, in *CreateNotaRequest, opts ...grpc.CallOption) (*Nota, error) {
-	out := new(Nota)
+func (c *notaServiceClient) Create(ctx context.Context, in *CreateNotaRequest, opts ...grpc.CallOption) (*CreateNotaResponse, error) {
+	out := new(CreateNotaResponse)
 	err := c.cc.Invoke(ctx, "/projeto.NotaService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (c *notaServiceClient) Delete(ctx context.Context, in *DeleteNotaRequest, o
 // All implementations must embed UnimplementedNotaServiceServer
 // for forward compatibility
 type NotaServiceServer interface {
-	Create(context.Context, *CreateNotaRequest) (*Nota, error)
+	Create(context.Context, *CreateNotaRequest) (*CreateNotaResponse, error)
 	Read(context.Context, *ReadNotaRequest) (*NotasResponse, error)
 	Update(context.Context, *UpdateNotaRequest) (*Nota, error)
 	Delete(context.Context, *DeleteNotaRequest) (*emptypb.Empty, error)
@@ -83,7 +83,7 @@ type NotaServiceServer interface {
 type UnimplementedNotaServiceServer struct {
 }
 
-func (UnimplementedNotaServiceServer) Create(context.Context, *CreateNotaRequest) (*Nota, error) {
+func (UnimplementedNotaServiceServer) Create(context.Context, *CreateNotaRequest) (*CreateNotaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedNotaServiceServer) Read(context.Context, *ReadNotaRequest) (*NotasResponse, error) {
