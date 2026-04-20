@@ -60,7 +60,13 @@ func ProcurarProvaNome(nome string) ([]models.Provas, error) {
 }
 
 func UpdateProvas(id uint32, dados models.Provas) error {
-	query := `UPDATE provas SET nome_prova=$1,turma_prova=$2,materia_prova=$3,data_prova=$4 WHERE id=$5;`
+	query := `UPDATE provas 
+	SET 
+    nome_prova = COALESCE(NULLIF($1, ''), nome_prova),
+    turma_prova = COALESCE(NULLIF($2, ''), turma_prova),
+    materia_prova = COALESCE(NULLIF($3, ''), materia_prova),
+    data_prova = COALESCE($4, data_prova)
+	WHERE id = $5;`
 	if _, err := DB.Exec(query, dados.NomeProva, dados.TurmaProva, dados.MateriaProva, dados.DataProva, id); err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
 	}
