@@ -54,3 +54,12 @@ func (s *ServerNota) Update(ctx context.Context, in *proto.UpdateNotaRequest) (*
 	}
 	return &emptypb.Empty{}, nil
 }
+
+func (s *ServerNota) Delete(ctx context.Context, in *proto.DeleteNotaRequest) (*emptypb.Empty, error) {
+	log.Printf("Função delete nota foi chamada com %v\n", in)
+	err := database.DeleteNotas(in.NotaId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "erro ao dar delete na nota: %v", err)
+	}
+	return &emptypb.Empty{}, nil
+}
