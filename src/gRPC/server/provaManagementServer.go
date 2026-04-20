@@ -74,3 +74,12 @@ func (s *ServerProva) Update(ctx context.Context, in *proto.UpdateProvaRequest) 
 	}
 	return nil
 }
+
+func (s *ServerProva) Delete(ctx context.Context, in *proto.DeleteProvaRequest) error {
+	log.Printf("Função delete de prova foi chamado")
+	err := database.DeleteProvas(in.Id)
+	if err != nil {
+		return status.Errorf(codes.Internal, "erro ao deletar prova: %v", err)
+	}
+	return nil
+}
