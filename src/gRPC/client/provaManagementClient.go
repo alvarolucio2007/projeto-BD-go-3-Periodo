@@ -59,3 +59,13 @@ func (h *HubConexoes) doReadProva(nomeProva string) ([]*models.Provas, error) {
 	}
 	return result, nil
 }
+
+func (h *HubConexoes) doUpdateProva(prova *models.Provas) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := h.Prova.Update(ctx, &proto.UpdateProvaRequest{Id: prova.ID, NovoNome: prova.NomeProva, NovaTurma: prova.TurmaProva, NovaMateria: prova.MateriaProva, DataProva: timestamppb.New(prova.DataProva)})
+	if err != nil {
+		return err
+	}
+	return nil
+}
