@@ -29,14 +29,33 @@ func (h *HubConexoes) doReadAllProva() ([]*models.Provas, error) {
 	}
 	result := make([]*models.Provas, 0, len(res.Provas))
 	for _, u := range res.Provas {
-		prova := models.Provas{
+		result = append(result, &models.Provas{
 			ID:           uint32(u.Id),
 			NomeProva:    u.NomeProva,
 			TurmaProva:   u.TurmaProva,
 			MateriaProva: u.MateriaProva,
 			DataProva:    u.DataProva.AsTime(),
-		}
-		result = append(result, &prova)
+		})
+	}
+	return result, nil
+}
+
+func (h *HubConexoes) doReadProva(nomeProva string) ([]*models.Provas, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	res, err := h.Prova.Read(ctx, &proto.ReadProvaRequest{NomeProva: nomeProva})
+	if err != nil {
+		return nil, err
+	}
+	result := make([]*models.Provas, 0, len(res.Provas))
+	for _, p := range res.Provas {
+		result = append(result, &models.Provas{
+			ID:           uint32(p.Id),
+			NomeProva:    p.NomeProva,
+			TurmaProva:   p.TurmaProva,
+			MateriaProva: p.MateriaProva,
+			DataProva:    p.DataProva.AsTime(),
+		})
 	}
 	return result, nil
 }
