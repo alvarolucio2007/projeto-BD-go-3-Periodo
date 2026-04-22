@@ -24,3 +24,15 @@ func (h *HubConexoes) HandlerCreateProva(c *gin.Context) {
 		"id":      id,
 	})
 }
+
+func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
+	res, err := h.DoReadAllProva()
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Provas lidas com sucesso",
+		"provas":  res,
+	})
+}
