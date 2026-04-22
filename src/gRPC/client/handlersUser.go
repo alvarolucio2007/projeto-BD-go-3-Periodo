@@ -44,3 +44,21 @@ func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
 		"id":      id,
 	})
 }
+
+func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
+	username := c.Param("username")
+	result, err := h.DoReadUser(username)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if len(result) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Não foram encontrados usuários",
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "Usuários buscados com sucesso",
+		"usuarios": result,
+	})
+}
