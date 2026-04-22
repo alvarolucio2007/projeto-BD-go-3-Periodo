@@ -97,3 +97,28 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 		"message": "Usuário deletado com sucesso",
 	})
 }
+
+func (h *HubConexoes) HandlerAuth(c *gin.Context) {
+	username := c.Param("username")
+	var body struct {
+		Password string `json:"password"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		SendError(c, err)
+		return
+	}
+	result, err := h.DoAuth(username, body.Password)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if !result.Status {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": result.Mensagem,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": result.Mensagem,
+	})
+}
