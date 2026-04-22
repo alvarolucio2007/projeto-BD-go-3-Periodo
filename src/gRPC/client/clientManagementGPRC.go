@@ -8,10 +8,12 @@ import (
 )
 
 type HubConexoes struct {
-	User  proto.UsuariosServiceClient
-	Prova proto.ProvaServiceClient
-	Nota  proto.NotaServiceClient
-	Conn  *grpc.ClientConn
+	User      proto.UsuariosServiceClient
+	Prova     proto.ProvaServiceClient
+	Nota      proto.NotaServiceClient
+	LeftJoin  proto.LeftJoinServiceClient
+	InnerJoin proto.InnerJoinServiceClient
+	Conn      *grpc.ClientConn
 }
 
 func ConnectAll(addr string) (*HubConexoes, error) {
