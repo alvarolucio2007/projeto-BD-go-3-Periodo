@@ -63,3 +63,19 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 		"usuarios": result,
 	})
 }
+
+func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
+	var novoUsuario models.Usuario
+	if err := c.ShouldBindJSON(&novoUsuario); err != nil {
+		SendError(c, err)
+		return
+	}
+	err := h.DoUpdateUser(&novoUsuario)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Usuário atualizado com sucesso",
+	})
+}
