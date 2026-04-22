@@ -39,3 +39,23 @@ func (h *HubConexoes) doReadNota(username string) ([]*models.InnerJoinType, erro
 	}
 	return response, nil
 }
+
+func (h *HubConexoes) doUpdateNota(nota *models.Notas) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := h.Nota.Update(ctx, &proto.UpdateNotaRequest{NotaId: nota.ID, ValorNota: nota.NotaProva, AlunoId: nota.UsuarioID, ProvaId: nota.ProvaID})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (h *HubConexoes) doDeleteNota(id uint32) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := h.Nota.Delete(ctx, &proto.DeleteNotaRequest{NotaId: id})
+	if err != nil {
+		return err
+	}
+	return nil
+}
