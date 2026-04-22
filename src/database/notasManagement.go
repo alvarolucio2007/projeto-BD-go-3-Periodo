@@ -56,7 +56,11 @@ func BuscarNotas(username string) ([]models.InnerJoinType, error) {
 }
 
 func UpdateNotas(id uint32, dados models.Notas) error {
-	query := `UPDATE notas SET usuario_id=$1,prova_id=$2,nota_prova=$3 WHERE id=$4;`
+	query := `UPDATE notas SET 
+    usuario_id = COALESCE(NULLIF($1, 0), usuario_id),
+    prova_id = COALESCE(NULLIF($2, 0), prova_id),
+    nota_prova = COALESCE(NULLIF($3, -1), nota_prova) -- Use -1 se 0 for nota válida
+WHERE id = $4;`
 	if _, err := DB.Exec(query, dados.UsuarioID, dados.ProvaID, dados.NotaProva, id); err != nil {
 		return fmt.Errorf("%w: %v", models.ErroAtualizacaoPostgres, err)
 	}
