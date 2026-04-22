@@ -2,11 +2,10 @@ package grpcserver
 
 import (
 	"context"
-	"database/sql"
 	"log"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
-	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/proto"
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -33,21 +32,6 @@ func (s *ServerInnerJoin) InnerJoin(ctx context.Context, in *emptypb.Empty) (*pr
 	}, nil
 }
 
-func nullStringToPointer(ns sql.NullString) *string {
-	if !ns.Valid {
-		return nil
-	}
-	return &ns.String
-}
-
-func nullFloatToPointer(nf sql.NullFloat64) *float32 {
-	if !nf.Valid {
-		return nil
-	}
-	f := float32(nf.Float64)
-	return &f
-}
-
 func (s *ServerLeftJoin) LeftJoin(ctx context.Context, in *emptypb.Empty) (*proto.LeftJoinResponse, error) {
 	log.Printf("Função left join foi chamada")
 	provas, err := database.LeftJoin()
@@ -58,8 +42,8 @@ func (s *ServerLeftJoin) LeftJoin(ctx context.Context, in *emptypb.Empty) (*prot
 	for _, p := range provas {
 		listaLeft = append(listaLeft, &proto.LeftJoin{
 			Username:  p.Username,
-			NomeProva: nullStringToPointer(p.NomeProva),
-			NotaProva: nullFloatToPointer(p.NotaProva),
+			NomeProva: p.NomeProva,
+			NotaProva: p.NotaProva,
 			DataProva: timestamppb.New(p.DataAplicacao),
 		})
 	}
