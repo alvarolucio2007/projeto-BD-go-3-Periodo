@@ -8,7 +8,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-func (h *HubConexoes) doCreateNota(nota *models.Notas) (uint32, error) {
+func (h *HubConexoes) DoCreateNota(nota *models.Notas) (uint32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := h.Nota.Create(ctx, &proto.CreateNotaRequest{UsuarioId: nota.UsuarioID, ProvaId: nota.ProvaID, NotaProva: nota.NotaProva})
@@ -18,7 +18,7 @@ func (h *HubConexoes) doCreateNota(nota *models.Notas) (uint32, error) {
 	return res.NotaId, nil
 }
 
-func (h *HubConexoes) doReadNota(username string) ([]*models.InnerJoinType, error) {
+func (h *HubConexoes) DoReadNota(username string) ([]*models.InnerJoinType, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := h.Nota.Read(ctx, &proto.ReadNotaRequest{Username: username})
@@ -40,7 +40,7 @@ func (h *HubConexoes) doReadNota(username string) ([]*models.InnerJoinType, erro
 	return response, nil
 }
 
-func (h *HubConexoes) doUpdateNota(nota *models.Notas) error {
+func (h *HubConexoes) DoUpdateNota(nota *models.Notas) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := h.Nota.Update(ctx, &proto.UpdateNotaRequest{NotaId: nota.ID, ValorNota: nota.NotaProva, AlunoId: nota.UsuarioID, ProvaId: nota.ProvaID})
@@ -50,7 +50,7 @@ func (h *HubConexoes) doUpdateNota(nota *models.Notas) error {
 	return nil
 }
 
-func (h *HubConexoes) doDeleteNota(id uint32) error {
+func (h *HubConexoes) DoDeleteNota(id uint32) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := h.Nota.Delete(ctx, &proto.DeleteNotaRequest{NotaId: id})

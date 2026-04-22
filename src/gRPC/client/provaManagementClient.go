@@ -10,7 +10,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (h *HubConexoes) doCreateProva(prova *models.Provas) (uint32, error) {
+func (h *HubConexoes) DoCreateProva(prova *models.Provas) (uint32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := h.Prova.Create(ctx, &proto.CreateProvaRequest{NomeProva: prova.NomeProva, TurmaProva: prova.NomeProva, MateriaProva: prova.MateriaProva, DataProva: timestamppb.New(prova.DataProva)})
@@ -20,7 +20,7 @@ func (h *HubConexoes) doCreateProva(prova *models.Provas) (uint32, error) {
 	return res.IdProva, nil
 }
 
-func (h *HubConexoes) doReadAllProva() ([]*models.Provas, error) {
+func (h *HubConexoes) DoReadAllProva() ([]*models.Provas, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := h.Prova.ReadAll(ctx, &emptypb.Empty{})
@@ -40,7 +40,7 @@ func (h *HubConexoes) doReadAllProva() ([]*models.Provas, error) {
 	return result, nil
 }
 
-func (h *HubConexoes) doReadProva(nomeProva string) ([]*models.Provas, error) {
+func (h *HubConexoes) DoReadProva(nomeProva string) ([]*models.Provas, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	res, err := h.Prova.Read(ctx, &proto.ReadProvaRequest{NomeProva: nomeProva})
@@ -60,7 +60,7 @@ func (h *HubConexoes) doReadProva(nomeProva string) ([]*models.Provas, error) {
 	return result, nil
 }
 
-func (h *HubConexoes) doUpdateProva(prova *models.Provas) error {
+func (h *HubConexoes) DoUpdateProva(prova *models.Provas) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := h.Prova.Update(ctx, &proto.UpdateProvaRequest{Id: prova.ID, NovoNome: prova.NomeProva, NovaTurma: prova.TurmaProva, NovaMateria: prova.MateriaProva, DataProva: timestamppb.New(prova.DataProva)})
@@ -70,7 +70,7 @@ func (h *HubConexoes) doUpdateProva(prova *models.Provas) error {
 	return nil
 }
 
-func (h *HubConexoes) doDeleteProva(id uint32) error {
+func (h *HubConexoes) DoDeleteProva(id uint32) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := h.Prova.Delete(ctx, &proto.DeleteProvaRequest{Id: id})
