@@ -56,6 +56,7 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Não foram encontrados usuários",
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "Usuários buscados com sucesso",
