@@ -1,0 +1,46 @@
+package grpcclient
+
+import (
+	"net/http"
+
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
+	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
+
+func SendError(c *gin.Context, err error) {
+	status, resposta := ErrorHandler(err)
+	c.JSON(status, resposta)
+}
+
+func ErrorHandler(err error) (int, gin.H) {
+	if st, ok := status.FromError(err); ok {
+		switch st.Code() {
+		case codes.NotFound:
+			return http.StatusNotFound, gin.H{"error": "Recurso não encontrado no servidor."}
+		case codes.Unavailable:
+			return http.StatusServiceUnavailable, gin.H{"error": "Servidor de notas está fora do ar"}
+		case codes.InvalidArgument:
+			return http.StatusBadRequest, gin.H{"error": st.Message()}
+		}
+	}
+	return http.StatusInternalServerError, gin.H{"error": "Erro interno: " + err.Error()}
+}
+
+func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
+	var novoUsuario models.Usuario
+	if err := c.ShouldBindJSON(&novoUsuario); err != nil {
+		SendError(c, err)
+		return
+	}
+	id, err := h.DoCreateUser(&novoUsuario)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Usuário criado com sucesso",
+		"id":      id,
+	})
+}
