@@ -17,3 +17,25 @@ func (h *HubConexoes) doCreateNota(nota *models.Notas) (uint32, error) {
 	}
 	return res.NotaId, nil
 }
+
+func (h *HubConexoes) doReadNota(username string) ([]*models.InnerJoinType, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	res, err := h.Nota.Read(ctx, &proto.ReadNotaRequest{Username: username})
+	if err != nil {
+		return nil, err
+	}
+	if res == nil || res.Response == nil {
+		return []*models.InnerJoinType{}, nil
+	}
+	response := make([]*models.InnerJoinType, 0, len(res.Response))
+	for _, n := range res.Response {
+		response = append(response, &models.InnerJoinType{
+			Username:      n.Username,
+			NomeProva:     n.NomeProva,
+			NotaProva:     n.NotaProva,
+			DataAplicacao: n.DataProva.AsTime(),
+		})
+	}
+	return response, nil
+}
