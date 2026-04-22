@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -32,8 +31,8 @@ type InnerJoinType struct {
 }
 type LeftJoinType struct {
 	Username      string
-	NomeProva     sql.NullString
-	NotaProva     sql.NullFloat64
+	NomeProva     *string
+	NotaProva     *float32
 	DataAplicacao time.Time
 }
 type AuthResult struct {
