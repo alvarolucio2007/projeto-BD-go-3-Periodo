@@ -82,7 +82,7 @@ func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.HTML(http.StatusOK, "usuario-linha", gin.H{
+	c.HTML(http.StatusOK, "usuario_linha", gin.H{
 		"message": "Usuário atualizado com sucesso",
 	})
 }
