@@ -49,3 +49,18 @@ func (h *HubConexoes) HandlerReadProva(c *gin.Context) {
 		"provas":  res,
 	})
 }
+
+func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
+	var novaProva models.Provas
+	if err := c.ShouldBindJSON(&novaProva); err != nil {
+		SendError(c, err)
+		return
+	}
+	if err := h.DoUpdateProva(&novaProva); err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Prova atualizada com sucesso",
+	})
+}
