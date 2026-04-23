@@ -33,7 +33,7 @@ type LeftJoinType struct {
 	Username      string
 	NomeProva     *string
 	NotaProva     *float32
-	DataAplicacao time.Time
+	DataAplicacao *time.Time
 }
 type AuthResult struct {
 	Status   bool
