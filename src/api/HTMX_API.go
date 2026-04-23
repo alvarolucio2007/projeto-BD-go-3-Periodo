@@ -17,7 +17,7 @@ func SetupExtRoutes() error {
 	r := gin.Default()
 	// APIs de usuário
 	r.POST("/usuario", hub.HandlerAddUsuario)
-	r.POST("/usuario/ler", hub.HandlerLerUsuario)
+	r.POST("/usuario/buscar", hub.HandlerLerUsuario)
 	r.PUT("/usuario", hub.HandlerUpdateUsuario)
 	r.DELETE("/usuario/:id", hub.HandlerDeleteUsuario)
 	r.POST("/usuario/auth", hub.HandlerAuth)
@@ -27,4 +27,13 @@ func SetupExtRoutes() error {
 	r.POST("/provas/buscar", hub.HandlerReadProva)
 	r.PUT("/provas", hub.HandlerUpdateProva)
 	r.DELETE("/provas/:id", hub.HandlerDeleteProva)
+	// APIs de nota
+	r.POST("/notas", hub.HandlerAddNota)
+	r.POST("/notas/buscar", hub.HandlerReadNota)
+	r.PUT("/notas", hub.HandlerUpdateNota)
+	r.DELETE("/notas/:id", hub.HandlerDeleteNota)
+	// APIs de JOIN
+	r.GET("/left_join", hub.HandlerLeftJoin)
+	r.GET("/inner_join", hub.HandlerInnerJoin)
+	return nil
 }
