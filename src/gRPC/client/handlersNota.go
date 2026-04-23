@@ -41,3 +41,19 @@ func (h *HubConexoes) HandlerReadNota(c *gin.Context) {
 		"notas":   res,
 	})
 }
+
+func (h *HubConexoes) HandlerUpdateNota(c *gin.Context) {
+	var novaNota models.Notas
+	if err := c.ShouldBindJSON(&novaNota); err != nil {
+		SendError(c, err)
+		return
+	}
+	err := h.DoUpdateNota(&novaNota)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Nota criada com sucesso",
+	})
+}
