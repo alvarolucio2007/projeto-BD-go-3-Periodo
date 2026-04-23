@@ -63,7 +63,7 @@ func (h *HubConexoes) HandlerReadProva(c *gin.Context) {
 
 func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
 	var novaProva models.Provas
-	if err := c.ShouldBindJSON(&novaProva); err != nil {
+	if err := c.ShouldBind(&novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -71,13 +71,13 @@ func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.HTML(http.StatusOK, "prova_linha", gin.H{
 		"message": "Prova atualizada com sucesso",
 	})
 }
 
 func (h *HubConexoes) HandlerDeleteProva(c *gin.Context) {
-	id := c.Param("id")
+	id := c.PostForm("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
@@ -88,7 +88,7 @@ func (h *HubConexoes) HandlerDeleteProva(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.HTML(http.StatusOK, "delete_prova", gin.H{
 		"message": "Prova deletada com sucesso",
 	})
 }
