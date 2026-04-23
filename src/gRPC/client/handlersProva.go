@@ -36,3 +36,16 @@ func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
 		"provas":  res,
 	})
 }
+
+func (h *HubConexoes) HandlerReadProva(c *gin.Context) {
+	nomeProva := c.Param("nome_prova")
+	res, err := h.DoReadProva(nomeProva)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Provas lidas com sucesso",
+		"provas":  res,
+	})
+}
