@@ -2,6 +2,7 @@ package grpcclient
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
@@ -55,5 +56,22 @@ func (h *HubConexoes) HandlerUpdateNota(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Nota criada com sucesso",
+	})
+}
+
+func (h *HubConexoes) HandlerDeleteNota(c *gin.Context) {
+	id := c.Param("id")
+	idUint, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	err = h.DoDeleteNota(uint32(idUint))
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Nota deletada com sucesso",
 	})
 }
