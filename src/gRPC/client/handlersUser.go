@@ -31,10 +31,9 @@ func ErrorHandler(err error) (int, gin.H) {
 
 func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
 	var novoUsuario models.Usuario
-	if err := c.ShouldBindJSON(&novoUsuario); err != nil {
-		SendError(c, err)
-		return
-	}
+	novoUsuario.Username = c.PostForm("username")
+	novoUsuario.Password = c.PostForm("password")
+	novoUsuario.Role = c.PostForm("role")
 	id, err := h.DoCreateUser(&novoUsuario)
 	if err != nil {
 		SendError(c, err)
