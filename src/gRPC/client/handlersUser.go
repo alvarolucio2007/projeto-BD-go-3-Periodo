@@ -73,7 +73,7 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 
 func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
 	var novoUsuario models.Usuario
-	if err := c.ShouldBindJSON(&novoUsuario); err != nil {
+	if err := c.ShouldBind(&novoUsuario); err != nil {
 		SendError(c, err)
 		return
 	}
