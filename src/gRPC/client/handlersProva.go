@@ -50,7 +50,7 @@ func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
 }
 
 func (h *HubConexoes) HandlerReadProva(c *gin.Context) {
-	nomeProva := c.Query("nome_prova")
+	nomeProva := c.PostForm("nome_prova")
 	res, err := h.DoReadProva(nomeProva)
 	if err != nil {
 		SendError(c, err)
@@ -77,7 +77,7 @@ func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
 }
 
 func (h *HubConexoes) HandlerDeleteProva(c *gin.Context) {
-	id := c.PostForm("id")
+	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
