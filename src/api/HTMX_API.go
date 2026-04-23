@@ -15,9 +15,16 @@ func SetupExtRoutes() error {
 	}
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
+	// APIs de usuário
 	r.POST("/usuario", hub.HandlerAddUsuario)
 	r.POST("/usuario/ler", hub.HandlerLerUsuario)
 	r.PUT("/usuario", hub.HandlerUpdateUsuario)
 	r.DELETE("/usuario/:id", hub.HandlerDeleteUsuario)
 	r.POST("/usuario/auth", hub.HandlerAuth)
+	// APIs de prova
+	r.POST("/provas", hub.HandlerCreateProva)
+	r.GET("/provas", hub.HandlerReadAllProva)
+	r.POST("/provas/buscar", hub.HandlerReadProva)
+	r.PUT("/provas", hub.HandlerUpdateProva)
+	r.DELETE("/provas/:id", hub.HandlerDeleteProva)
 }
