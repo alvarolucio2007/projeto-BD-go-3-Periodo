@@ -17,3 +17,15 @@ func (h *HubConexoes) HandlerLeftJoin(c *gin.Context) {
 		"resultado": res,
 	})
 }
+
+func (h *HubConexoes) HandlerInnerJoin(c *gin.Context) {
+	res, err := h.DoInnerJoin()
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message":   "Inner Join realizado com sucesso",
+		"resultado": res,
+	})
+}
