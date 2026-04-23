@@ -35,5 +35,9 @@ func SetupExtRoutes() error {
 	// APIs de JOIN
 	r.GET("/left_join", hub.HandlerLeftJoin)
 	r.GET("/inner_join", hub.HandlerInnerJoin)
+	err = r.Run(":8080")
+	if err != nil {
+		return err
+	}
 	return nil
 }
