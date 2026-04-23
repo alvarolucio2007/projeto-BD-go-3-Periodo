@@ -39,14 +39,14 @@ func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{
+	c.HTML(http.StatusCreated, "add_usuario.html", gin.H{
 		"message": "Usuário criado com sucesso",
 		"id":      id,
 	})
 }
 
 func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
-	username := c.Param("username")
+	username := c.PostForm("username")
 	result, err := h.DoReadUser(username)
 	if err != nil {
 		SendError(c, err)
