@@ -64,11 +64,17 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 		return
 	}
 	if len(result) == 0 {
-		c.HTML(http.StatusCreated, "add_usuario.html", gin.H{
-			"message":  "Usuários buscados com sucesso",
-			"usuarios": result,
+		c.HTML(http.StatusOK, "ler_usuario.html", gin.H{
+			"message":  "não há nenhum usuário",
+			"usuarios": nil,
 		})
+		return
 	}
+
+	c.HTML(http.StatusOK, "ler_usuario.html", gin.H{
+		"message":  "Usuários buscados com sucesso",
+		"usuarios": result,
+	})
 }
 
 func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
@@ -103,7 +109,7 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 }
 
 func (h *HubConexoes) HandlerAuth(c *gin.Context) {
-	username := c.Param("username")
+	username := c.PostForm("username")
 	var body struct {
 		Password string `form:"password" json:"password"`
 	}
