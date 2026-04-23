@@ -39,7 +39,7 @@ func (h *HubConexoes) HandlerAddNota(c *gin.Context) {
 }
 
 func (h *HubConexoes) HandlerReadNota(c *gin.Context) {
-	username := c.Param("username")
+	username := c.PostForm("username")
 	res, err := h.DoReadNota(username)
 	if err != nil {
 		SendError(c, err)
@@ -75,7 +75,7 @@ func (h *HubConexoes) HandlerUpdateNota(c *gin.Context) {
 }
 
 func (h *HubConexoes) HandlerDeleteNota(c *gin.Context) {
-	id := c.PostForm("id")
+	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
