@@ -31,7 +31,8 @@ func (h *HubConexoes) DoLeftJoin() ([]*models.LeftJoinType, error) {
 	}
 	result := make([]*models.LeftJoinType, 0, len(res.Resultado))
 	for _, l := range res.Resultado {
-		result = append(result, &models.LeftJoinType{Username: l.Username, NomeProva: l.NomeProva, NotaProva: l.NotaProva, DataAplicacao: l.DataProva.AsTime()})
+		t := l.DataProva.AsTime()
+		result = append(result, &models.LeftJoinType{Username: l.Username, NomeProva: l.NomeProva, NotaProva: l.NotaProva, DataAplicacao: &t})
 	}
 	return result, nil
 }
