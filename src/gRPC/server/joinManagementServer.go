@@ -40,11 +40,16 @@ func (s *ServerLeftJoin) LeftJoin(ctx context.Context, in *emptypb.Empty) (*prot
 	}
 	listaLeft := make([]*proto.LeftJoin, 0, len(provas))
 	for _, p := range provas {
+		var dataProto *timestamppb.Timestamp
+		if p.DataAplicacao != nil {
+			dataProto = timestamppb.New(*p.DataAplicacao)
+		}
 		listaLeft = append(listaLeft, &proto.LeftJoin{
 			Username:  p.Username,
 			NomeProva: p.NomeProva,
 			NotaProva: p.NotaProva,
-			DataProva: timestamppb.New(p.DataAplicacao),
+
+			DataProva: dataProto,
 		})
 	}
 	return &proto.LeftJoinResponse{
