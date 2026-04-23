@@ -23,3 +23,21 @@ func (h *HubConexoes) HandlerAddNota(c *gin.Context) {
 		"id":      id,
 	})
 }
+
+func (h *HubConexoes) HandlerReadNota(c *gin.Context) {
+	username := c.Param("username")
+	res, err := h.DoReadNota(username)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if len(res) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "não foram encontradas notas",
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Busca de nota feita com sucesso",
+		"notas":   res,
+	})
+}
