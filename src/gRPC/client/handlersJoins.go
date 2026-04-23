@@ -12,7 +12,7 @@ func (h *HubConexoes) HandlerLeftJoin(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.HTML(http.StatusOK, "left_join", gin.H{
 		"message":   "Left Join realizado com sucesso",
 		"resultado": res,
 	})
@@ -24,7 +24,7 @@ func (h *HubConexoes) HandlerInnerJoin(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.HTML(http.StatusOK, "inner_join", gin.H{
 		"message":   "Inner Join realizado com sucesso",
 		"resultado": res,
 	})
