@@ -12,6 +12,17 @@ import (
 
 func SendError(c *gin.Context, err error) {
 	status, resposta := ErrorHandler(err)
+
+	msg := "Erro desconhecido"
+	if val, existe := resposta["error"]; existe {
+		msg = val.(string)
+	}
+
+	if c.GetHeader("HX-Request") != "" {
+		c.String(status, msg)
+		return
+	}
+
 	c.JSON(status, resposta)
 }
 
@@ -19,14 +30,14 @@ func ErrorHandler(err error) (int, gin.H) {
 	if st, ok := status.FromError(err); ok {
 		switch st.Code() {
 		case codes.NotFound:
-			return http.StatusNotFound, gin.H{"error": "Recurso não encontrado no servidor."}
+			return http.StatusNotFound, gin.H{"error": "Recurso não encontrado."}
 		case codes.Unavailable:
-			return http.StatusServiceUnavailable, gin.H{"error": "Servidor de notas está fora do ar"}
+			return http.StatusServiceUnavailable, gin.H{"error": "Servidor gRPC fora do ar."}
 		case codes.InvalidArgument:
 			return http.StatusBadRequest, gin.H{"error": st.Message()}
 		}
 	}
-	return http.StatusInternalServerError, gin.H{"error": "Erro interno: " + err.Error()}
+	return http.StatusInternalServerError, gin.H{"error": err.Error()}
 }
 
 func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
@@ -53,15 +64,11 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 		return
 	}
 	if len(result) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "Não foram encontrados usuários",
+		c.HTML(http.StatusCreated, "add_usuario.html", gin.H{
+			"message":  "Usuários buscados com sucesso",
+			"usuarios": result,
 		})
-		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"message":  "Usuários buscados com sucesso",
-		"usuarios": result,
-	})
 }
 
 func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
@@ -75,7 +82,7 @@ func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.HTML(http.StatusOK, "usuario-linha", gin.H{
 		"message": "Usuário atualizado com sucesso",
 	})
 }
@@ -92,17 +99,15 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Usuário deletado com sucesso",
-	})
+	c.Status(http.StatusOK)
 }
 
 func (h *HubConexoes) HandlerAuth(c *gin.Context) {
 	username := c.Param("username")
 	var body struct {
-		Password string `json:"password"`
+		Password string `form:"password" json:"password"`
 	}
-	if err := c.ShouldBindJSON(&body); err != nil {
+	if err := c.ShouldBind(&body); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -112,12 +117,12 @@ func (h *HubConexoes) HandlerAuth(c *gin.Context) {
 		return
 	}
 	if !result.Status {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.HTML(http.StatusBadRequest, "usuario-auth", gin.H{
 			"message": result.Mensagem,
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": result.Mensagem,
+	c.HTML(http.StatusOK, "usuario-auth", gin.H{
+		"message": "Usuário autenticado com sucesso",
 	})
 }
