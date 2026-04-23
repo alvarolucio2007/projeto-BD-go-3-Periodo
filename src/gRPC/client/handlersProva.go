@@ -1,8 +1,10 @@
 package grpcclient
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
@@ -10,17 +12,23 @@ import (
 
 func (h *HubConexoes) HandlerCreateProva(c *gin.Context) {
 	var novaProva models.Provas
-	if err := c.ShouldBindJSON(&novaProva); err != nil {
-		SendError(c, err)
+	novaProva.NomeProva = c.PostForm("nome_prova")
+	novaProva.MateriaProva = c.PostForm("materia_prova")
+	novaProva.TurmaProva = c.PostForm("turma_prova")
+	dataString := c.PostForm("data_prova")
+	dataProva, err := time.Parse("2006-01-02", dataString)
+	if err != nil {
+		SendError(c, fmt.Errorf("formato de data inválido: %v", err))
 		return
 	}
+	novaProva.DataProva = dataProva
 	id, err := h.DoCreateProva(&novaProva)
 	if err != nil {
 
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{
+	c.HTML(http.StatusCreated, "add_prova.html", gin.H{
 		"message": "Prova criada com sucesso",
 		"id":      id,
 	})
@@ -32,7 +40,10 @@ func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	if res == nil {
+		res = []*models.Provas{}
+	}
+	c.HTML(http.StatusOK, "read_all_prova.html", gin.H{
 		"message": "Provas lidas com sucesso",
 		"provas":  res,
 	})
