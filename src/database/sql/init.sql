@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS usuarios(
   password VARCHAR(255) NOT NULL,
   role role_usuario NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS provas(
   id SERIAL PRIMARY KEY,
   nome_prova VARCHAR(50) NOT NULL,
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS provas(
   materia_prova VARCHAR(50) NOT NULL,
   data_prova TIMESTAMPTZ NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS notas(
   id SERIAL PRIMARY KEY,
   usuario_id INTEGER NOT NULL,
