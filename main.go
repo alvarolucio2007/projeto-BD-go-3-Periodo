@@ -29,8 +29,12 @@ func main() {
 	}()
 	time.Sleep(2 * time.Second)
 	log.Print("Servidor gRPC iniciado com sucesso, tentando iniciar client gRPC...")
-	grpcclient.ConnectAll("localhost:50051")
+	hub, err := grpcclient.ConnectAll("localhost:50051")
+	if err != nil {
+		log.Fatalf("\x1b[31m[ERRO CRÍTICO]\x1b[0m Falha ao conectar o servidor gRPC: %v", err)
+		panic(err)
+	}
 	log.Print("Client gRPC iniciado com sucesso, tentando iniciar servidor API REST...")
-	api.SetupExtRoutes()
+	api.SetupExtRoutes(hub)
 	log.Print("Servidor REST iniciado com sucesso. Aplicação iniciada com sucesso.")
 }
