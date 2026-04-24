@@ -12,8 +12,14 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-//go:embed sql/init.sql
-var initSQL string
+//go:embed sql/initNotas.sql
+var initSQLNotas string
+
+//go:embed sql/initProvas.sql
+var initSQLProvas string
+
+//go:embed sql/initUsuarios.sql
+var initSQLUsuarios string
 var DB *sql.DB // O ponteiro para a DB em si
 
 func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a saúde do Postgres imediatamente após conectar.
@@ -34,7 +40,15 @@ func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a sa
 }
 
 func MigrarPostgres() error {
-	_, err := DB.Exec(initSQL)
+	_, err := DB.Exec(initSQLUsuarios)
+	if err != nil {
+		return fmt.Errorf("%w: %v", models.ErroMigracaoPostgres, err)
+	}
+	_, err = DB.Exec(initSQLProvas)
+	if err != nil {
+		return fmt.Errorf("%w: %v", models.ErroMigracaoPostgres, err)
+	}
+	_, err = DB.Exec(initSQLNotas)
 	if err != nil {
 		return fmt.Errorf("%w: %v", models.ErroMigracaoPostgres, err)
 	}
