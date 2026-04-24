@@ -50,7 +50,7 @@ func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	c.HTML(http.StatusCreated, "add_usuario.html", gin.H{
+	c.HTML(http.StatusCreated, "index.html", gin.H{
 		"message": "Usuário criado com sucesso",
 		"id":      id,
 	})
@@ -123,12 +123,12 @@ func (h *HubConexoes) HandlerAuth(c *gin.Context) {
 		return
 	}
 	if !result.Status {
-		c.HTML(http.StatusBadRequest, "usuario-auth", gin.H{
+		c.HTML(http.StatusBadRequest, "index.html", gin.H{
 			"message": result.Mensagem,
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "usuario-auth", gin.H{
+	c.HTML(http.StatusOK, "index.html", gin.H{
 		"message": "Usuário autenticado com sucesso",
 	})
 }
