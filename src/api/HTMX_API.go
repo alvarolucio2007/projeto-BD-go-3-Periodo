@@ -6,15 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const addr string = "localhost:50051"
-
-func SetupExtRoutes() error {
-	hub, err := grpcclient.ConnectAll(addr)
-	if err != nil {
-		return err
-	}
+func SetupExtRoutes(hub *grpcclient.HubConexoes) error {
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
+	r.LoadHTMLGlob("web/templates/*")
 	// APIs de usuário
 	r.POST("/usuario", hub.HandlerAddUsuario)
 	r.POST("/usuario/buscar", hub.HandlerLerUsuario)
@@ -35,7 +30,7 @@ func SetupExtRoutes() error {
 	// APIs de JOIN
 	r.GET("/left_join", hub.HandlerLeftJoin)
 	r.GET("/inner_join", hub.HandlerInnerJoin)
-	err = r.Run(":8080")
+	err := r.Run(":8080")
 	if err != nil {
 		return err
 	}
