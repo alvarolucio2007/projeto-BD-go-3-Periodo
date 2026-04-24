@@ -1,5 +1,9 @@
-DROP TYPE IF EXISTS role_usuario CASCADE;
-CREATE TYPE role_usuario AS ENUM ('admin','professor','aluno');
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_usuario') THEN
+    CREATE TYPE role_usuario AS ENUM ('admin','professor','aluno');
+  END IF;
+END $$;
+
 CREATE TABLE IF NOT EXISTS usuarios(
   id SERIAL PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
