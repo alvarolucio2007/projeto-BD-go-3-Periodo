@@ -29,13 +29,16 @@ func (h *HubConexoes) DoReadAllProva() ([]*models.Provas, error) {
 	}
 	result := make([]*models.Provas, 0, len(res.Provas))
 	for _, u := range res.Provas {
-		result = append(result, &models.Provas{
+		p := &models.Provas{
 			ID:           uint32(u.Id),
 			NomeProva:    u.NomeProva,
 			TurmaProva:   u.TurmaProva,
 			MateriaProva: u.MateriaProva,
-			DataProva:    u.DataProva.AsTime(),
-		})
+		}
+		if u.DataProva != nil {
+			p.DataProva = u.DataProva.AsTime()
+		}
+		result = append(result, p)
 	}
 	return result, nil
 }
