@@ -11,7 +11,7 @@ func SetupExtRoutes(hub *grpcclient.HubConexoes) error {
 	r := gin.Default()
 	// APIs de usuário
 	r.POST("/usuario", hub.HandlerAddUsuario)
-	r.POST("/usuario/buscar", hub.HandlerLerUsuario)
+	r.GET("/usuario/buscar", hub.HandlerLerUsuario)
 	r.PUT("/usuario", hub.HandlerUpdateUsuario)
 	r.DELETE("/usuario/:id", hub.HandlerDeleteUsuario)
 	r.POST("/usuario/auth", hub.HandlerAuth)
