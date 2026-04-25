@@ -6,6 +6,7 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -24,8 +25,11 @@ var DB *sql.DB // O ponteiro para a DB em si
 
 func ConectarPostgres() (*sql.DB, error) { // Esta função Conecta e checa a saúde do Postgres imediatamente após conectar.
 	var err error
-	const dsn string = "host=localhost user=user password=password dbname=pg_projeto_db sslmode=disable" // Tenta se conectar à DB com essas credenciais.
-	DB, err = sql.Open("pgx", dsn)                                                                       // O sql.Open apenas valida os argumentos, não abre uma conexão.
+	dsn := os.Getenv("DB_URL")
+	if dsn == "" {
+		dsn = "postgres://user_escola:password_escola@localhost:5432/db_escola?sslmode=disable"
+	}
+	DB, err = sql.Open("pgx", dsn) // O sql.Open apenas valida os argumentos, não abre uma conexão.
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroAberturaPostgres, err)
 	}
@@ -51,6 +55,10 @@ func MigrarPostgres() error {
 	_, err = DB.Exec(initSQLNotas)
 	if err != nil {
 		return fmt.Errorf("%w: %v", models.ErroMigracaoPostgres, err)
+	}
+	_, err = DB.Exec("INSERT INTO usuarios (username, password, role) VALUES ('root','admin','admin')")
+	if err != nil {
+		fmt.Errorf("Erro de migração: %v ", err)
 	}
 	log.Println("Migração realizada com sucesso.")
 	return nil

@@ -1,6 +1,7 @@
 import requests
+import os
 
-API_URL = "http://localhost:8080"
+API_URL = os.getenv("API_URL", "http://localhost:8080")
 
 
 def _tratar_resposta(response):

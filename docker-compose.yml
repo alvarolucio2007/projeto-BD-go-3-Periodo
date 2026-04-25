@@ -1,11 +1,42 @@
+version: '3.8'
+
 services:
-  pg_projeto_db:
-    image: postgres:18-alpine
+  db:
+    image: postgres:17-alpine # Versão real
+    container_name: escola_db_container
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: pg_projeto_db
+      POSTGRES_USER: user_escola
+      POSTGRES_PASSWORD: password_escola
+      POSTGRES_DB: db_escola
     ports:
       - "5432:5432"
+    healthcheck:
+      # Garante que o banco está PRONTO, não só subindo
+      test: ["CMD-SHELL", "pg_isready -U user_escola -d db_escola"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build: .
+    container_name: go_backend
+    depends_on:
+      db:
+        condition: service_healthy # Espera o healthcheck do banco
+    ports:
+      - "8080:8080" # Porta da API REST para o Frontend
+      - "50051:50051" # Porta gRPC (opcional expor, mas bom para debug)
+    environment:
+      - DB_URL=postgres://user_escola:password_escola@db:5432/db_escola?sslmode=disable
+
+  frontend:
+    build: ./web
+    container_name: streamlit_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://backend:8080
