@@ -65,6 +65,7 @@ def _requisicao(metodo, endpoint, json=None, params=None):
         raise Exception("Erro: A Api demorou demais para responder.")
 
 
+# USUARIO
 def cadastrar_usuario(usuario_dados: dict):
     return _requisicao("POST", "/usuario", json=usuario_dados)
 
@@ -83,3 +84,41 @@ def deletar_usuario(id: int):
 
 def auth_usuario(usuario_login_password: dict):
     return _requisicao("POST", "/usuario/auth", json=usuario_login_password)
+
+
+# PROVAS
+def cadastrar_prova(prova_dados: dict):
+    return _requisicao("POST", "/provas", json=prova_dados)
+
+
+def ler_todas_provas():
+    return _requisicao("GET", "/provas")
+
+
+def buscar_prova(nome_prova: str):
+    return _requisicao("POST", "/provas/buscar", json={"nome_prova": nome_prova})
+
+
+def atualizar_prova(prova_dados: dict):
+    return _requisicao("PUT", "/provas", json=prova_dados)
+
+
+def deletar_prova(id: int):
+    return _requisicao("DELETE", f"/provas/{id}")
+
+
+# NOTAS
+def cadastrar_nota(nota_dados: dict):
+    return _requisicao("POST", "/notas", json=nota_dados)
+
+
+def buscar_nota(username: str):
+    return _requisicao("POST", "/notas/buscar", params={"username": username})
+
+
+def editar_nota(nota_dados: dict):
+    return _requisicao("PUT", "/notas", json=nota_dados)
+
+
+def deletar_nota(id: int):
+    return _requisicao("DELETE", f"/notas/{id}")
