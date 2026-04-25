@@ -47,6 +47,10 @@ func (h *HubConexoes) HandlerReadProva(c *gin.Context) {
 	if err := c.ShouldBindJSON(&filtroProva); err != nil {
 		filtroProva.NomeProva = c.Query("nome_prova")
 	}
+	if filtroProva.NomeProva == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "nome da prova é obrigatório"})
+		return
+	}
 	res, err := h.DoReadProva(filtroProva.NomeProva)
 	if err != nil {
 		SendError(c, err)
@@ -63,6 +67,7 @@ func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
 	}
 	if novaProva.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID da prova é obrigratório"})
+		return
 	}
 	if err := h.DoUpdateProva(&novaProva); err != nil {
 		SendError(c, err)
