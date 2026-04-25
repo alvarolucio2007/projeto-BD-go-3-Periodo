@@ -122,3 +122,12 @@ def editar_nota(nota_dados: dict):
 
 def deletar_nota(id: int):
     return _requisicao("DELETE", f"/notas/{id}")
+
+
+# JOINs
+def left_join():
+    return _requisicao("GET", "/left_join")
+
+
+def inner_join():
+    return _requisicao("GET", "/inner_join")
