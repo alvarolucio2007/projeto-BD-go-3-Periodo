@@ -1,6 +1,7 @@
 package grpcclient
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -60,36 +61,33 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 	username := c.PostForm("username")
 	result, err := h.DoReadUser(username)
 	if err != nil {
-		SendError(c, err)
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
-	if len(result) == 0 {
-		c.HTML(http.StatusOK, "ler_usuario.html", gin.H{
-			"message":  "não há nenhum usuário",
-			"usuarios": nil,
-		})
-		return
-	}
-
-	c.HTML(http.StatusOK, "ler_usuario.html", gin.H{
-		"message":  "Usuários buscados com sucesso",
+	c.HTML(http.StatusOK, "usuario_edicao_fragmento.html", gin.H{
 		"usuarios": result,
 	})
 }
 
 func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
-	var novoUsuario models.Usuario
-	if err := c.ShouldBind(&novoUsuario); err != nil {
-		SendError(c, err)
+	idStr := c.PostForm("id")
+	idUint, _ := strconv.ParseUint(idStr, 10, 32)
+
+	usuario := models.Usuario{
+		ID:       uint32(idUint),
+		Username: c.PostForm("username"),
+		Password: c.PostForm("password"), // AGORA RECEBE O VALOR
+		Role:     c.PostForm("role"),
+	}
+
+	if err := h.DoUpdateUser(&usuario); err != nil {
+		fmt.Println("ERRO NO GRPC:", err) // Veja o erro aqui se ainda der 500
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
-	err := h.DoUpdateUser(&novoUsuario)
-	if err != nil {
-		SendError(c, err)
-		return
-	}
-	c.HTML(http.StatusOK, "usuario_linha", gin.H{
-		"message": "Usuário atualizado com sucesso",
+
+	c.HTML(http.StatusOK, "usuario_lista_fragmento_unica.html", gin.H{
+		"usuario": usuario,
 	})
 }
 
@@ -97,12 +95,12 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
-		SendError(c, err)
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	err = h.DoDeleteUser(uint32(idUint))
 	if err != nil {
-		SendError(c, err)
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.Status(http.StatusOK)
@@ -110,25 +108,16 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 
 func (h *HubConexoes) HandlerAuth(c *gin.Context) {
 	username := c.PostForm("username")
-	var body struct {
-		Password string `form:"password" json:"password"`
-	}
-	if err := c.ShouldBind(&body); err != nil {
-		SendError(c, err)
-		return
-	}
-	result, err := h.DoAuth(username, body.Password)
+	password := c.PostForm("password")
+	result, err := h.DoAuth(username, password)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
 	if !result.Status {
-		c.HTML(http.StatusBadRequest, "index.html", gin.H{
-			"message": result.Mensagem,
-		})
+		c.String(http.StatusOK, result.Mensagem)
 		return
 	}
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"message": "Usuário autenticado com sucesso",
-	})
+	c.Header("HX-Redirect", "/hub")
+	c.Status(http.StatusOK)
 }

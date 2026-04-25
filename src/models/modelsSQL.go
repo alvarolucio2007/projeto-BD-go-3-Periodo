@@ -5,10 +5,10 @@ import (
 )
 
 type Usuario struct {
-	ID       uint32
-	Username string
-	Password string
-	Role     string
+	ID       uint32 `json:"id" form:"id"`
+	Username string `json:"username" form:"username"`
+	Password string `json:"password" form:"password"`
+	Role     string `json:"role" form:"role"`
 }
 type Provas struct {
 	ID           uint32
