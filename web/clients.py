@@ -67,3 +67,19 @@ def _requisicao(metodo, endpoint, json=None, params=None):
 
 def cadastrar_usuario(usuario_dados: dict):
     return _requisicao("POST", "/usuario", json=usuario_dados)
+
+
+def buscar_usuario(username: str):
+    return _requisicao("POST", "/usuario/buscar", params={"username": username})
+
+
+def atualizar_usuario(usuario_dados: dict):
+    return _requisicao("PUT", "/usuario", json=usuario_dados)
+
+
+def deletar_usuario(id: int):
+    return _requisicao("DELETE", f"/usuario/{id}")
+
+
+def auth_usuario(usuario_login_password: dict):
+    return _requisicao("POST", "/usuario/auth", json=usuario_login_password)
