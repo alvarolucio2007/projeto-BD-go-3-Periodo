@@ -58,7 +58,7 @@ func MigrarPostgres() error {
 	}
 	_, err = DB.Exec("INSERT INTO usuarios (username, password, role) VALUES ('root','admin','admin')")
 	if err != nil {
-		fmt.Errorf("Erro de migração: %v ", err)
+		log.Printf("Erro de migração: %v ", err)
 	}
 	log.Println("Migração realizada com sucesso.")
 	return nil
