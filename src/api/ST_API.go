@@ -9,7 +9,6 @@ import (
 func SetupExtRoutes(hub *grpcclient.HubConexoes) error {
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
-	r.LoadHTMLGlob("web/templates/*")
 	// APIs de usuário
 	r.POST("/usuario", hub.HandlerAddUsuario)
 	r.POST("/usuario/buscar", hub.HandlerLerUsuario)
