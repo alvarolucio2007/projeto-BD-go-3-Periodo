@@ -70,7 +70,7 @@ def cadastrar_usuario(usuario_dados: dict):
 
 
 def buscar_usuario(username: str):
-    return _requisicao("POST", "/usuario/buscar", params={"username": username})
+    return _requisicao("GET", "/usuario/buscar", params={"username": username})
 
 
 def atualizar_usuario(usuario_dados: dict):
