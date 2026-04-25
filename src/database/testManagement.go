@@ -18,7 +18,7 @@ func CriarEntradaProva(prova models.Provas) (uint32, error) {
 
 func LerTodasProvas() ([]models.Provas, error) {
 	var provas []models.Provas
-	rows, err := DB.Query("SELECT id,nome_prova,turma_prova,materia_prova,data_prova FROM provas")
+	rows, err := DB.Query("SELECT id, nome_prova, turma_prova, materia_prova, data_prova FROM provas")
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", models.ErroBuscaPostgres, err)
 	}
@@ -34,6 +34,7 @@ func LerTodasProvas() ([]models.Provas, error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+	fmt.Printf("DEBUG INTERNO: %v", provas)
 	return provas, nil
 }
 

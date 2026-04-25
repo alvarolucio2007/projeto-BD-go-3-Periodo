@@ -18,7 +18,6 @@ func SetupExtRoutes(hub *grpcclient.HubConexoes) error {
 	// APIs de prova
 	r.POST("/provas", hub.HandlerCreateProva)
 	r.GET("/provas", hub.HandlerReadAllProva)
-	r.POST("/provas/buscar", hub.HandlerReadProva)
 	r.PUT("/provas", hub.HandlerUpdateProva)
 	r.DELETE("/provas/:id", hub.HandlerDeleteProva)
 	// APIs de nota

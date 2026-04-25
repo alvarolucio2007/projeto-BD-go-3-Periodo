@@ -97,6 +97,7 @@ func (h *HubConexoes) HandlerAuth(c *gin.Context) {
 	}
 	if err := c.ShouldBindJSON(&credenciais); err != nil {
 		SendError(c, err)
+		return
 	}
 	result, err := h.DoAuth(credenciais.Username, credenciais.Password)
 	if err != nil {

@@ -1,6 +1,7 @@
 package grpcclient
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,11 +15,12 @@ func (h *HubConexoes) HandlerCreateProva(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
+
 	id, err := h.DoCreateProva(&novaProva)
 	if err != nil {
 		SendError(c, err)
-		return
 	}
+	fmt.Printf("Tentando salvar no banco: %+v\n", novaProva)
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Prova criada com sucesso",
 		"id":      id,
@@ -34,28 +36,31 @@ func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
 	if res == nil {
 		res = []*models.Provas{}
 	}
-	c.JSON(http.StatusCreated, gin.H{
+	fmt.Printf("DEBUG: Total de provas recuperadas: %d\n", len(res))
+	if len(res) > 0 {
+		fmt.Printf("DEBUG: Primeira prova: %+v\n", res[0])
+	}
+
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Provas lidas com sucesso",
-		"provas":  res,
+		"provas":  res, // O Gin usará as tags `json:"..."` da sua struct models.Provas
 	})
 }
 
-func (h *HubConexoes) HandlerReadProva(c *gin.Context) {
-	var filtroProva struct {
-		NomeProva string `json:"nome_prova"`
-	}
-	if err := c.ShouldBindJSON(&filtroProva); err != nil {
-		filtroProva.NomeProva = c.Query("nome_prova")
-	}
-	if filtroProva.NomeProva == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "nome da prova é obrigatório"})
-		return
-	}
-	res, err := h.DoReadProva(filtroProva.NomeProva)
+func (h *HubConexoes) HandlerReadAllProvas(c *gin.Context) {
+	// Sem Query, sem JSON, sem barreiras. Chamada direta.
+	res, err := h.DoReadAllProva() // Garanta que essa função chame o gRPC ReadAll
 	if err != nil {
 		SendError(c, err)
 		return
 	}
+
+	// Proteção para o Python não receber 'null'
+	if res == nil {
+		c.JSON(http.StatusOK, gin.H{"provas": []any{}})
+		return
+	}
+
 	c.JSON(http.StatusOK, res)
 }
 

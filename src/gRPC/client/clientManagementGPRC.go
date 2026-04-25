@@ -22,9 +22,11 @@ func ConnectAll(addr string) (*HubConexoes, error) {
 		return nil, err
 	}
 	return &HubConexoes{
-		User:  proto.NewUsuariosServiceClient(conn),
-		Prova: proto.NewProvaServiceClient(conn),
-		Nota:  proto.NewNotaServiceClient(conn),
-		Conn:  conn,
+		User:      proto.NewUsuariosServiceClient(conn),
+		Prova:     proto.NewProvaServiceClient(conn),
+		Nota:      proto.NewNotaServiceClient(conn),
+		InnerJoin: proto.NewInnerJoinServiceClient(conn),
+		LeftJoin:  proto.NewLeftJoinServiceClient(conn),
+		Conn:      conn,
 	}, nil
 }
