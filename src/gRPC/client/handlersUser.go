@@ -1,7 +1,6 @@
 package grpcclient
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -48,36 +47,31 @@ func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
 }
 
 func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
-	username := c.PostForm("username")
+	username := c.Query("username")
 	result, err := h.DoReadUser(username)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		SendError(c, err)
 		return
 	}
-	c.HTML(http.StatusOK, "usuario_edicao_fragmento.html", gin.H{
-		"usuarios": result,
-	})
+	c.JSON(http.StatusOK, result)
 }
 
 func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
-	idStr := c.PostForm("id")
-	idUint, _ := strconv.ParseUint(idStr, 10, 32)
-
-	usuario := models.Usuario{
-		ID:       uint32(idUint),
-		Username: c.PostForm("username"),
-		Password: c.PostForm("password"), // AGORA RECEBE O VALOR
-		Role:     c.PostForm("role"),
+	var usuarioEdit models.Usuario
+	if err := c.ShouldBindJSON(&usuarioEdit); err != nil {
+		SendError(c, err)
+		return
 	}
-
-	if err := h.DoUpdateUser(&usuario); err != nil {
-		fmt.Println("ERRO NO GRPC:", err) // Veja o erro aqui se ainda der 500
-		c.String(http.StatusInternalServerError, err.Error())
+	if usuarioEdit.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário não enviada"})
+	}
+	if err := h.DoUpdateUser(&usuarioEdit); err != nil {
+		SendError(c, err)
 		return
 	}
 
-	c.HTML(http.StatusOK, "usuario_lista_fragmento_unica.html", gin.H{
-		"usuario": usuario,
+	c.JSON(http.StatusOK, gin.H{
+		"usuario": usuarioEdit,
 	})
 }
 
@@ -85,29 +79,36 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		SendError(c, err)
 		return
 	}
 	err = h.DoDeleteUser(uint32(idUint))
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		SendError(c, err)
 		return
 	}
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{"message": "Usuário excluido com sucesso"})
 }
 
 func (h *HubConexoes) HandlerAuth(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
-	result, err := h.DoAuth(username, password)
+	var credenciais struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	if err := c.ShouldBindJSON(&credenciais); err != nil {
+		SendError(c, err)
+	}
+	result, err := h.DoAuth(credenciais.Username, credenciais.Password)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
 	if !result.Status {
-		c.String(http.StatusOK, result.Mensagem)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": result.Mensagem})
 		return
 	}
-	c.Header("HX-Redirect", "/hub")
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Login realizado com sucesso",
+		"auth":    true,
+	})
 }
