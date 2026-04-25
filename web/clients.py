@@ -113,7 +113,7 @@ def cadastrar_nota(nota_dados: dict):
 
 
 def buscar_nota(username: str):
-    return _requisicao("POST", "/notas/buscar", params={"username": username})
+    return _requisicao("GET", "/notas/buscar", params={"username": username})
 
 
 def editar_nota(nota_dados: dict):

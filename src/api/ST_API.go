@@ -23,7 +23,7 @@ func SetupExtRoutes(hub *grpcclient.HubConexoes) error {
 	r.DELETE("/provas/:id", hub.HandlerDeleteProva)
 	// APIs de nota
 	r.POST("/notas", hub.HandlerAddNota)
-	r.POST("/notas/buscar", hub.HandlerReadNota)
+	r.GET("/notas/buscar", hub.HandlerReadNota)
 	r.PUT("/notas", hub.HandlerUpdateNota)
 	r.DELETE("/notas/:id", hub.HandlerDeleteNota)
 	// APIs de JOIN
