@@ -27,6 +27,10 @@ func (h *HubConexoes) HandlerAddNota(c *gin.Context) {
 
 func (h *HubConexoes) HandlerReadNota(c *gin.Context) {
 	username := c.Query("username")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "username é obrigatório para a pesquisa."})
+		return
+	}
 	res, err := h.DoReadNota(username)
 	if err != nil {
 		SendError(c, err)
