@@ -17,11 +17,11 @@ O sistema permite o cadastro de alunos e avaliações, além do lançamento de n
 
 ## 📸 Prints da Aplicação
 
-<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-07.png?raw=true>
-<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-17.png?raw=true>
-<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-45.png?raw=true>
-<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-47.png?raw=true>
-<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-50.png?raw=true>
+![Página inicial](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-07.png?raw=true)
+![Gestão de usuários](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-17.png?raw=true)
+![Gestão de Provas](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-45.png?raw=true)
+![Gestão de Notas](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-47.png?raw=true)
+![Gestão de Relatórios](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-50.png?raw=true)
 
 ### 🔐 Tela de Login
 
