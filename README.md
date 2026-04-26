@@ -23,21 +23,6 @@ O sistema permite o cadastro de alunos e avaliações, além do lançamento de n
 ![Gestão de Notas](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-47.png?raw=true)
 ![Gestão de Relatórios](https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-50.png?raw=true)
 
-### 🔐 Tela de Login
-
-![Tela de Login](./screenshots/login.png)
-_Interface de autenticação para acesso ao sistema._
-
-### 🏠 Menu Principal
-
-![Menu Principal](./screenshots/menu.png)
-_Painel central com acesso às funcionalidades de Alunos, Provas e Notas._
-
-### 📊 Consulta com JOIN (Relatório de Notas)
-
-![Consulta JOIN](./screenshots/join_report.png)
-_Demonstração de Inner Join cruzando dados de Alunos, Provas e Notas em tempo real._
-
 ## 🚀 Instruções de Execução
 
 A aplicação está totalmente "dockerizada", o que dispensa a configuração manual de banco de dados ou instalação de dependências locais.
