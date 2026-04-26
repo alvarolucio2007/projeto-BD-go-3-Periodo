@@ -17,7 +17,11 @@ O sistema permite o cadastro de alunos e avaliações, além do lançamento de n
 
 ## 📸 Prints da Aplicação
 
-> **Nota:** Para que as imagens apareçam aqui, você deve salvar os prints na pasta `/screenshots` do seu repositório e ajustar o caminho abaixo.
+<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-07.png?raw=true>
+<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-17.png?raw=true>
+<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-45.png?raw=true>
+<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-47.png?raw=true>
+<https://github.com/alvarolucio2007/projeto-BD-go-3-Periodo/blob/main/screenshots/Screenshot_2026-04-25_22-03-50.png?raw=true>
 
 ### 🔐 Tela de Login
 
