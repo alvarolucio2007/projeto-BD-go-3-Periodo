@@ -214,7 +214,7 @@ class FrontEnd:
                         ct.atualizar_prova(
                             {
                                 "id": int(up_id),
-                                "nome": up_nome,
+                                "nome_prova": up_nome,
                                 "turma_prova": up_turma,
                                 "materia_prova": up_materia,
                                 "data_prova": f"{up_data}T{up_hora}Z",
@@ -364,7 +364,7 @@ class FrontEnd:
                     try:
                         # Aqui passamos o ID da nota e o novo valor
                         ct.editar_nota(
-                            {"id": int(up_nota_id), "nota": float(nova_nota_val)}
+                            {"id": int(up_nota_id), "nota_prova": float(nova_nota_val)}
                         )
                         st.success(
                             f"Nota ID {up_nota_id} atualizada para {nova_nota_val}!"
