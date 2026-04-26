@@ -67,5 +67,4 @@ A aplicação está totalmente "dockerizada", o que dispensa a configuração ma
 
 Clique no link abaixo para assistir à demonstração completa das funcionalidades e da arquitetura do projeto:
 
-👉 ASSISTIR VÍDEO NO YOUTUBE/DRIVE
-
+👉 [ASSISTIR VÍDEO NO YOUTUBE/DRIVE](https://youtu.be/QGF6niVbN78)
