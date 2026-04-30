@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
@@ -8,7 +9,12 @@ import (
 
 func AdicionarUsuarioRedis(codigo uint32, usuario models.Usuario) error {
 	codigoStr := fmt.Sprintf("user:%s", codigo)
-	return RedisClient.Set(Ctx, codigoStr, usuario, 0).Err()
+
+	jsonData, err := json.Marshal(usuario)
+	if err != nil {
+		return err
+	}
+	return RedisClient.Set(Ctx, codigoStr, jsonData, 0).Err()
 }
 
 func LerUsuarioRedis(codigo uint32) (models.Usuario, error) {
