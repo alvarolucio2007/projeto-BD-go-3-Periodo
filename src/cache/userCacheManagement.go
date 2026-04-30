@@ -1,23 +1,29 @@
 package cache
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
+	"github.com/redis/go-redis/v9"
 )
 
-func AdicionarUsuarioRedis(codigo uint32, usuario models.Usuario) error {
+func AdicionarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, usuario models.Usuario) error {
 	codigoStr := fmt.Sprintf("user:%s", codigo)
-
 	jsonData, err := json.Marshal(usuario)
 	if err != nil {
 		return err
 	}
-	return RedisClient.Set(Ctx, codigoStr, jsonData, 0).Err()
+	return rdb.Set(Ctx, codigoStr, jsonData, 0).Err()
 }
 
-func LerUsuarioRedis(codigo uint32) (models.Usuario, error) {
+func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (models.Usuario, error) {
 	codigoStr := fmt.Sprintf("user:%s", codigo)
 	return RedisClient.Get(Ctx, codigoStr).Result()
+}
+
+func DeletarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
+	codigoStr := fmt.Sprintf("user:%s", codigo)
+	return rdb.Del(Ctx, codigoStr).Err()
 }
