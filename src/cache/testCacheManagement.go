@@ -20,9 +20,12 @@ func AdicionarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, t
 
 func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Provas, error) {
 	codigoStr := fmt.Sprintf("test:%s", codigo)
-	res := rdb.Get(Ctx, codigoStr).Return()
+	res, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		return nil, err
+	}
 	var resFatorado *models.Provas
-	err := json.Unmarshal(res, resFatorado)
+	err = json.Unmarshal([]byte(res), resFatorado)
 	if err != nil {
 		return nil, err
 	}
