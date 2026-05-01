@@ -10,7 +10,7 @@ import (
 )
 
 func AdicionarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, test *models.Provas) error {
-	codigoStr := fmt.Sprintf("test:%s", codigo)
+	codigoStr := fmt.Sprintf("test:%d", codigo)
 	jsonData, err := json.Marshal(&test)
 	if err != nil {
 		return err
@@ -19,7 +19,7 @@ func AdicionarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, t
 }
 
 func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Provas, error) {
-	codigoStr := fmt.Sprintf("test:%s", codigo)
+	codigoStr := fmt.Sprintf("test:%d", codigo)
 	res, err := rdb.Get(Ctx, codigoStr).Result()
 	if err != nil {
 		return nil, err
@@ -33,6 +33,6 @@ func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*model
 }
 
 func DeletarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
-	codigoStr := fmt.Sprintf("user:%s", codigo)
+	codigoStr := fmt.Sprintf("user:%d", codigo)
 	return rdb.Del(Ctx, codigoStr).Err()
 }
