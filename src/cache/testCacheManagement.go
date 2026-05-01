@@ -9,16 +9,27 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func AdicionarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, test models.Provas) error {
+func AdicionarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, test *models.Provas) error {
 	codigoStr := fmt.Sprintf("test:%s", codigo)
-	jsonData, err := json.Marshal(test)
+	jsonData, err := json.Marshal(&test)
 	if err != nil {
 		return err
 	}
 	return rdb.Set(Ctx, codigoStr, jsonData, 0).Err()
 }
 
-func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (models.Provas, error) {
+func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Provas, error) {
 	codigoStr := fmt.Sprintf("test:%s", codigo)
-	return rdb.Get(Ctx, codigoStr).Result()
+	res := rdb.Get(Ctx, codigoStr).Return()
+	var resFatorado *models.Provas
+	err := json.Unmarshal(res, resFatorado)
+	if err != nil {
+		return nil, err
+	}
+	return resFatorado, nil
+}
+
+func DeletarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
+	codigoStr := fmt.Sprintf("user:%s", codigo)
+	return rdb.Del(Ctx, codigoStr).Err()
 }
