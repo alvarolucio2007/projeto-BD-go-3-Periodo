@@ -10,7 +10,7 @@ import (
 )
 
 func AdicionarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, nota *models.Notas) error {
-	codigoStr := fmt.Sprintf("nota:%s", codigo)
+	codigoStr := fmt.Sprintf("nota:%d", codigo)
 	jsonData, err := json.Marshal(nota)
 	if err != nil {
 		return err
@@ -19,17 +19,20 @@ func AdicionarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, n
 }
 
 func LerNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Notas, error) {
-	codigoStr := fmt.Sprintf("nota:%s", codigo)
-	res := rdb.Get(Ctx, codigoStr).Return()
+	codigoStr := fmt.Sprintf("nota:%d", codigo)
+	res, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		return nil, err
+	}
 	var resFatorado *models.Notas
-	err := json.Unmarshal(res, resFatorado)
+	err = json.Unmarshal([]byte(res), resFatorado)
 	if err != nil {
 		return nil, err
 	}
 	return resFatorado, nil
 }
 
-func DeletarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
-	codigoStr := fmt.Sprintf("nota:%s", codigo)
+func DeletarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
+	codigoStr := fmt.Sprintf("nota:%d", codigo)
 	return rdb.Del(Ctx, codigoStr).Err()
 }
