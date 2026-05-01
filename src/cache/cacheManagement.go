@@ -1,3 +1,4 @@
+// Package cache faz a conexão e manipulação de cache.
 package cache
 
 import (
