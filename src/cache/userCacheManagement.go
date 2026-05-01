@@ -20,7 +20,7 @@ func AdicionarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32
 
 func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Usuario, error) {
 	codigoStr := fmt.Sprintf("user:%s", codigo)
-	res := RedisClient.Get(Ctx, codigoStr).Return()
+	res := rdb.Get(Ctx, codigoStr).Return()
 	var resFatorado *models.Usuario
 	err := json.Unmarshal(res, resFatorado)
 	if err != nil {
