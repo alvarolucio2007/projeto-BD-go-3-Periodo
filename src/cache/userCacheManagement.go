@@ -10,7 +10,7 @@ import (
 )
 
 func AdicionarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, usuario *models.Usuario) error {
-	codigoStr := fmt.Sprintf("user:%s", codigo)
+	codigoStr := fmt.Sprintf("user:%d", codigo)
 	jsonData, err := json.Marshal(&usuario)
 	if err != nil {
 		return err
@@ -19,10 +19,13 @@ func AdicionarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32
 }
 
 func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Usuario, error) {
-	codigoStr := fmt.Sprintf("user:%s", codigo)
-	res := rdb.Get(Ctx, codigoStr).Return()
+	codigoStr := fmt.Sprintf("user:%d", codigo)
+	res, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		return nil, err
+	}
 	var resFatorado *models.Usuario
-	err := json.Unmarshal(res, resFatorado)
+	err = json.Unmarshal([]byte(res), resFatorado)
 	if err != nil {
 		return nil, err
 	}
@@ -30,6 +33,6 @@ func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*mo
 }
 
 func DeletarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
-	codigoStr := fmt.Sprintf("user:%s", codigo)
+	codigoStr := fmt.Sprintf("user:%d", codigo)
 	return rdb.Del(Ctx, codigoStr).Err()
 }
