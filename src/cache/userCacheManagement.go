@@ -32,6 +32,23 @@ func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*mo
 	return resFatorado, nil
 }
 
+func AdicionarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client) error {
+	const cacheKey = "user:all"
+}
+
+func LerTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client) ([]*models.Usuario, error) {
+	const cacheKey = "user:all"
+	val, err := rdb.Get(Ctx, cacheKey).Result()
+	if err != nil {
+		return nil, err
+	}
+	var usuarioLista []*models.Usuario
+	if err := json.Unmarshal([]byte(val), &usuarioLista); err != nil {
+		return nil, err
+	}
+	return usuarioLista, nil
+}
+
 func DeletarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
 	codigoStr := fmt.Sprintf("user:%d", codigo)
 	return rdb.Del(Ctx, codigoStr).Err()
