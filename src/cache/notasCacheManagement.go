@@ -34,12 +34,12 @@ func LerNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*model
 	if err != nil {
 		return nil, err
 	}
-	var resFatorado *models.Notas
-	err = json.Unmarshal([]byte(res), resFatorado)
+	var resFatorado models.Notas
+	err = json.Unmarshal([]byte(res), &resFatorado)
 	if err != nil {
 		return nil, err
 	}
-	return resFatorado, nil
+	return &resFatorado, nil
 }
 
 func DeletarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
