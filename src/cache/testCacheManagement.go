@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/redis/go-redis/v9"
@@ -16,6 +17,15 @@ func AdicionarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, t
 		return err
 	}
 	return rdb.Set(Ctx, codigoStr, jsonData, 0).Err()
+}
+
+func AdicionarTodosTestRedis(Ctx context.Context, rdb *redis.Client, tests []*models.Provas) error {
+	const cacheKey = "test:all"
+	jsonData, err := json.Marshal(&tests)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, cacheKey, jsonData, 10*time.Minute).Err()
 }
 
 func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Provas, error) {
