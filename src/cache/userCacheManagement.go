@@ -25,12 +25,12 @@ func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*mo
 	if err != nil {
 		return nil, err
 	}
-	var resFatorado *models.Usuario
-	err = json.Unmarshal([]byte(res), resFatorado)
+	var resFatorado models.Usuario
+	err = json.Unmarshal([]byte(res), &resFatorado)
 	if err != nil {
 		return nil, err
 	}
-	return resFatorado, nil
+	return &resFatorado, nil
 }
 
 func AdicionarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client, users []*models.Usuario) error {
