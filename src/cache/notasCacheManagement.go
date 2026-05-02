@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/redis/go-redis/v9"
@@ -16,6 +17,15 @@ func AdicionarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, n
 		return err
 	}
 	return rdb.Set(Ctx, codigoStr, jsonData, 0).Err()
+}
+
+func AdicionarTodasNotasRedis(Ctx context.Context, rdb *redis.Client, notas []*models.Provas) error {
+	const cacheKey = "notas:all"
+	jsonData, err := json.Marshal(&notas)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, cacheKey, jsonData, 10*time.Minute).Err()
 }
 
 func LerNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Notas, error) {
