@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/redis/go-redis/v9"
@@ -15,7 +16,7 @@ func AdicionarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, codigoStr, jsonData, 0).Err()
+	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
 }
 
 func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Usuario, error) {
@@ -32,8 +33,13 @@ func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*mo
 	return resFatorado, nil
 }
 
-func AdicionarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client) error {
+func AdicionarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client, users []*models.Usuario) error {
 	const cacheKey = "user:all"
+	jsonData, err := json.Marshal(&users)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, cacheKey, jsonData, 10*time.Minute).Err()
 }
 
 func LerTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client) ([]*models.Usuario, error) {
