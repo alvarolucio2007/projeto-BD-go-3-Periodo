@@ -5,18 +5,25 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis"
 )
 
-func (h *HubConexoes) HandlerCreateProva(c *gin.Context) {
+type ProvaHandler struct {
+	Rdb         *redis.Client
+	ProvaClient *proto.ProvaServiceClient
+}
+
+func (p *ProvaHandler) HandlerCreateProva(c *gin.Context, provaConn *ProvaConexao) {
 	var novaProva models.Provas
 	if err := c.ShouldBindJSON(&novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
 
-	id, err := h.DoCreateProva(&novaProva)
+	id, err := provaConn.DoCreateProva(&novaProva)
 	if err != nil {
 		SendError(c, err)
 	}
@@ -27,8 +34,8 @@ func (h *HubConexoes) HandlerCreateProva(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
-	res, err := h.DoReadAllProva()
+func (p *ProvaHandler) HandlerReadAllProva(c *gin.Context, provaConn *ProvaConexao) {
+	res, err := provaConn.DoReadAllProva()
 	if err != nil {
 		SendError(c, err)
 		return
@@ -47,9 +54,9 @@ func (h *HubConexoes) HandlerReadAllProva(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerReadAllProvas(c *gin.Context) {
+func (p *ProvaHandler) HandlerReadAllProvas(c *gin.Context, provaConn *ProvaConexao) {
 	// Sem Query, sem JSON, sem barreiras. Chamada direta.
-	res, err := h.DoReadAllProva() // Garanta que essa função chame o gRPC ReadAll
+	res, err := provaConn.DoReadAllProva() // Garanta que essa função chame o gRPC ReadAll
 	if err != nil {
 		SendError(c, err)
 		return
@@ -64,7 +71,7 @@ func (h *HubConexoes) HandlerReadAllProvas(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
+func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, provaConn *ProvaConexao) {
 	var novaProva models.Provas
 	if err := c.ShouldBindJSON(&novaProva); err != nil {
 		SendError(c, err)
@@ -74,7 +81,7 @@ func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID da prova é obrigratório"})
 		return
 	}
-	if err := h.DoUpdateProva(&novaProva); err != nil {
+	if err := provaConn.DoUpdateProva(&novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -83,14 +90,14 @@ func (h *HubConexoes) HandlerUpdateProva(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerDeleteProva(c *gin.Context) {
+func (p *ProvaHandler) HandlerDeleteProva(c *gin.Context, provaConn *ProvaConexao) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-	err = h.DoDeleteProva(uint32(idUint))
+	err = provaConn.DoDeleteProva(uint32(idUint))
 	if err != nil {
 		SendError(c, err)
 		return
