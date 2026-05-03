@@ -3,12 +3,23 @@ package grpcclient
 import (
 	"net/http"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis"
 )
 
-func (h *HubConexoes) HandlerLeftJoin(c *gin.Context) {
-	res, err := h.DoLeftJoin()
+type LeftJoinHandler struct {
+	Rdb            *redis.Client
+	LeftJoinClient *proto.LeftJoinServiceClient
+}
+type InnerJoinHandler struct {
+	Rdb             *redis.Client
+	InnerJoinClient *proto.InnerJoinServiceClient
+}
+
+func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, leftConn *LeftJoinConexao) {
+	res, err := leftConn.DoLeftJoin()
 	if err != nil {
 		SendError(c, err)
 		return
@@ -22,8 +33,8 @@ func (h *HubConexoes) HandlerLeftJoin(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerInnerJoin(c *gin.Context) {
-	res, err := h.DoInnerJoin()
+func (i *InnerJoinHandler) HandlerInnerJoin(c *gin.Context, innerConn *InnerJoinConexao) {
+	res, err := innerConn.DoInnerJoin()
 	if err != nil {
 		SendError(c, err)
 		return
