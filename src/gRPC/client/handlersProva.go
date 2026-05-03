@@ -1,14 +1,14 @@
 package grpcclient
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/cache"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis"
+	"github.com/redis/go-redis/v9"
 )
 
 type ProvaHandler struct {
@@ -26,8 +26,12 @@ func (p *ProvaHandler) HandlerCreateProva(c *gin.Context, provaConn *ProvaConexa
 	id, err := provaConn.DoCreateProva(&novaProva)
 	if err != nil {
 		SendError(c, err)
+		return
 	}
-	fmt.Printf("Tentando salvar no banco: %+v\n", novaProva)
+	if err := cache.AdicionarTestRedis(c, p.Rdb, id, &novaProva); err != nil {
+		SendError(c, err)
+		return
+	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Prova criada com sucesso",
 		"id":      id,
@@ -43,32 +47,15 @@ func (p *ProvaHandler) HandlerReadAllProva(c *gin.Context, provaConn *ProvaConex
 	if res == nil {
 		res = []*models.Provas{}
 	}
-	fmt.Printf("DEBUG: Total de provas recuperadas: %d\n", len(res))
-	if len(res) > 0 {
-		fmt.Printf("DEBUG: Primeira prova: %+v\n", res[0])
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Provas lidas com sucesso",
-		"provas":  res, // O Gin usará as tags `json:"..."` da sua struct models.Provas
-	})
-}
-
-func (p *ProvaHandler) HandlerReadAllProvas(c *gin.Context, provaConn *ProvaConexao) {
-	// Sem Query, sem JSON, sem barreiras. Chamada direta.
-	res, err := provaConn.DoReadAllProva() // Garanta que essa função chame o gRPC ReadAll
+	err = cache.AdicionarTodosTestRedis(c, p.Rdb, res)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-
-	// Proteção para o Python não receber 'null'
-	if res == nil {
-		c.JSON(http.StatusOK, gin.H{"provas": []any{}})
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Provas lidas com sucesso",
+		"provas":  res,
+	})
 }
 
 func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, provaConn *ProvaConexao) {
@@ -82,6 +69,10 @@ func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, provaConn *ProvaConexa
 		return
 	}
 	if err := provaConn.DoUpdateProva(&novaProva); err != nil {
+		SendError(c, err)
+		return
+	}
+	if err := cache.AdicionarTestRedis(c, p.Rdb, novaProva.ID, &novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -99,6 +90,19 @@ func (p *ProvaHandler) HandlerDeleteProva(c *gin.Context, provaConn *ProvaConexa
 	}
 	err = provaConn.DoDeleteProva(uint32(idUint))
 	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if err := cache.DeletarTestRedis(c, p.Rdb, uint32(idUint)); err != nil {
+		SendError(c, err)
+		return
+	}
+	provas, err := provaConn.DoReadAllProva()
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if err := cache.AdicionarTodosTestRedis(c, p.Rdb, provas); err != nil {
 		SendError(c, err)
 		return
 	}
