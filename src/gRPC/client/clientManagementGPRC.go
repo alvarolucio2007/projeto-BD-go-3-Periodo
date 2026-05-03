@@ -15,6 +15,26 @@ type HubConexoes struct {
 	InnerJoin proto.InnerJoinServiceClient
 	Conn      *grpc.ClientConn
 }
+type UserConexao struct {
+	User proto.UsuariosServiceClient
+	Conn *grpc.ClientConn
+}
+type ProvaConexao struct {
+	Prova proto.ProvaServiceClient
+	Conn  *grpc.ClientConn
+}
+type NotaConexao struct {
+	Nota proto.NotaServiceClient
+	Conn *grpc.ClientConn
+}
+type LeftJoinConexao struct {
+	LeftJoin proto.LeftJoinServiceClient
+	Conn     *grpc.ClientConn
+}
+type InnerJoinConexao struct {
+	InnerJoin proto.InnerJoinServiceClient
+	Conn      *grpc.ClientConn
+}
 
 func ConnectAll(addr string) (*HubConexoes, error) {
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
