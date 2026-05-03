@@ -8,10 +8,10 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (h *HubConexoes) DoInnerJoin() ([]*models.InnerJoinType, error) {
+func (i *InnerJoinConexao) DoInnerJoin() ([]*models.InnerJoinType, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	res, err := h.InnerJoin.InnerJoin(ctx, &emptypb.Empty{})
+	res, err := i.InnerJoin.InnerJoin(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, err
 	}
@@ -22,10 +22,10 @@ func (h *HubConexoes) DoInnerJoin() ([]*models.InnerJoinType, error) {
 	return result, nil
 }
 
-func (h *HubConexoes) DoLeftJoin() ([]*models.LeftJoinType, error) {
+func (l *LeftJoinConexao) DoLeftJoin() ([]*models.LeftJoinType, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	res, err := h.LeftJoin.LeftJoin(ctx, &emptypb.Empty{})
+	res, err := l.LeftJoin.LeftJoin(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, err
 	}
