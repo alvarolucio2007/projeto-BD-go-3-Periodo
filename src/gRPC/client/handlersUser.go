@@ -8,7 +8,6 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -16,20 +15,6 @@ import (
 type UsuarioHandler struct {
 	Rdb        *redis.Client
 	UserClient proto.UsuariosServiceClient
-}
-
-func NewUsuarioHandler(clt proto.UsuariosServiceClient, rdb *redis.Client) *UsuarioHandler {
-	return &UsuarioHandler{
-		Rdb:        rdb,
-		UserClient: clt,
-	}
-}
-
-func NewUsuarioConexao(user proto.UsuariosServiceClient, conn *grpc.ClientConn) *UserConexao {
-	return &UserConexao{
-		User: user,
-		Conn: conn,
-	}
 }
 
 func SendError(c *gin.Context, err error) {
