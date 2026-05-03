@@ -4,11 +4,25 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+type UsuarioHandler struct {
+	Rdb        *redis.Client
+	UserClient proto.UsuariosServiceClient
+}
+
+func NewUsuarioHandler(clt proto.UsuariosServiceClient, rdb *redis.Client) *UsuarioHandler {
+	return &UsuarioHandler{
+		Rdb:        rdb,
+		UserClient: clt,
+	}
+}
 
 func SendError(c *gin.Context, err error) {
 	status, resposta := ErrorHandler(err)
@@ -29,13 +43,13 @@ func ErrorHandler(err error) (int, gin.H) {
 	return http.StatusInternalServerError, gin.H{"error": err.Error()}
 }
 
-func (h *HubConexoes) HandlerAddUsuario(c *gin.Context) {
+func (h *UsuarioHandler) HandlerAddUsuario(c *gin.Context) {
 	var novoUsuario models.Usuario
 	if err := c.ShouldBindJSON(&novoUsuario); err != nil {
 		SendError(c, err)
 		return
 	}
-	id, err := h.DoCreateUser(&novoUsuario)
+	id, err := h.UserClient.DoCreateUser(&novoUsuario)
 	if err != nil {
 		SendError(c, err)
 		return
