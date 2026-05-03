@@ -1,13 +1,16 @@
 package grpcclient
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/cache"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis"
+	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -47,6 +50,9 @@ func (u *UsuarioHandler) HandlerAddUsuario(c *gin.Context, userConn *UserConexao
 		SendError(c, err)
 		return
 	}
+	if err := cache.AdicionarUsuarioRedis(c, u.Rdb, id, &novoUsuario); err != nil {
+		SendError(c, err)
+	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Usuário criado com sucesso",
 		"id":      id,
@@ -55,8 +61,27 @@ func (u *UsuarioHandler) HandlerAddUsuario(c *gin.Context, userConn *UserConexao
 
 func (u *UsuarioHandler) HandlerLerUsuario(c *gin.Context, userConn *UserConexao) {
 	username := c.Query("username")
+	userEncontradoRedis, err := cache.LerTodosUsuariosRedis(c, u.Rdb)
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			result := make([]*models.Usuario, 0, len(userEncontradoRedis))
+			for _, u := range userEncontradoRedis {
+				if strings.Contains(username, u.Username) {
+					result = append(result, u)
+				}
+			}
+			c.JSON(http.StatusOK, result)
+			return
+		}
+		SendError(c, err)
+		return
+	}
 	result, err := userConn.DoReadUser(username)
 	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if err := cache.AdicionarTodosUsuariosRedis(c, u.Rdb, result); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -72,11 +97,23 @@ func (u *UsuarioHandler) HandlerUpdateUsuario(c *gin.Context, userConn *UserCone
 	if usuarioEdit.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário não enviada"})
 	}
+	if err := cache.DeletarUsuarioRedis(c, u.Rdb, usuarioEdit.ID); err != nil {
+		if errors.Is(err, redis.Nil) {
+			err = cache.AdicionarUsuarioRedis(c, u.Rdb, usuarioEdit.ID, &usuarioEdit)
+			if err != nil {
+				SendError(c, err)
+				return
+			}
+		}
+	}
 	if err := userConn.DoUpdateUser(&usuarioEdit); err != nil {
 		SendError(c, err)
 		return
 	}
-
+	if err := cache.AdicionarUsuarioRedis(c, u.Rdb, usuarioEdit.ID, &usuarioEdit); err != nil {
+		SendError(c, err)
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"usuario": usuarioEdit,
 	})
@@ -90,6 +127,11 @@ func (u *UsuarioHandler) HandlerDeleteUsuario(c *gin.Context, userConn *UserCone
 		return
 	}
 	err = userConn.DoDeleteUser(uint32(idUint))
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	err = cache.DeletarUsuarioRedis(c, u.Rdb, uint32(idUint))
 	if err != nil {
 		SendError(c, err)
 		return
