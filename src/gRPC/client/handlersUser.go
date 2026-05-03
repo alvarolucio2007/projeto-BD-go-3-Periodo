@@ -8,6 +8,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,6 +22,13 @@ func NewUsuarioHandler(clt proto.UsuariosServiceClient, rdb *redis.Client) *Usua
 	return &UsuarioHandler{
 		Rdb:        rdb,
 		UserClient: clt,
+	}
+}
+
+func NewUsuarioConexao(user proto.UsuariosServiceClient, conn *grpc.ClientConn) *UserConexao {
+	return &UserConexao{
+		User: user,
+		Conn: conn,
 	}
 }
 
@@ -43,13 +51,13 @@ func ErrorHandler(err error) (int, gin.H) {
 	return http.StatusInternalServerError, gin.H{"error": err.Error()}
 }
 
-func (h *UsuarioHandler) HandlerAddUsuario(c *gin.Context) {
+func (u *UsuarioHandler) HandlerAddUsuario(c *gin.Context, userConn *UserConexao) {
 	var novoUsuario models.Usuario
 	if err := c.ShouldBindJSON(&novoUsuario); err != nil {
 		SendError(c, err)
 		return
 	}
-	id, err := h.UserClient.DoCreateUser(&novoUsuario)
+	id, err := userConn.DoCreateUser(&novoUsuario)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -60,9 +68,9 @@ func (h *UsuarioHandler) HandlerAddUsuario(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
+func (u *UsuarioHandler) HandlerLerUsuario(c *gin.Context, userConn *UserConexao) {
 	username := c.Query("username")
-	result, err := h.DoReadUser(username)
+	result, err := userConn.DoReadUser(username)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -70,7 +78,7 @@ func (h *HubConexoes) HandlerLerUsuario(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
+func (u *UsuarioHandler) HandlerUpdateUsuario(c *gin.Context, userConn *UserConexao) {
 	var usuarioEdit models.Usuario
 	if err := c.ShouldBindJSON(&usuarioEdit); err != nil {
 		SendError(c, err)
@@ -79,7 +87,7 @@ func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
 	if usuarioEdit.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário não enviada"})
 	}
-	if err := h.DoUpdateUser(&usuarioEdit); err != nil {
+	if err := userConn.DoUpdateUser(&usuarioEdit); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -89,14 +97,14 @@ func (h *HubConexoes) HandlerUpdateUsuario(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
+func (u *UsuarioHandler) HandlerDeleteUsuario(c *gin.Context, userConn *UserConexao) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-	err = h.DoDeleteUser(uint32(idUint))
+	err = userConn.DoDeleteUser(uint32(idUint))
 	if err != nil {
 		SendError(c, err)
 		return
@@ -104,7 +112,7 @@ func (h *HubConexoes) HandlerDeleteUsuario(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Usuário excluido com sucesso"})
 }
 
-func (h *HubConexoes) HandlerAuth(c *gin.Context) {
+func (u *UsuarioHandler) HandlerAuth(c *gin.Context, userConn *UserConexao) {
 	var credenciais struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -113,7 +121,7 @@ func (h *HubConexoes) HandlerAuth(c *gin.Context) {
 		SendError(c, err)
 		return
 	}
-	result, err := h.DoAuth(credenciais.Username, credenciais.Password)
+	result, err := userConn.DoAuth(credenciais.Username, credenciais.Password)
 	if err != nil {
 		SendError(c, err)
 		return
