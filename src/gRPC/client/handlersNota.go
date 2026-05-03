@@ -4,17 +4,24 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis"
 )
 
-func (h *HubConexoes) HandlerAddNota(c *gin.Context) {
+type NotaHandler struct {
+	Rdb        *redis.Client
+	NotaClient *proto.NotaServiceClient
+}
+
+func (n *NotaHandler) HandlerAddNota(c *gin.Context, notaConn *NotaConexao) {
 	var novaNota models.Notas
 	if err := c.ShouldBindJSON(&novaNota); err != nil {
 		SendError(c, err)
 		return
 	}
-	id, err := h.DoCreateNota(&novaNota)
+	id, err := notaConn.DoCreateNota(&novaNota)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -25,13 +32,13 @@ func (h *HubConexoes) HandlerAddNota(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerReadNota(c *gin.Context) {
+func (n *NotaHandler) HandlerReadNota(c *gin.Context, notaConn *NotaConexao) {
 	username := c.Query("username")
 	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username é obrigatório para a pesquisa."})
 		return
 	}
-	res, err := h.DoReadNota(username)
+	res, err := notaConn.DoReadNota(username)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -45,13 +52,13 @@ func (h *HubConexoes) HandlerReadNota(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerUpdateNota(c *gin.Context) {
+func (n *NotaHandler) HandlerUpdateNota(c *gin.Context, notaConn *NotaConexao) {
 	var novaNota models.Notas
 	if err := c.ShouldBindJSON(&novaNota); err != nil {
 		SendError(c, err)
 		return
 	}
-	err := h.DoUpdateNota(&novaNota)
+	err := notaConn.DoUpdateNota(&novaNota)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -61,14 +68,14 @@ func (h *HubConexoes) HandlerUpdateNota(c *gin.Context) {
 	})
 }
 
-func (h *HubConexoes) HandlerDeleteNota(c *gin.Context) {
+func (n *NotaHandler) HandlerDeleteNota(c *gin.Context, notaConn *NotaConexao) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-	err = h.DoDeleteNota(uint32(idUint))
+	err = notaConn.DoDeleteNota(uint32(idUint))
 	if err != nil {
 		SendError(c, err)
 		return
