@@ -59,3 +59,8 @@ func DeletarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) 
 	codigoStr := fmt.Sprintf("user:%d", codigo)
 	return rdb.Del(Ctx, codigoStr).Err()
 }
+
+func DeletarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client) error {
+	const cacheKey = "user:all"
+	return rdb.Del(Ctx, cacheKey).Err()
+}
