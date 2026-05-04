@@ -60,32 +60,31 @@ func (u *UsuarioHandler) HandlerAddUsuario(c *gin.Context, userConn *UserConexao
 }
 
 func (u *UsuarioHandler) HandlerLerUsuario(c *gin.Context, userConn *UserConexao) {
-	username := c.Query("username")
-	userEncontradoRedis, err := cache.LerTodosUsuariosRedis(c, u.Rdb)
-	if err != nil {
-		if errors.Is(err, redis.Nil) {
-			result := make([]*models.Usuario, 0, len(userEncontradoRedis))
-			for _, u := range userEncontradoRedis {
-				if strings.Contains(username, u.Username) {
-					result = append(result, u)
-				}
-			}
-			c.JSON(http.StatusOK, result)
+	usernameQuery := c.Query("username")
+	ctx := c.Request.Context()
+	usuarios, err := cache.LerTodosUsuariosRedis(ctx, u.Rdb)
+	if errors.Is(err, redis.Nil) {
+		usuarios, err = userConn.DoReadAllUser(ctx)
+		if err != nil {
+			SendError(c, err)
 			return
 		}
+		_ = cache.AdicionarTodosUsuariosRedis(ctx, u.Rdb, usuarios)
+	} else if err != nil {
 		SendError(c, err)
 		return
 	}
-	result, err := userConn.DoReadUser(username)
-	if err != nil {
-		SendError(c, err)
+	if usernameQuery == "" {
+		c.JSON(http.StatusOK, usuarios)
 		return
 	}
-	if err := cache.AdicionarTodosUsuariosRedis(c, u.Rdb, result); err != nil {
-		SendError(c, err)
-		return
+	var filtrados []*models.Usuario
+	for _, user := range usuarios {
+		if strings.Contains(strings.ToLower(user.Username), strings.ToLower(usernameQuery)) {
+			filtrados = append(filtrados, user)
+		}
 	}
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, filtrados)
 }
 
 func (u *UsuarioHandler) HandlerUpdateUsuario(c *gin.Context, userConn *UserConexao) {
