@@ -95,21 +95,17 @@ func (u *UsuarioHandler) HandlerUpdateUsuario(c *gin.Context, userConn *UserCone
 	}
 	if usuarioEdit.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário não enviada"})
-	}
-	if err := cache.DeletarUsuarioRedis(c, u.Rdb, usuarioEdit.ID); err != nil {
-		if errors.Is(err, redis.Nil) {
-			err = cache.AdicionarUsuarioRedis(c, u.Rdb, usuarioEdit.ID, &usuarioEdit)
-			if err != nil {
-				SendError(c, err)
-				return
-			}
-		}
+		return
 	}
 	if err := userConn.DoUpdateUser(&usuarioEdit); err != nil {
 		SendError(c, err)
 		return
 	}
-	if err := cache.AdicionarUsuarioRedis(c, u.Rdb, usuarioEdit.ID, &usuarioEdit); err != nil {
+	if err := cache.DeletarUsuarioRedis(c, u.Rdb, usuarioEdit.ID); err != nil {
+		SendError(c, err)
+		return
+	}
+	if err := cache.DeletarTodosUsuariosRedis(c, u.Rdb); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -131,6 +127,11 @@ func (u *UsuarioHandler) HandlerDeleteUsuario(c *gin.Context, userConn *UserCone
 		return
 	}
 	err = cache.DeletarUsuarioRedis(c, u.Rdb, uint32(idUint))
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	err = cache.DeletarTodosUsuariosRedis(c, u.Rdb)
 	if err != nil {
 		SendError(c, err)
 		return
