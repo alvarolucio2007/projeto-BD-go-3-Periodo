@@ -49,6 +49,7 @@ service UsuariosService {
   rpc Create(UsuarioCreateRequest) returns (UsuarioCreateResponse);
   //Ler usuário
   rpc Read(UsuarioReadRequest) returns (UsuarioReadResponse);
+  rpc ReadAll(google.protobuf.Empty) returns (UsuarioReadResponse);
   //Atualizar usuário
   rpc Update(UsuarioUpdateRequest) returns (google.protobuf.Empty);
   //Deletar usuário
