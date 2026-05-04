@@ -44,6 +44,26 @@ func (s *ServerUser) Read(ctx context.Context, in *proto.UsuarioReadRequest) (*p
 	}, nil
 }
 
+func (s *ServerUser) ReadAll(ctx context.Context) (*proto.UsuarioReadResponse, error) {
+	log.Printf("função ler todos usuários foi chamada")
+	users, err := database.LerTodosUsuarios()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro ao mostrar todos os usuários no Postgres: %v", err)
+	}
+	listaProtobuf := make([]*proto.Usuario, 0, len(users))
+	for _, u := range users {
+		listaProtobuf = append(listaProtobuf, &proto.Usuario{
+			Id:       u.ID,
+			Username: u.Username,
+			Password: u.Password,
+			Role:     u.Role,
+		})
+	}
+	return &proto.UsuarioReadResponse{
+		Usuarios: listaProtobuf,
+	}, nil
+}
+
 func (s *ServerUser) Update(ctx context.Context, in *proto.UsuarioUpdateRequest) (*emptypb.Empty, error) {
 	log.Printf("função atualizar usuário foi chamada com %v\n", in)
 	modeloUsuario := models.Usuario{Username: in.Username, Password: in.Password, Role: in.Role}
