@@ -7,27 +7,26 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type UserConexao struct {
-	User proto.UsuariosServiceClient
-	Conn *grpc.ClientConn
-}
-type ProvaConexao struct {
-	Prova proto.ProvaServiceClient
-	Conn  *grpc.ClientConn
-}
-type NotaConexao struct {
-	Nota proto.NotaServiceClient
-	Conn *grpc.ClientConn
-}
-type LeftJoinConexao struct {
-	LeftJoin proto.LeftJoinServiceClient
-	Conn     *grpc.ClientConn
-}
-type InnerJoinConexao struct {
+type HubGeral struct {
+	User      proto.UsuariosServiceClient
+	Prova     proto.ProvaServiceClient
+	Nota      proto.NotaServiceClient
+	LeftJoin  proto.LeftJoinServiceClient
 	InnerJoin proto.InnerJoinServiceClient
 	Conn      *grpc.ClientConn
 }
 
-func NewGRPCConn(addr string) (*grpc.ClientConn, error) {
-	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func ConnectAll(addr string) (*HubGeral, error) {
+	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, err
+	}
+	return &HubGeral{
+		User:      proto.NewUsuariosServiceClient(conn),
+		Prova:     proto.NewProvaServiceClient(conn),
+		Nota:      proto.NewNotaServiceClient(conn),
+		InnerJoin: proto.NewInnerJoinServiceClient(conn),
+		LeftJoin:  proto.NewLeftJoinServiceClient(conn),
+		Conn:      conn,
+	}, nil
 }
