@@ -42,6 +42,20 @@ func LerTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*model
 	return &resFatorado, nil
 }
 
+func LerAllTestRedis(Ctx context.Context, rdb *redis.Client) ([]*models.Provas, error) {
+	const cacheKey = "test:all"
+	res, err := rdb.Get(Ctx, cacheKey).Result()
+	if err != nil {
+		return nil, err
+	}
+	var resFatorado []*models.Provas
+	err = json.Unmarshal([]byte(res), &resFatorado)
+	if err != nil {
+		return nil, err
+	}
+	return resFatorado, nil
+}
+
 func DeletarTestRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
 	codigoStr := fmt.Sprintf("user:%d", codigo)
 	return rdb.Del(Ctx, codigoStr).Err()
