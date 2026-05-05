@@ -44,7 +44,7 @@ func (s *ServerUser) Read(ctx context.Context, in *proto.UsuarioReadRequest) (*p
 	}, nil
 }
 
-func (s *ServerUser) ReadAll(ctx context.Context) (*proto.UsuarioReadResponse, error) {
+func (s *ServerUser) ReadAll(ctx context.Context, _ *emptypb.Empty) (*proto.UsuarioReadResponse, error) {
 	log.Printf("função ler todos usuários foi chamada")
 	users, err := database.LerTodosUsuarios()
 	if err != nil {
