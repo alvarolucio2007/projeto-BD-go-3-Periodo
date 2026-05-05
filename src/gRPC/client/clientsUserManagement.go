@@ -9,20 +9,20 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (u *UserConexao) DoCreateUser(user *models.Usuario) (uint32, error) {
+func (h *HubGeral) DoCreateUser(user *models.Usuario) (uint32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	res, err := u.User.Create(ctx, &proto.UsuarioCreateRequest{Username: user.Username, Password: user.Password, Role: user.Role})
+	res, err := h.User.Create(ctx, &proto.UsuarioCreateRequest{Username: user.Username, Password: user.Password, Role: user.Role})
 	if err != nil {
 		return 0, err
 	}
 	return res.Id, nil
 }
 
-func (u *UserConexao) DoReadUser(username string) ([]*models.Usuario, error) {
+func (h *HubGeral) DoReadUser(username string) ([]*models.Usuario, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	res, err := u.User.Read(ctx, &proto.UsuarioReadRequest{Nome: username})
+	res, err := h.User.Read(ctx, &proto.UsuarioReadRequest{Nome: username})
 	if err != nil {
 		return nil, err
 	}
@@ -39,10 +39,10 @@ func (u *UserConexao) DoReadUser(username string) ([]*models.Usuario, error) {
 	return result, nil
 }
 
-func (u *UserConexao) DoReadAllUser(ctx context.Context) ([]*models.Usuario, error) {
+func (h *HubGeral) DoReadAllUser(ctx context.Context) ([]*models.Usuario, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	res, err := u.User.ReadAll(ctx, &emptypb.Empty{})
+	res, err := h.User.ReadAll(ctx, &emptypb.Empty{})
 	if err != nil {
 		return nil, err
 	}
@@ -59,30 +59,30 @@ func (u *UserConexao) DoReadAllUser(ctx context.Context) ([]*models.Usuario, err
 	return result, nil
 }
 
-func (u *UserConexao) DoUpdateUser(user *models.Usuario) error {
+func (h *HubGeral) DoUpdateUser(user *models.Usuario) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := u.User.Update(ctx, &proto.UsuarioUpdateRequest{Id: user.ID, Username: user.Username, Password: user.Password, Role: user.Role})
+	_, err := h.User.Update(ctx, &proto.UsuarioUpdateRequest{Id: user.ID, Username: user.Username, Password: user.Password, Role: user.Role})
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *UserConexao) DoDeleteUser(id uint32) error {
+func (h *HubGeral) DoDeleteUser(id uint32) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := u.User.Delete(ctx, &proto.UsuarioDeleteRequest{Id: id})
+	_, err := h.User.Delete(ctx, &proto.UsuarioDeleteRequest{Id: id})
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *UserConexao) DoAuth(username string, password string) (*models.AuthResult, error) {
+func (h *HubGeral) DoAuth(username string, password string) (*models.AuthResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	response, err := u.User.Auth(ctx, &proto.UsuarioLoginRequest{Username: username, Password: password})
+	response, err := h.User.Auth(ctx, &proto.UsuarioLoginRequest{Username: username, Password: password})
 	if err != nil {
 		return nil, err
 	}

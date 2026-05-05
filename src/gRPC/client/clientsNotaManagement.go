@@ -8,20 +8,20 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-func (n *NotaConexao) DoCreateNota(nota *models.Notas) (uint32, error) {
+func (h *HubGeral) DoCreateNota(nota *models.Notas) (uint32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	res, err := n.Nota.Create(ctx, &proto.CreateNotaRequest{UsuarioId: nota.UsuarioID, ProvaId: nota.ProvaID, NotaProva: nota.NotaProva})
+	res, err := h.Nota.Create(ctx, &proto.CreateNotaRequest{UsuarioId: nota.UsuarioID, ProvaId: nota.ProvaID, NotaProva: nota.NotaProva})
 	if err != nil {
 		return 0, err
 	}
 	return res.NotaId, nil
 }
 
-func (n *NotaConexao) DoReadNota(username string) ([]*models.InnerJoinType, error) {
+func (h *HubGeral) DoReadNota(username string) ([]*models.InnerJoinType, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	res, err := n.Nota.Read(ctx, &proto.ReadNotaRequest{Username: username})
+	res, err := h.Nota.Read(ctx, &proto.ReadNotaRequest{Username: username})
 	if err != nil {
 		return nil, err
 	}
@@ -40,20 +40,20 @@ func (n *NotaConexao) DoReadNota(username string) ([]*models.InnerJoinType, erro
 	return response, nil
 }
 
-func (n *NotaConexao) DoUpdateNota(nota *models.Notas) error {
+func (h *HubGeral) DoUpdateNota(nota *models.Notas) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := n.Nota.Update(ctx, &proto.UpdateNotaRequest{NotaId: nota.ID, ValorNota: nota.NotaProva, AlunoId: nota.UsuarioID, ProvaId: nota.ProvaID})
+	_, err := h.Nota.Update(ctx, &proto.UpdateNotaRequest{NotaId: nota.ID, ValorNota: nota.NotaProva, AlunoId: nota.UsuarioID, ProvaId: nota.ProvaID})
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (n *NotaConexao) DoDeleteNota(id uint32) error {
+func (h *HubGeral) DoDeleteNota(id uint32) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := n.Nota.Delete(ctx, &proto.DeleteNotaRequest{NotaId: id})
+	_, err := h.Nota.Delete(ctx, &proto.DeleteNotaRequest{NotaId: id})
 	if err != nil {
 		return err
 	}
