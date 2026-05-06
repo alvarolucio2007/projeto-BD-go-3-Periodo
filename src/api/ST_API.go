@@ -9,7 +9,7 @@ import (
 
 func SetupExtRoutes(hub *grpcclient.HubGeral, rdb *redis.Client) error {
 	gin.SetMode(gin.DebugMode)
-	r := gin.Default()
+	r := gin.New()
 	// APIs de usuário
 	userHandler := &grpcclient.UsuarioHandler{
 		Rdb:        rdb,
