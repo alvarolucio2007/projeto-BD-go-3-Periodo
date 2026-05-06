@@ -18,18 +18,31 @@ services:
       retries: 5
     volumes:
       - ./src/database/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+  cache:
+    image: redis:7-alpine
+    container_name: escola_redis_container
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "6379:6379"
 
   backend:
     build: .
     container_name: go_backend
     depends_on:
       db:
-        condition: service_healthy # Espera o healthcheck do banco
+        condition: service_healthy
+      cache:
+        condition: service_healthy
     ports:
-      - "8080:8080" # Porta da API REST para o Frontend
-      - "50051:50051" # Porta gRPC (opcional expor, mas bom para debug)
+      - "8080:8080" # Porta da API REST
+      - "50051:50051" # Porta gRPC
     environment:
       - DB_URL=postgres://user_escola:password_escola@db:5432/db_escola?sslmode=disable
+      - REDIS_ADDR=cache:6379
 
   frontend:
     build: ./web
