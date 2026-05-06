@@ -4,6 +4,7 @@ package cache
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -14,8 +15,12 @@ var (
 )
 
 func ConectarRedis() *redis.Client {
+	addr := os.Getenv("REDIS_ADDR")
+	if addr == "" {
+		addr = "cache:6379"
+	}
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis_proj_bd:6379",
+		Addr:     addr,
 		Password: "",
 		DB:       0,
 	})
