@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/api"
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/cache"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/database"
 	grpcclient "github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/client"
 	grpcserver "github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/server"
@@ -23,6 +24,7 @@ func main() {
 		log.Fatalf("\x1b[31m[ERRO CRÍTICO]\x1b[0m Falha ao conectar o servidor gRPC: %v", err)
 		panic(err)
 	}
+	cacheRedis := cache.ConectarRedis()
 	log.Print("Banco de dados migrado, tentando iniciar servidor gRPC...")
 	go func() {
 		grpcserver.StartServerGeralGRPC()
@@ -35,6 +37,10 @@ func main() {
 		panic(err)
 	}
 	log.Print("Client gRPC iniciado com sucesso, tentando iniciar servidor API REST...")
-	api.SetupExtRoutes(hub)
+	err = api.SetupExtRoutes(hub, cacheRedis)
+	if err != nil {
+		log.Fatalf("\x1b[31m[ERRO CRÍTICO]\x1b[0m Falha ao conectar o servidor API REST: %v", err)
+		panic(err)
+	}
 	log.Print("Servidor REST iniciado com sucesso. Aplicação iniciada com sucesso.")
 }
