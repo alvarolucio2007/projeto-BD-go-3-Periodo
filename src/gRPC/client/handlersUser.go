@@ -54,6 +54,15 @@ func (u *UsuarioHandler) HandlerAddUsuario(c *gin.Context, hub *HubGeral) {
 		SendError(c, err)
 		return
 	}
+	listaTodosUsuarios, err := hub.DoReadAllUser(c)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	err = cache.AdicionarTodosUsuariosRedis(c, u.Rdb, listaTodosUsuarios)
+	if err != nil {
+		SendError(c, err)
+	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Usuário criado com sucesso",
 		"id":      id,
