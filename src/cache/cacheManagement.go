@@ -28,6 +28,7 @@ func ConectarRedis() *redis.Client {
 	if err != nil {
 		panic(fmt.Sprintf("Não foi possível conectar ao Redis: %v", err))
 	}
+	RedisClient = rdb
 	fmt.Println("Redis conectado.")
 	return rdb
 }
