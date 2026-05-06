@@ -11,15 +11,15 @@ import (
 
 type LeftJoinHandler struct {
 	Rdb            *redis.Client
-	LeftJoinClient *proto.LeftJoinServiceClient
+	LeftJoinClient proto.LeftJoinServiceClient
 }
 type InnerJoinHandler struct {
 	Rdb             *redis.Client
-	InnerJoinClient *proto.InnerJoinServiceClient
+	InnerJoinClient proto.InnerJoinServiceClient
 }
 
-func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, leftConn *LeftJoinConexao) {
-	res, err := leftConn.DoLeftJoin()
+func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, hub *HubGeral) {
+	res, err := hub.DoLeftJoin()
 	if err != nil {
 		SendError(c, err)
 		return
@@ -33,8 +33,8 @@ func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, leftConn *LeftJoinCone
 	})
 }
 
-func (i *InnerJoinHandler) HandlerInnerJoin(c *gin.Context, innerConn *InnerJoinConexao) {
-	res, err := innerConn.DoInnerJoin()
+func (i *InnerJoinHandler) HandlerInnerJoin(c *gin.Context, hub *HubGeral) {
+	res, err := hub.DoInnerJoin()
 	if err != nil {
 		SendError(c, err)
 		return

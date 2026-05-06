@@ -1,6 +1,7 @@
 package grpcclient
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,22 +14,21 @@ import (
 
 type ProvaHandler struct {
 	Rdb         *redis.Client
-	ProvaClient *proto.ProvaServiceClient
+	ProvaClient proto.ProvaServiceClient
 }
 
-func (p *ProvaHandler) HandlerCreateProva(c *gin.Context, provaConn *ProvaConexao) {
+func (p *ProvaHandler) HandlerCreateProva(c *gin.Context, hub *HubGeral) {
 	var novaProva models.Provas
 	if err := c.ShouldBindJSON(&novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
-
-	id, err := provaConn.DoCreateProva(&novaProva)
+	id, err := hub.DoCreateProva(&novaProva)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-	if err := cache.AdicionarTestRedis(c, p.Rdb, id, &novaProva); err != nil {
+	if err := cache.AdicionarTestRedis(c.Request.Context(), p.Rdb, id, &novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -38,27 +38,40 @@ func (p *ProvaHandler) HandlerCreateProva(c *gin.Context, provaConn *ProvaConexa
 	})
 }
 
-func (p *ProvaHandler) HandlerReadAllProva(c *gin.Context, provaConn *ProvaConexao) {
-	res, err := provaConn.DoReadAllProva()
-	if err != nil {
+func (p *ProvaHandler) HandlerReadAllProva(c *gin.Context, hub *HubGeral) {
+	res, err := cache.LerAllTestRedis(c.Request.Context(), p.Rdb)
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Provas lidas com sucesso",
+			"provas":  res,
+		})
+		return
+	}
+	if errors.Is(err, redis.Nil) {
+		res, err = hub.DoReadAllProva()
+		if err != nil {
+			SendError(c, err)
+			return
+		}
+		if res == nil {
+			res = []*models.Provas{}
+		}
+		err = cache.AdicionarTodosTestRedis(c, p.Rdb, res)
+		if err != nil {
+			SendError(c, err)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Provas lidas com sucesso",
+			"provas":  res,
+		})
+	} else {
 		SendError(c, err)
 		return
 	}
-	if res == nil {
-		res = []*models.Provas{}
-	}
-	err = cache.AdicionarTodosTestRedis(c, p.Rdb, res)
-	if err != nil {
-		SendError(c, err)
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Provas lidas com sucesso",
-		"provas":  res,
-	})
 }
 
-func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, provaConn *ProvaConexao) {
+func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, hub *HubGeral) {
 	var novaProva models.Provas
 	if err := c.ShouldBindJSON(&novaProva); err != nil {
 		SendError(c, err)
@@ -68,7 +81,7 @@ func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, provaConn *ProvaConexa
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID da prova é obrigratório"})
 		return
 	}
-	if err := provaConn.DoUpdateProva(&novaProva); err != nil {
+	if err := hub.DoUpdateProva(&novaProva); err != nil {
 		SendError(c, err)
 		return
 	}
@@ -81,14 +94,14 @@ func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, provaConn *ProvaConexa
 	})
 }
 
-func (p *ProvaHandler) HandlerDeleteProva(c *gin.Context, provaConn *ProvaConexao) {
+func (p *ProvaHandler) HandlerDeleteProva(c *gin.Context, hub *HubGeral) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-	err = provaConn.DoDeleteProva(uint32(idUint))
+	err = hub.DoDeleteProva(uint32(idUint))
 	if err != nil {
 		SendError(c, err)
 		return
@@ -97,7 +110,7 @@ func (p *ProvaHandler) HandlerDeleteProva(c *gin.Context, provaConn *ProvaConexa
 		SendError(c, err)
 		return
 	}
-	provas, err := provaConn.DoReadAllProva()
+	provas, err := hub.DoReadAllProva()
 	if err != nil {
 		SendError(c, err)
 		return

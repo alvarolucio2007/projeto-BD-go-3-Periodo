@@ -12,16 +12,16 @@ import (
 
 type NotaHandler struct {
 	Rdb        *redis.Client
-	NotaClient *proto.NotaServiceClient
+	NotaClient proto.NotaServiceClient
 }
 
-func (n *NotaHandler) HandlerAddNota(c *gin.Context, notaConn *NotaConexao) {
+func (n *NotaHandler) HandlerAddNota(c *gin.Context, hub *HubGeral) {
 	var novaNota models.Notas
 	if err := c.ShouldBindJSON(&novaNota); err != nil {
 		SendError(c, err)
 		return
 	}
-	id, err := notaConn.DoCreateNota(&novaNota)
+	id, err := hub.DoCreateNota(&novaNota)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -32,13 +32,13 @@ func (n *NotaHandler) HandlerAddNota(c *gin.Context, notaConn *NotaConexao) {
 	})
 }
 
-func (n *NotaHandler) HandlerReadNota(c *gin.Context, notaConn *NotaConexao) {
+func (n *NotaHandler) HandlerReadNota(c *gin.Context, hub *HubGeral) {
 	username := c.Query("username")
 	if username == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "username é obrigatório para a pesquisa."})
 		return
 	}
-	res, err := notaConn.DoReadNota(username)
+	res, err := hub.DoReadNota(username)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -52,13 +52,13 @@ func (n *NotaHandler) HandlerReadNota(c *gin.Context, notaConn *NotaConexao) {
 	})
 }
 
-func (n *NotaHandler) HandlerUpdateNota(c *gin.Context, notaConn *NotaConexao) {
+func (n *NotaHandler) HandlerUpdateNota(c *gin.Context, hub *HubGeral) {
 	var novaNota models.Notas
 	if err := c.ShouldBindJSON(&novaNota); err != nil {
 		SendError(c, err)
 		return
 	}
-	err := notaConn.DoUpdateNota(&novaNota)
+	err := hub.DoUpdateNota(&novaNota)
 	if err != nil {
 		SendError(c, err)
 		return
@@ -68,14 +68,14 @@ func (n *NotaHandler) HandlerUpdateNota(c *gin.Context, notaConn *NotaConexao) {
 	})
 }
 
-func (n *NotaHandler) HandlerDeleteNota(c *gin.Context, notaConn *NotaConexao) {
+func (n *NotaHandler) HandlerDeleteNota(c *gin.Context, hub *HubGeral) {
 	id := c.Param("id")
 	idUint, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		SendError(c, err)
 		return
 	}
-	err = notaConn.DoDeleteNota(uint32(idUint))
+	err = hub.DoDeleteNota(uint32(idUint))
 	if err != nil {
 		SendError(c, err)
 		return
