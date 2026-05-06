@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/cache"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,11 @@ func (n *NotaHandler) HandlerAddNota(c *gin.Context, hub *HubGeral) {
 		SendError(c, err)
 		return
 	}
+	if err := cache.AdicionarNotaRedis(c, n.Rdb, id, &novaNota); err != nil {
+		SendError(c,err)
+		return
+	}
+	listaTodasNotas,err:=hub.DoReadNota(username string)
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Nota criada com sucesso",
 		"id":      id,

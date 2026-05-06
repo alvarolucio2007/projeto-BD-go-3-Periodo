@@ -19,6 +19,15 @@ func AdicionarUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32
 	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
 }
 
+func AdicionarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client, users []*models.Usuario) error {
+	const cacheKey = "user:all"
+	jsonData, err := json.Marshal(&users)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, cacheKey, jsonData, 10*time.Minute).Err()
+}
+
 func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.Usuario, error) {
 	codigoStr := fmt.Sprintf("user:%d", codigo)
 	res, err := rdb.Get(Ctx, codigoStr).Result()
@@ -31,15 +40,6 @@ func LerUsuarioRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*mo
 		return nil, err
 	}
 	return &resFatorado, nil
-}
-
-func AdicionarTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client, users []*models.Usuario) error {
-	const cacheKey = "user:all"
-	jsonData, err := json.Marshal(&users)
-	if err != nil {
-		return err
-	}
-	return rdb.Set(Ctx, cacheKey, jsonData, 10*time.Minute).Err()
 }
 
 func LerTodosUsuariosRedis(Ctx context.Context, rdb *redis.Client) ([]*models.Usuario, error) {
