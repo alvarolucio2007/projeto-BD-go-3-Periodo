@@ -32,6 +32,16 @@ func (p *ProvaHandler) HandlerCreateProva(c *gin.Context, hub *HubGeral) {
 		SendError(c, err)
 		return
 	}
+	listaTodasProvas, err := hub.DoReadAllProva()
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	err = cache.AdicionarTodosTestRedis(c, p.Rdb, listaTodasProvas)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Prova criada com sucesso",
 		"id":      id,
