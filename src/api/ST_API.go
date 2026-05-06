@@ -15,7 +15,7 @@ func SetupExtRoutes(hub *grpcclient.HubGeral, rdb *redis.Client) error {
 		Rdb:        rdb,
 		UserClient: hub.User,
 	}
-	r.POST("/usuario")
+	r.POST("/usuario", func(c *gin.Context) { userHandler.HandlerAddUsuario(c, hub) })
 	r.GET("/usuario/buscar", func(c *gin.Context) { userHandler.HandlerLerUsuario(c, hub) })
 	r.PUT("/usuario", func(c *gin.Context) { userHandler.HandlerUpdateUsuario(c, hub) })
 	r.DELETE("/usuario/:id", func(c *gin.Context) { userHandler.HandlerDeleteUsuario(c, hub) })
