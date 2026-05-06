@@ -52,6 +52,7 @@ func (u *UsuarioHandler) HandlerAddUsuario(c *gin.Context, hub *HubGeral) {
 	}
 	if err := cache.AdicionarUsuarioRedis(c, u.Rdb, id, &novoUsuario); err != nil {
 		SendError(c, err)
+		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Usuário criado com sucesso",
