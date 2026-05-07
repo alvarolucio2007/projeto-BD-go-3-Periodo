@@ -60,7 +60,6 @@ func (i *InnerJoinHandler) HandlerInnerJoin(c *gin.Context, hub *HubGeral) {
 			"resultado": resRedis,
 		})
 	}
-
 	if err != nil && !errors.Is(err, redis.Nil) {
 		SendError(c, err)
 		return
