@@ -1,8 +1,10 @@
 package grpcclient
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/cache"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
@@ -19,6 +21,18 @@ type InnerJoinHandler struct {
 }
 
 func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, hub *HubGeral) {
+	resRedis, err := cache.LerLeftJoinRedis(c, l.Rdb)
+	if err == nil && resRedis != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"message":   "Left Join realizado com sucesso",
+			"resultado": resRedis,
+		})
+		return
+	}
+	if err != nil && !errors.Is(err, redis.Nil) {
+		SendError(c, err)
+		return
+	}
 	res, err := hub.DoLeftJoin()
 	if err != nil {
 		SendError(c, err)
@@ -27,6 +41,11 @@ func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, hub *HubGeral) {
 	if res == nil {
 		res = []*models.LeftJoinType{}
 	}
+	err = cache.AdicionarLeftJoinRedis(c, l.Rdb, res)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message":   "Left Join realizado com sucesso",
 		"resultado": res,
@@ -34,6 +53,18 @@ func (l *LeftJoinHandler) HandlerLeftJoin(c *gin.Context, hub *HubGeral) {
 }
 
 func (i *InnerJoinHandler) HandlerInnerJoin(c *gin.Context, hub *HubGeral) {
+	resRedis, err := cache.LerInnerJoinRedis(c, i.Rdb)
+	if err == nil && resRedis != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"message":   "Inner Join realizado com sucesso",
+			"resultado": resRedis,
+		})
+	}
+
+	if err != nil && !errors.Is(err, redis.Nil) {
+		SendError(c, err)
+		return
+	}
 	res, err := hub.DoInnerJoin()
 	if err != nil {
 		SendError(c, err)
