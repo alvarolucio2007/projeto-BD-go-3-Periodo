@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/cache"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/gRPC/proto"
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/gin-gonic/gin"
@@ -27,11 +26,6 @@ func (n *NotaHandler) HandlerAddNota(c *gin.Context, hub *HubGeral) {
 		SendError(c, err)
 		return
 	}
-	if err := cache.AdicionarNotaRedis(c, n.Rdb, id, &novaNota); err != nil {
-		SendError(c,err)
-		return
-	}
-	listaTodasNotas,err:=hub.DoReadNota(username string)
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Nota criada com sucesso",
 		"id":      id,
@@ -40,10 +34,6 @@ func (n *NotaHandler) HandlerAddNota(c *gin.Context, hub *HubGeral) {
 
 func (n *NotaHandler) HandlerReadNota(c *gin.Context, hub *HubGeral) {
 	username := c.Query("username")
-	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username é obrigatório para a pesquisa."})
-		return
-	}
 	res, err := hub.DoReadNota(username)
 	if err != nil {
 		SendError(c, err)
