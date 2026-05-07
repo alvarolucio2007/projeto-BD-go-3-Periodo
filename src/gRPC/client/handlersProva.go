@@ -95,7 +95,13 @@ func (p *ProvaHandler) HandlerUpdateProva(c *gin.Context, hub *HubGeral) {
 		SendError(c, err)
 		return
 	}
-	if err := cache.AdicionarTestRedis(c, p.Rdb, novaProva.ID, &novaProva); err != nil {
+	provas, err := hub.DoReadAllProva()
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	err = cache.AdicionarTodosTestRedis(c, p.Rdb, provas)
+	if err != nil {
 		SendError(c, err)
 		return
 	}
