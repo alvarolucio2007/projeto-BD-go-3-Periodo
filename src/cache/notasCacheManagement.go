@@ -10,8 +10,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func AdicionarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32, nota *models.Notas) error {
-	codigoStr := fmt.Sprintf("nota:%d", codigo)
+func AdicionarNotaRedis(Ctx context.Context, rdb *redis.Client, nota *models.InnerJoinType) error {
+	codigoStr := fmt.Sprintf("nota:%s:%s", nota.Username, nota.NomeProva)
 	jsonData, err := json.Marshal(nota)
 	if err != nil {
 		return err
@@ -28,8 +28,8 @@ func AdicionarTodasNotasRedis(Ctx context.Context, rdb *redis.Client, notas []*m
 	return rdb.Set(Ctx, cacheKey, jsonData, 10*time.Minute).Err()
 }
 
-func LerNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) (*models.InnerJoinType, error) {
-	codigoStr := fmt.Sprintf("nota:%d", codigo)
+func LerNotaRedis(Ctx context.Context, rdb *redis.Client, username, nomeProva string) (*models.InnerJoinType, error) {
+	codigoStr := fmt.Sprintf("nota:%s:%s", username, nomeProva)
 	res, err := rdb.Get(Ctx, codigoStr).Result()
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func LerAllNotaRedis(Ctx context.Context, rdb *redis.Client) ([]*models.InnerJoi
 	return resFatorado, nil
 }
 
-func DeletarNotaRedis(Ctx context.Context, rdb *redis.Client, codigo uint32) error {
-	codigoStr := fmt.Sprintf("nota:%d", codigo)
+func DeletarNotaRedis(Ctx context.Context, rdb *redis.Client, username, nomeProva string) error {
+	codigoStr := fmt.Sprintf("nota:%s,%s", username, nomeProva)
 	return rdb.Del(Ctx, codigoStr).Err()
 }
