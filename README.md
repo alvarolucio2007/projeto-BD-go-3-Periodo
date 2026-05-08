@@ -13,6 +13,7 @@ O sistema permite o cadastro de alunos e avaliações, além do lançamento de n
 - **Front-end:** [Python](https://www.python.org/) com [Streamlit](https://streamlit.io/) e [Pandas](https://pandas.pydata.org/).
 - **Comunicação:** [gRPC](https://grpc.io/) (Protocol Buffers) e HTTP/JSON.
 - **SGBD:** [PostgreSQL 17](https://www.postgresql.org/).
+- Estrutura de Cache: [Redis](https://redis.io/downloads/#Redis_Open_Source).
 - **Infraestrutura:** [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/).
 
 ## 📸 Prints da Aplicação
