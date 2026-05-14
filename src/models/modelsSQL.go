@@ -47,7 +47,6 @@ type AuthResult struct {
 }
 
 type EstatisticaAluno struct {
-	Nome            string  `json:"nome"`
 	QuantidadeProva int     `json:"quantidade"`
 	MediaProvas     float64 `json:"media"`
 }
