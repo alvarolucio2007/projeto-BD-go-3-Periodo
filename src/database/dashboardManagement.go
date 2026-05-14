@@ -92,3 +92,33 @@ func LerMediaNotaMateria(nomeCategoria string) (map[string]models.EstatisticaAlu
 	}
 	return result, nil
 }
+
+func LerDistribuicaoStatusAluno() (map[string]int, error) { // Gráfico de pizza, bem básico...
+	query := `
+	SELECT
+		CASE
+			WHEN nota>=7 THEN 'Aprovado'
+			WHEN nota>=5 THEN 'Recuperação'
+			ELSE 'Reprovado'
+		END AS status,
+		COUNT(*)
+	FROM notas
+	GROUP BY status;`
+	rows, err := DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := make(map[string]int)
+	for rows.Next() {
+		var (
+			status string
+			valor  int
+		)
+		if err := rows.Scan(&status, &valor); err != nil {
+			return nil, err
+		}
+		result[status] = valor
+	}
+	return result, nil
+}
