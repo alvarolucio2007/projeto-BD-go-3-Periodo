@@ -2,9 +2,14 @@ package database
 
 import "github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 
-func LerQuantidadeProvaAluno() (map[string]int, error) {
-	query := "SELECT usuarios.username,COUNT(notas.id) as total_provas FROM usuarios LEFT JOIN notas ON usuarios.id=notas.usuario_id WHERE usuarios.role='aluno' GROUP BY usuarios.username ORDER BY total_provas DESC;"
-	rows, err := DB.Query(query)
+func LerQuantidadeProvaAluno(nomeBusca string) (map[string]int, error) {
+	query := `SELECT 
+		usuarios.username,COUNT(notas.id) as total_provas FROM usuarios 
+		LEFT JOIN notas ON usuarios.id=notas.usuario_id 
+		WHERE usuarios.role='aluno' AND u.username ILIKE $1
+		GROUP BY usuarios.username 
+		ORDER BY total_provas DESC;`
+	rows, err := DB.Query(query, "%"+nomeBusca+"%")
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +28,7 @@ func LerQuantidadeProvaAluno() (map[string]int, error) {
 	return stats, nil
 }
 
-func LerQuantidadeNotaProvaAluno() (map[string]models.EstatisticaAluno, error) {
+func LerQuantidadeNotaProvaAluno(nomeBusca string) (map[string]models.EstatisticaAluno, error) {
 	query := `SELECT 
     u.username,
     COUNT(n.id) AS total_provas,
@@ -31,10 +36,10 @@ func LerQuantidadeNotaProvaAluno() (map[string]models.EstatisticaAluno, error) {
 		FROM usuarios u
 		LEFT JOIN notas n ON u.id = n.usuario_id
 		LEFT JOIN provas p ON p.id = n.prova_id
-		WHERE u.role = 'aluno' 
+		WHERE u.role = 'aluno' AND u.username ILIKE $1
 		GROUP BY u.username 
 		ORDER BY total_provas ASC;`
-	rows, err := DB.Query(query)
+	rows, err := DB.Query(query, "%"+nomeBusca+"%")
 	if err != nil {
 		return nil, err
 	}
