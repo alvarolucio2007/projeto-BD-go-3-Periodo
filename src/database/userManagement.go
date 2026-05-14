@@ -91,7 +91,7 @@ func UpdateUsuarios(id uint32, dados models.Usuario) error {
         SET 
             username = COALESCE(NULLIF($1, ''), username),
             password = COALESCE(NULLIF($2, ''), password),
-	role     = COALESCE(NULLIF($3, '')::role_usuario, role)
+						role     = COALESCE(NULLIF($3, '')::role_usuario, role)
         WHERE id = $4`
 	res, err := DB.Exec(query, dados.Username, dados.Password, dados.Role, id)
 	if err != nil {
