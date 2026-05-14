@@ -26,6 +26,9 @@ type ServerLeftJoin struct {
 type ServerInnerJoin struct {
 	proto.InnerJoinServiceServer
 }
+type ServerDashboard struct {
+	proto.DashboardServiceServer
+}
 
 func StartServerGeralGRPC() {
 	lis, err := net.Listen("tcp", addr)
@@ -38,6 +41,7 @@ func StartServerGeralGRPC() {
 	proto.RegisterNotaServiceServer(s, &ServerNota{})
 	proto.RegisterLeftJoinServiceServer(s, &ServerLeftJoin{})
 	proto.RegisterInnerJoinServiceServer(s, &ServerInnerJoin{})
+	proto.RegisterDashboardServiceServer(s, &ServerDashboard{})
 	log.Printf("Servidor Usuário gRPC rodando em %s", addr)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Falha ao servir no servidor gRPC do usuário: %v", err)
