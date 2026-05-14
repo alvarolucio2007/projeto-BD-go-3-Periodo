@@ -1,0 +1,38 @@
+syntax = "proto3";
+package projeto;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
+message EstatisticaAluno {
+  int64 quantidade_prova = 1;
+  float media_prova = 2;
+}
+message QuantidadeProvaAlunoRequest {
+  string nome_busca = 1;
+}
+message QuantidadeProvaAlunoResponse {
+  map<string, int64> response = 1;
+}
+message QuantidadeNotaProvaAlunoRequest {
+  string nome_busca = 1;
+}//é igual ao QuantidadeProvaAlunoRequest kkkkkkkkkkkkkkkkkkkkkkkkk vou deixar separado
+message QuantidadeNotaProvaAlunoResponse {
+  map<string, EstatisticaAluno> response = 1;
+}
+message MediaNotaMateriaRequest {
+  string nome_categoria = 1;
+}
+message MediaNotaMateriaResponse {
+  map<string, EstatisticaAluno> response = 1;
+}
+message DistribuicaoStatusAlunoRequest {}
+message DistribuicaoStatusAlunoResponse {
+  map<string, int64> response = 1;
+}
+service DashboardService {
+  rpc QuantidadeProvaAluno(QuantidadeProvaAlunoRequest) returns (QuantidadeProvaAlunoResponse);
+  rpc QuantidadeNotaProvaAluno(QuantidadeNotaProvaAlunoRequest) returns (QuantidadeNotaProvaAlunoResponse);
+  rpc MediaNotaMateria(MediaNotaMateriaRequest) returns (MediaNotaMateriaResponse);
+  rpc DistribuicaoStatusAluno(DistribuicaoStatusAlunoRequest) returns (DistribuicaoStatusAlunoResponse);
+}
