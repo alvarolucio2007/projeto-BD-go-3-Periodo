@@ -63,6 +63,7 @@ func LerQuantidadeNotaProvaAluno(nomeBusca string) (map[string]models.Estatistic
 }
 
 func LerMediaNotaMateria(nomeCategoria string) (map[string]models.EstatisticaAluno, error) { // sim estou reutilizando o models.EstatisticaAluno, se cabe direito consigo...
+	// ah e também é gráfico de barras horizontal
 	query := `SELECT 
     p.materia_prova,
     COALESCE(AVG(n.nota), 0.0) AS media_materia,
