@@ -1,8 +1,6 @@
 syntax = "proto3";
 package projeto;
 
-import "google/protobuf/empty.proto";
-
 option go_package = "github.com/alvarolucio2007/projeto-BD-go-3-Periodo/src/proto";
 message EstatisticaAluno {
   int64 quantidade_prova = 1;
