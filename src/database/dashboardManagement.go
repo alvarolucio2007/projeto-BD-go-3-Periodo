@@ -1,5 +1,7 @@
 package database
 
+import "github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
+
 func LerQuantidadeProvaAluno() (map[string]int, error) {
 	query := "SELECT usuarios.username,COUNT(notas.id) as total_provas FROM usuarios LEFT JOIN notas ON usuarios.id=notas.usuario_id WHERE usuarios.role='aluno' GROUP BY usuarios.username ORDER BY total_provas DESC;"
 	rows, err := DB.Query(query)
@@ -19,4 +21,8 @@ func LerQuantidadeProvaAluno() (map[string]int, error) {
 		stats[user] = qtd
 	}
 	return stats, nil
+}
+
+func LerQuantidadeNotaProvaAluno() ([]models.EstatisticaAluno, error) {
+	query := "SELECT usuarios.username,COUNT(notas.id) as total_provas FROM usuarios LEFT JOIN notas ON usuarios.id=notas.usuario_id WHERE usuarios.role='aluno' GROUP BY usuarios.username ORDER BY total_provas DESC;"
 }
