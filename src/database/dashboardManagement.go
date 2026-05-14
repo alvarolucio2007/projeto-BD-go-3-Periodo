@@ -4,7 +4,7 @@ import (
 	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 )
 
-func LerQuantidadeProvaAluno(nomeBusca string) (map[string]int, error) { // Essa é para um gráfico de barras
+func LerQuantidadeProvaAluno(nomeBusca string) (map[string]int64, error) { // Essa é para um gráfico de barras
 	query := `SELECT 
 		usuarios.username,COUNT(notas.id) as total_provas 
 		FROM usuarios u
@@ -17,7 +17,7 @@ func LerQuantidadeProvaAluno(nomeBusca string) (map[string]int, error) { // Essa
 		return nil, err
 	}
 	defer rows.Close()
-	stats := make(map[string]int)
+	stats := make(map[string]int64)
 	for rows.Next() {
 		var (
 			user string
@@ -26,7 +26,7 @@ func LerQuantidadeProvaAluno(nomeBusca string) (map[string]int, error) { // Essa
 		if err := rows.Scan(&user, &qtd); err != nil {
 			return nil, err
 		}
-		stats[user] = qtd
+		stats[user] = int64(qtd)
 	}
 	return stats, nil
 }
