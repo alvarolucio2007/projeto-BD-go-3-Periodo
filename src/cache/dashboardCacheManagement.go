@@ -6,10 +6,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/alvarolucio2007/projeto-DB-go-3-Periodo/src/models"
 	"github.com/redis/go-redis/v9"
 )
 
-func AdicionarQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client, data map[string]int64) error {
+func AdicionarQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client, data map[string]int64) error {
 	codigoStr := "quantidade_prova_aluno"
 	jsonData, err := json.Marshal(&data)
 	if err != nil {
@@ -18,7 +19,7 @@ func AdicionarQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client, 
 	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
 }
 
-func LerQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
+func LerQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
 	codigoStr := "quantiade_prova_aluno"
 	res, err := rdb.Get(Ctx, codigoStr).Result()
 	if err != nil {
@@ -33,4 +34,13 @@ func LerQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client) (map[s
 		return nil, err
 	}
 	return resFatorado, nil
+}
+
+func AdicionarQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client, dados map[string]models.EstatisticaAluno) error {
+	codigoStr := "quantidade_nota_prova_aluno"
+	jsonData, err := json.Marshal(&dados)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
 }
