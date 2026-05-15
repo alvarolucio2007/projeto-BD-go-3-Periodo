@@ -52,3 +52,14 @@ func (s *ServerDashboard) MediaNotaMateria(ctx context.Context, in *proto.MediaN
 		Response: resCorrect,
 	}, nil
 }
+
+func (s *ServerDashboard) DistribuicaoStatusAluno(ctx context.Context, in *proto.DistribuicaoStatusAlunoRequest) (*proto.DistribuicaoStatusAlunoResponse, error) {
+	log.Printf("função distribuicao status aluno foi chamado \n")
+	res, err := database.LerDistribuicaoStatusAluno()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro ao fazer o relatório: %v", err)
+	}
+	return &proto.DistribuicaoStatusAlunoResponse{
+		Response: res,
+	}, nil
+}
