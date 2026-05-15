@@ -36,3 +36,19 @@ func (s *ServerDashboard) QuantidadeNotaProvaAluno(ctx context.Context, in *prot
 		Response: resCorrect,
 	}, nil
 }
+
+func (s *ServerDashboard) MediaNotaMateria(ctx context.Context, in *proto.MediaNotaMateriaRequest) (*proto.MediaNotaMateriaResponse, error) {
+	log.Printf("função media nota materia foi chamada com: %v\n")
+	res, err := database.LerMediaNotaMateria(in.NomeCategoria)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Erro ao fazer o relatório: %v", err)
+	}
+	resCorrect := make(map[string]*proto.EstatisticaAluno)
+	for a, b := range res {
+		c := &proto.EstatisticaAluno{QuantidadeProva: int64(b.QuantidadeProva), MediaProva: float32(b.MediaProvas)}
+		resCorrect[a] = c
+	}
+	return &proto.MediaNotaMateriaResponse{
+		Response: resCorrect,
+	}, nil
+}
