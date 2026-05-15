@@ -3,16 +3,34 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 )
 
-func AdicionarLerQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client, data map[string]int64) error {
+func AdicionarQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client, data map[string]int64) error {
 	codigoStr := "quantidade_prova_aluno"
 	jsonData, err := json.Marshal(&data)
 	if err != nil {
 		return err
 	}
 	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+}
+
+func LerQuantidadeProvaAlunoTodos(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
+	codigoStr := "quantiade_prova_aluno"
+	res, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var resFatorado map[string]int64
+	err = json.Unmarshal([]byte(res), &resFatorado)
+	if err != nil {
+		return nil, err
+	}
+	return resFatorado, nil
 }
