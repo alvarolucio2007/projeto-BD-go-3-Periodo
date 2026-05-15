@@ -44,3 +44,20 @@ func AdicionarQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client, 
 	}
 	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
 }
+
+func LerQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[string]models.EstatisticaAluno, error) {
+	codigoStr := "quantidade_nota_prova_aluno"
+	res, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var resFatorado map[string]models.EstatisticaAluno
+	err = json.Unmarshal([]byte(res), &resFatorado)
+	if err != nil {
+		return nil, err
+	}
+	return resFatorado, nil
+}
