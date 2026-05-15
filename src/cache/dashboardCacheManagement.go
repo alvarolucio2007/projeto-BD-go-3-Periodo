@@ -23,7 +23,7 @@ func AdicionarQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client, data
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, KeyQuantidadeProvaAluno, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyQuantidadeProvaAluno, jsonData, DefaultTTL).Err()
 }
 
 func LerQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
@@ -47,7 +47,7 @@ func AdicionarQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client, 
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, KeyQuantidadeNotaProvaAluno, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyQuantidadeNotaProvaAluno, jsonData, DefaultTTL).Err()
 }
 
 func LerQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[string]models.EstatisticaAluno, error) {
@@ -71,7 +71,7 @@ func AdicionarMediaNotaMaterias(Ctx context.Context, rdb *redis.Client, dados ma
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, KeyMediasNotas, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyMediasNotas, jsonData, DefaultTTL).Err()
 }
 
 func LerMediaNotaMaterias(Ctx context.Context, rdb *redis.Client) (map[string]models.EstatisticaAluno, error) {
@@ -95,7 +95,7 @@ func AdicionarDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client, da
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, KeyDistribuicaoStatus, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyDistribuicaoStatus, jsonData, DefaultTTL).Err()
 }
 
 func LerDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
