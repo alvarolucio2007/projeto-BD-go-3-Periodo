@@ -14,9 +14,5 @@ func (h *HubGeral) DoLerQuantidadeProvaAluno(nome string) (map[string]int64, err
 	if err != nil {
 		return nil, err
 	}
-	result := make(map[string]int64)
-	for s, i := range res.Response {
-		result[s] = i
-	}
-	return result, nil
+	return res.Response, nil
 }
