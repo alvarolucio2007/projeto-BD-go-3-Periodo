@@ -93,7 +93,7 @@ func LerMediaNotaMateria(nomeCategoria string) (map[string]models.EstatisticaAlu
 	return result, nil
 }
 
-func LerDistribuicaoStatusAluno() (map[string]int, error) { // Gráfico de pizza, bem básico...
+func LerDistribuicaoStatusAluno() (map[string]int64, error) { // Gráfico de pizza, bem básico...
 	query := `
 	SELECT
 		CASE
@@ -109,11 +109,11 @@ func LerDistribuicaoStatusAluno() (map[string]int, error) { // Gráfico de pizza
 		return nil, err
 	}
 	defer rows.Close()
-	result := make(map[string]int)
+	result := make(map[string]int64)
 	for rows.Next() {
 		var (
 			status string
-			valor  int
+			valor  int64
 		)
 		if err := rows.Scan(&status, &valor); err != nil {
 			return nil, err
