@@ -13,6 +13,7 @@ type HubGeral struct {
 	Nota      proto.NotaServiceClient
 	LeftJoin  proto.LeftJoinServiceClient
 	InnerJoin proto.InnerJoinServiceClient
+	Dashboard proto.DashboardServiceClient
 	Conn      *grpc.ClientConn
 }
 
