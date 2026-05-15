@@ -61,3 +61,29 @@ func LerQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[s
 	}
 	return resFatorado, nil
 }
+
+func AdicionarMediaNotaMaterias(Ctx context.Context, rdb *redis.Client, dados map[string]models.EstatisticaAluno) error {
+	codigoStr := "medias_notas"
+	jsonData, err := json.Marshal(&dados)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+}
+
+func LerMediaNotaMaterias(Ctx context.Context, rdb *redis.Client) (map[string]models.EstatisticaAluno, error) {
+	codigoStr := "medias_notas"
+	res, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var resFatorado map[string]models.EstatisticaAluno
+	err = json.Unmarshal([]byte(res), &resFatorado)
+	if err != nil {
+		return nil, err
+	}
+	return resFatorado, nil
+}
