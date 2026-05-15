@@ -47,3 +47,13 @@ func (h *HubGeral) DoLerMediaNotaMateria(nome string) (map[string]models.Estatis
 	}
 	return response, nil
 }
+
+func (h *HubGeral) DoLerDistribuicaoStatusAluno() (map[string]int64, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	res, err := h.Dashboard.DistribuicaoStatusAluno(ctx, &proto.DistribuicaoStatusAlunoRequest{})
+	if err != nil {
+		return nil, err
+	}
+	return res.Response, nil
+}
