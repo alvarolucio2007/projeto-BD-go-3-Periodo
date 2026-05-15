@@ -96,3 +96,20 @@ func AdicionarDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client, da
 	}
 	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
 }
+
+func LerDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
+	codigoStr := "distribuicao_status"
+	dados, err := rdb.Get(Ctx, codigoStr).Result()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var result map[string]int64
+	err = json.Unmarshal([]byte(dados), &result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
