@@ -87,3 +87,12 @@ func LerMediaNotaMaterias(Ctx context.Context, rdb *redis.Client) (map[string]mo
 	}
 	return resFatorado, nil
 }
+
+func AdicionarDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client, dados map[string]int64) error {
+	codigoStr := "distribuicao_status"
+	jsonData, err := json.Marshal(&dados)
+	if err != nil {
+		return err
+	}
+	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+}
