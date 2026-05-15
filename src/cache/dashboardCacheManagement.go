@@ -10,18 +10,24 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	KeyQuantidadeProvaAluno     = "dashboard:quantidade_prova_aluno"
+	KeyQuantidadeNotaProvaAluno = "dashboard:quantidade_nota_prova_aluno"
+	KeyMediasNotas              = "dashboard:medias_notas"
+	KeyDistribuicaoStatus       = "dashboard:distribuicao_status"
+	DefaultTTL                  = 10 * time.Minute
+)
+
 func AdicionarQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client, data map[string]int64) error {
-	codigoStr := "quantidade_prova_aluno"
 	jsonData, err := json.Marshal(&data)
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyQuantidadeProvaAluno, jsonData, 10*time.Minute).Err()
 }
 
 func LerQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
-	codigoStr := "quantiade_prova_aluno"
-	res, err := rdb.Get(Ctx, codigoStr).Result()
+	res, err := rdb.Get(Ctx, KeyQuantidadeProvaAluno).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, nil
@@ -37,17 +43,15 @@ func LerQuantidadeProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[strin
 }
 
 func AdicionarQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client, dados map[string]models.EstatisticaAluno) error {
-	codigoStr := "quantidade_nota_prova_aluno"
 	jsonData, err := json.Marshal(&dados)
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyQuantidadeNotaProvaAluno, jsonData, 10*time.Minute).Err()
 }
 
 func LerQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[string]models.EstatisticaAluno, error) {
-	codigoStr := "quantidade_nota_prova_aluno"
-	res, err := rdb.Get(Ctx, codigoStr).Result()
+	res, err := rdb.Get(Ctx, KeyQuantidadeNotaProvaAluno).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, nil
@@ -63,17 +67,15 @@ func LerQuantidadeNotaProvaAlunos(Ctx context.Context, rdb *redis.Client) (map[s
 }
 
 func AdicionarMediaNotaMaterias(Ctx context.Context, rdb *redis.Client, dados map[string]models.EstatisticaAluno) error {
-	codigoStr := "medias_notas"
 	jsonData, err := json.Marshal(&dados)
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyMediasNotas, jsonData, 10*time.Minute).Err()
 }
 
 func LerMediaNotaMaterias(Ctx context.Context, rdb *redis.Client) (map[string]models.EstatisticaAluno, error) {
-	codigoStr := "medias_notas"
-	res, err := rdb.Get(Ctx, codigoStr).Result()
+	res, err := rdb.Get(Ctx, KeyMediasNotas).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, nil
@@ -89,17 +91,15 @@ func LerMediaNotaMaterias(Ctx context.Context, rdb *redis.Client) (map[string]mo
 }
 
 func AdicionarDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client, dados map[string]int64) error {
-	codigoStr := "distribuicao_status"
 	jsonData, err := json.Marshal(&dados)
 	if err != nil {
 		return err
 	}
-	return rdb.Set(Ctx, codigoStr, jsonData, 10*time.Minute).Err()
+	return rdb.Set(Ctx, KeyDistribuicaoStatus, jsonData, 10*time.Minute).Err()
 }
 
 func LerDistribuicaoStatusAluno(Ctx context.Context, rdb *redis.Client) (map[string]int64, error) {
-	codigoStr := "distribuicao_status"
-	dados, err := rdb.Get(Ctx, codigoStr).Result()
+	dados, err := rdb.Get(Ctx, KeyDistribuicaoStatus).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, nil
