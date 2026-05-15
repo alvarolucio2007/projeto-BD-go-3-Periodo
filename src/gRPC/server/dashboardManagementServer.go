@@ -38,7 +38,7 @@ func (s *ServerDashboard) QuantidadeNotaProvaAluno(ctx context.Context, in *prot
 }
 
 func (s *ServerDashboard) MediaNotaMateria(ctx context.Context, in *proto.MediaNotaMateriaRequest) (*proto.MediaNotaMateriaResponse, error) {
-	log.Printf("função media nota materia foi chamada com: %v\n")
+	log.Printf("função media nota materia foi chamada com: %v\n", in.NomeCategoria)
 	res, err := database.LerMediaNotaMateria(in.NomeCategoria)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Erro ao fazer o relatório: %v", err)
