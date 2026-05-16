@@ -34,13 +34,13 @@ func (d *DashboardHandler) HandlerQuantidadeProvaAluno(c *gin.Context, hub *HubG
 		}
 		if resRedis != nil {
 			c.JSON(http.StatusOK, resRedis)
-			go func() {
+			go func(client proto.DashboardServiceClient) {
 				bgCtx := context.Background()
-				res, err := hub.Dashboard.QuantidadeProvaAluno(bgCtx, &proto.QuantidadeProvaAlunoRequest{NomeBusca: ""})
+				res, err := client.QuantidadeProvaAluno(bgCtx, &proto.QuantidadeProvaAlunoRequest{NomeBusca: ""})
 				if err == nil {
 					_ = cache.AdicionarQuantidadeProvaAlunos(bgCtx, d.Rdb, res.Response)
 				}
-			}()
+			}(hub.Dashboard)
 			return
 		}
 	}
