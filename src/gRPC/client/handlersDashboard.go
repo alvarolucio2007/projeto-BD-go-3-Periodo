@@ -19,7 +19,7 @@ type DashboardHandler struct {
 func FromProto(p *proto.EstatisticaAluno) models.EstatisticaAluno {
 	return models.EstatisticaAluno{
 		QuantidadeProva: int(p.QuantidadeProva),
-		MediaProvas:     float64(p.QuantidadeProva),
+		MediaProvas:     float64(p.MediaProva),
 	}
 }
 
@@ -49,7 +49,6 @@ func (d *DashboardHandler) HandlerQuantidadeProvaAluno(c *gin.Context, hub *HubG
 		SendError(c, err)
 		return
 	}
-
 	c.JSON(http.StatusOK, res.Response)
 }
 
