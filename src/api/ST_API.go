@@ -1,4 +1,4 @@
-// Package api cuida da API RESTful externa, para o HTMX.
+// Package api cuida da API RESTful externa, para o Streamlit.
 package api
 
 import (
@@ -10,6 +10,7 @@ import (
 func SetupExtRoutes(hub *grpcclient.HubGeral, rdb *redis.Client) error {
 	gin.SetMode(gin.DebugMode)
 	r := gin.New()
+	r.Use(gin.Logger(), gin.Recovery())
 	// APIs de usuário
 	userHandler := &grpcclient.UsuarioHandler{
 		Rdb:        rdb,
@@ -49,6 +50,15 @@ func SetupExtRoutes(hub *grpcclient.HubGeral, rdb *redis.Client) error {
 	}
 	r.GET("/left_join", func(c *gin.Context) { leftJoinHandler.HandlerLeftJoin(c, hub) })
 	r.GET("/inner_join", func(c *gin.Context) { innerJoinHandler.HandlerInnerJoin(c, hub) })
+	// APIs de Dashboard
+	dashboardHandler := &grpcclient.DashboardHandler{
+		Rdb:             rdb,
+		DashboardClient: hub.Dashboard,
+	}
+	r.GET("/dashboard/quantidade_prova_aluno", func(c *gin.Context) { dashboardHandler.HandlerQuantidadeProvaAluno(c, hub) })
+	r.GET("/dashboard/quantidade_nota_prova_aluno", func(c *gin.Context) { dashboardHandler.HandlerQuantidadeNotaProvaAluno(c, hub) })
+	r.GET("/dashboard/handler_media_nota_materia", func(c *gin.Context) { dashboardHandler.HandlerMediaNotaMateria(c, hub) })
+	r.GET("/dashboard/handler_distribuicao_status_aluno", func(c *gin.Context) { dashboardHandler.HandlerDistribuicaoStatusAluno(c, hub) })
 	err := r.Run(":8080")
 	if err != nil {
 		return err
