@@ -121,3 +121,19 @@ def left_join():
 
 def inner_join():
     return _requisicao("GET", "/inner_join")
+
+
+def dashboard_quantidade_prova():
+    return _requisicao("GET", "/dashboard/quantidade_prova_aluno")
+
+
+def dashboard_quantidade_nota_prova():
+    return _requisicao("GET", "/dashboard/quantidade_nota_prova_aluno")
+
+
+def dashboard_media_nota_materia():
+    return _requisicao("GET", "/dashboard/media_nota_materia")
+
+
+def dashboard_distribuicao_status():
+    return _requisicao("GET", "/dashboard/distribuicao_status_aluno")
