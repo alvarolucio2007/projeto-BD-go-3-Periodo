@@ -57,8 +57,8 @@ func SetupExtRoutes(hub *grpcclient.HubGeral, rdb *redis.Client) error {
 	}
 	r.GET("/dashboard/quantidade_prova_aluno", func(c *gin.Context) { dashboardHandler.HandlerQuantidadeProvaAluno(c, hub) })
 	r.GET("/dashboard/quantidade_nota_prova_aluno", func(c *gin.Context) { dashboardHandler.HandlerQuantidadeNotaProvaAluno(c, hub) })
-	r.GET("/dashboard/handler_media_nota_materia", func(c *gin.Context) { dashboardHandler.HandlerMediaNotaMateria(c, hub) })
-	r.GET("/dashboard/handler_distribuicao_status_aluno", func(c *gin.Context) { dashboardHandler.HandlerDistribuicaoStatusAluno(c, hub) })
+	r.GET("/dashboard/media_nota_materia", func(c *gin.Context) { dashboardHandler.HandlerMediaNotaMateria(c, hub) })
+	r.GET("/dashboard/distribuicao_status_aluno", func(c *gin.Context) { dashboardHandler.HandlerDistribuicaoStatusAluno(c, hub) })
 	err := r.Run(":8080")
 	if err != nil {
 		return err
