@@ -123,16 +123,22 @@ def inner_join():
     return _requisicao("GET", "/inner_join")
 
 
-def dashboard_quantidade_prova():
-    return _requisicao("GET", "/dashboard/quantidade_prova_aluno")
+def dashboard_quantidade_prova(username: str):
+    return _requisicao(
+        "GET", "/dashboard/quantidade_prova_aluno", params={"username": username}
+    )
 
 
-def dashboard_quantidade_nota_prova():
-    return _requisicao("GET", "/dashboard/quantidade_nota_prova_aluno")
+def dashboard_quantidade_nota_prova(username: str):
+    return _requisicao(
+        "GET", "/dashboard/quantidade_nota_prova_aluno", params={"username": username}
+    )
 
 
-def dashboard_media_nota_materia():
-    return _requisicao("GET", "/dashboard/media_nota_materia")
+def dashboard_media_nota_materia(categoria: str):
+    return _requisicao(
+        "GET", "/dashboard/media_nota_materia", params={"categoria": categoria}
+    )
 
 
 def dashboard_distribuicao_status():
