@@ -127,3 +127,29 @@ func (d *DashboardHandler) HandlerMediaNotaMateria(c *gin.Context, hub *HubGeral
 	}
 	c.JSON(http.StatusOK, mapCerto)
 }
+
+func (d *DashboardHandler) HandlerDistribuicaoStatusAluno(c *gin.Context, hub *HubGeral) {
+	ctx := c.Request.Context()
+	resRedis, err := cache.LerDistribuicaoStatusAluno(ctx, d.Rdb)
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	if resRedis != nil {
+		c.JSON(http.StatusOK, resRedis)
+		go func(client proto.DashboardServiceClient) {
+			bgCtx := context.Background()
+			res, err := client.DistribuicaoStatusAluno(bgCtx, &proto.DistribuicaoStatusAlunoRequest{})
+			if err == nil {
+				_ = cache.AdicionarDistribuicaoStatusAluno(bgCtx, d.Rdb, res.Response)
+			}
+		}(hub.Dashboard)
+		return
+	}
+	res, err := hub.Dashboard.DistribuicaoStatusAluno(ctx, &proto.DistribuicaoStatusAlunoRequest{})
+	if err != nil {
+		SendError(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, res.Response)
+}
