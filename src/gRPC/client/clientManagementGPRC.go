@@ -28,6 +28,7 @@ func ConnectAll(addr string) (*HubGeral, error) {
 		Nota:      proto.NewNotaServiceClient(conn),
 		InnerJoin: proto.NewInnerJoinServiceClient(conn),
 		LeftJoin:  proto.NewLeftJoinServiceClient(conn),
+		Dashboard: proto.NewDashboardServiceClient(conn),
 		Conn:      conn,
 	}, nil
 }
