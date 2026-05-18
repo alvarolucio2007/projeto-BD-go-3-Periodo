@@ -504,12 +504,12 @@ class FrontEnd:
                 "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
             )
             dados = ct.dashboard_quantidade_prova(texto)
-            df = pd.DataFrame(dados.items(), columns={"Quantidade"})
+            df = pd.DataFrame(dados.items(), columns=["Username", "Quantidade"])
             fig_barra = px.bar(
                 df,
-                x="Item",
+                x="Username",
                 y="Quantidade",
-                color="Item",
+                color="Quantidade",
                 title="Quantidade por Categoria/Prova",
                 template="plotly_white",
             )
@@ -522,10 +522,10 @@ class FrontEnd:
                 "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
             )
             dados = ct.dashboard_quantidade_nota_prova(texto)
-            df = pd.DataFrame(dados.items(), columns={"Quantidade", "Média"})
+            df = pd.DataFrame(dados.items(), columns=["Quantidade", "Média"])
             fig_dispersao = px.scatter(
                 df,
-                x="Item",
+                x="Média",
                 y="Quantidade",
                 size="Quantidade",
                 color="Item",
@@ -541,7 +541,7 @@ class FrontEnd:
                 "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
             )
             dados = ct.dashboard_media_nota_materia(texto)
-            df = pd.DataFrame(dados.items(), columns={"Quantidade", "Média"})
+            df = pd.DataFrame(dados.items(), columns=["Quantidade", "Média"])
             fig_horizontal = px.bar(
                 df,
                 x="Quantidade",
@@ -562,7 +562,7 @@ class FrontEnd:
                 "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
             )
             dados = ct.dashboard_distribuicao_status()
-            df = pd.DataFrame(dados.items(), columns={"Resultado"})
+            df = pd.DataFrame(dados.items(), columns=["Resultado"])
             fig_pizza = px.pie(
                 df,
                 names="Item",
