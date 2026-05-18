@@ -22,6 +22,8 @@ def main():
             app.renderizar_notas()
         elif opcao == "Relatórios":
             app.renderizar_relatorios()
+        elif opcao == "Dashboards":
+            app.renderizar_dashboards()
 
         # Botão de Logout no final do menu lateral
         if st.sidebar.button("Sair"):
