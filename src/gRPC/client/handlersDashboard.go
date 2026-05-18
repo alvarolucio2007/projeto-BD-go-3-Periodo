@@ -40,7 +40,7 @@ func (d *DashboardHandler) HandlerQuantidadeProvaAluno(c *gin.Context, hub *HubG
 				if err == nil {
 					_ = cache.AdicionarQuantidadeProvaAlunos(bgCtx, d.Rdb, res.Response)
 				}
-			}(hub.Dashboard)
+			}(d.DashboardClient)
 			return
 		}
 	}
@@ -73,7 +73,7 @@ func (d *DashboardHandler) HandlerQuantidadeNotaProvaAluno(c *gin.Context, hub *
 					}
 					_ = cache.AdicionarQuantidadeNotaProvaAlunos(bgCtx, d.Rdb, mapCerto)
 				}
-			}(hub.Dashboard)
+			}(d.DashboardClient)
 			return
 		}
 	}
@@ -111,7 +111,7 @@ func (d *DashboardHandler) HandlerMediaNotaMateria(c *gin.Context, hub *HubGeral
 					}
 					_ = cache.AdicionarMediaNotaMaterias(bgCtx, d.Rdb, mapCerto)
 				}
-			}(hub.Dashboard)
+			}(d.DashboardClient)
 			return
 		}
 	}
@@ -142,7 +142,7 @@ func (d *DashboardHandler) HandlerDistribuicaoStatusAluno(c *gin.Context, hub *H
 			if err == nil {
 				_ = cache.AdicionarDistribuicaoStatusAluno(bgCtx, d.Rdb, res.Response)
 			}
-		}(hub.Dashboard)
+		}(d.DashboardClient)
 		return
 	}
 	res, err := hub.Dashboard.DistribuicaoStatusAluno(ctx, &proto.DistribuicaoStatusAlunoRequest{})
