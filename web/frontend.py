@@ -1,6 +1,7 @@
 import streamlit as st
 import clients as ct
 import pandas as pd
+import plotly.express as px
 
 
 class FrontEnd:
@@ -38,12 +39,7 @@ class FrontEnd:
 
             opcao = st.radio(
                 "Selecione a ação",
-                (
-                    "Usuários",
-                    "Provas",
-                    "Notas",
-                    "Relatórios",
-                ),
+                ("Usuários", "Provas", "Notas", "Relatórios", "Dashboards"),
             )
             return opcao
 
@@ -389,18 +385,14 @@ class FrontEnd:
 
     def renderizar_relatorios(self) -> None:
         st.title("📈 Relatórios e Análises")
-
         aba_aproveitamento, aba_panorama = st.tabs(
             ["🏆 Boletim de Aproveitamento", "👥 Panorama Geral de Alunos"]
         )
-
         with aba_aproveitamento:
             if st.button("Gerar Relatório de Aproveitamento"):
                 dados = ct.inner_join()
-
                 # CHAVE CORRETA: "resultado" (conforme seu JSON)
                 lista = dados.get("resultado", []) if isinstance(dados, dict) else dados
-
                 if lista:
                     df = pd.DataFrame(lista)
 
@@ -496,3 +488,86 @@ class FrontEnd:
                         st.warning("Nenhum aluno encontrado na base de dados.")
                 except Exception as e:
                     st.error(f"Erro ao gerar panorama: {e}")
+
+    def renderizar_dashboards(self) -> None:
+        st.title("📊 Dashboards de Desempenho")
+
+        # Criando as abas
+        aba_barra, aba_dispersao, aba_horizontal, aba_pizza = st.tabs(
+            ["Gráfico de Barra", "Dispersão", "Barra Horizontal", "Pizza"]
+        )
+
+        # --- ABA 1: BARRA ---
+        with aba_barra:
+            st.subheader("Análise Quantitativa")
+            texto = st.text_input(
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+            )
+            dados = ct.dashboard_quantidade_prova(texto)
+            df = pd.DataFrame(dados.items(), columns={"Quantidade"})
+            fig_barra = px.bar(
+                df,
+                x="Item",
+                y="Quantidade",
+                color="Item",
+                title="Quantidade por Categoria/Prova",
+                template="plotly_white",
+            )
+            st.plotly_chart(fig_barra, use_container_width=True)
+
+        # --- ABA 2: DISPERSÃO ---
+        with aba_dispersao:
+            st.subheader("Análise de Dispersão")
+            texto = st.text_input(
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+            )
+            dados = ct.dashboard_quantidade_nota_prova(texto)
+            df = pd.DataFrame(dados.items(), columns={"Quantidade", "Média"})
+            fig_dispersao = px.scatter(
+                df,
+                x="Item",
+                y="Quantidade",
+                size="Quantidade",
+                color="Item",
+                title="Dispersão de Quantidade",
+                template="plotly_white",
+            )
+            st.plotly_chart(fig_dispersao, use_container_width=True)
+
+        # --- ABA 3: BARRA HORIZONTAL ---
+        with aba_horizontal:
+            st.subheader("Ranking / Comparativo")
+            texto = st.text_input(
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+            )
+            dados = ct.dashboard_media_nota_materia(texto)
+            df = pd.DataFrame(dados.items(), columns={"Quantidade", "Média"})
+            fig_horizontal = px.bar(
+                df,
+                x="Quantidade",
+                y="Item",
+                orientation="h",  # Define o gráfico como horizontal
+                color="Item",
+                title="Comparativo Horizontal",
+                template="plotly_white",
+            )
+            # Dica: Inverter o eixo Y para o maior/primeiro item ficar no topo
+            fig_horizontal.update_yaxes(autorange="reversed")
+            st.plotly_chart(fig_horizontal, use_container_width=True)
+
+        # --- ABA 4: PIZZA ---
+        with aba_pizza:
+            st.subheader("Distribuição Percentual")
+            texto = st.text_input(
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+            )
+            dados = ct.dashboard_distribuicao_status()
+            df = pd.DataFrame(dados.items(), columns={"Resultado"})
+            fig_pizza = px.pie(
+                df,
+                names="Item",
+                values="Quantidade",
+                title="Proporção dos Dados",
+                hole=0.3,  # Cria um gráfico de rosca (opcional, mas fica mais moderno)
+            )
+            st.plotly_chart(fig_pizza, use_container_width=True)
