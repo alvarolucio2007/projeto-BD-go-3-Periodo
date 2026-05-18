@@ -6,9 +6,9 @@ import (
 
 func LerQuantidadeProvaAluno(nomeBusca string) (map[string]int64, error) { // Essa é para um gráfico de barras
 	query := `SELECT 
-		usuarios.username,COUNT(notas.id) as total_provas 
+		u.username,COUNT(n.id) as total_provas 
 		FROM usuarios u
-		LEFT JOIN notas ON u.id=notas.usuario_id 
+		LEFT JOIN notas n ON u.id=n.usuario_id 
 		WHERE u.role='aluno' AND u.username ILIKE $1
 		GROUP BY u.username 
 		ORDER BY total_provas DESC;`
