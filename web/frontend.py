@@ -501,7 +501,8 @@ class FrontEnd:
         with aba_barra:
             st.subheader("Análise Quantitativa")
             texto = st.text_input(
-                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)",
+                key="input_barra_aluno",
             )
             dados = ct.dashboard_quantidade_prova(texto)
             df = pd.DataFrame(dados.items(), columns=["Username", "Quantidade"])
@@ -519,53 +520,88 @@ class FrontEnd:
         with aba_dispersao:
             st.subheader("Análise de Dispersão")
             texto = st.text_input(
-                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)",
+                key="input_dispersao_aluno",
             )
             dados = ct.dashboard_quantidade_nota_prova(texto)
-            df = pd.DataFrame(dados.items(), columns=["Quantidade", "Média"])
-            fig_dispersao = px.scatter(
-                df,
-                x="Média",
-                y="Quantidade",
-                size="Quantidade",
-                color="Item",
-                title="Dispersão de Quantidade",
-                template="plotly_white",
-            )
-            st.plotly_chart(fig_dispersao, use_container_width=True)
+            lista_formatada = []
+            for username, info in dados.items():
+                lista_formatada.append(
+                    {
+                        "Aluno": username,
+                        "Média": info.get("media"),
+                        "Provas": info.get("quantidade"),
+                    }
+                )
+            df = pd.DataFrame(lista_formatada)
+            if not df.empty:
+                fig_dispersao = px.scatter(
+                    df,
+                    x="Média",
+                    y="Provas",
+                    color="Aluno",
+                    hover_name="Aluno",
+                    trendline="ols",  # Ativa a linha de tendência
+                    trendline_scope="overall",  # Garante uma linha única para todo o gráfico
+                    trendline_color_override="white",  # Deixa a linha preta para destacar das bolinhas coloridas
+                    title="Dispersão entre Quantidade de Provas e Média por Aluno",
+                    template="plotly_white",
+                    labels={
+                        "Média": "Média das Notas",
+                        "Provas": "Total de Provas Realizadas",
+                    },
+                    range_x=[0, 10.5],
+                )
+
+                fig_dispersao.update_traces(
+                    marker=dict(size=12, line=dict(width=1, color="DarkSlateGrey"))
+                )
+
+                st.plotly_chart(fig_dispersao, use_container_width=True)
+            else:
+                st.warning("Nenhum dado encontrado.")
 
         # --- ABA 3: BARRA HORIZONTAL ---
         with aba_horizontal:
             st.subheader("Ranking / Comparativo")
             texto = st.text_input(
-                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
+                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)",
+                key="dashboard_horizontal",
             )
             dados = ct.dashboard_media_nota_materia(texto)
-            df = pd.DataFrame(dados.items(), columns=["Quantidade", "Média"])
-            fig_horizontal = px.bar(
-                df,
-                x="Quantidade",
-                y="Item",
-                orientation="h",  # Define o gráfico como horizontal
-                color="Item",
-                title="Comparativo Horizontal",
-                template="plotly_white",
-            )
-            # Dica: Inverter o eixo Y para o maior/primeiro item ficar no topo
-            fig_horizontal.update_yaxes(autorange="reversed")
-            st.plotly_chart(fig_horizontal, use_container_width=True)
+            lista_formatada = []
+            for username, info in dados.items():
+                lista_formatada.append(
+                    {
+                        "Matéria": username,
+                        "Média": info.get("media"),
+                        "Provas": info.get("provas"),
+                    }
+                )
+            df = pd.DataFrame(lista_formatada)
+            if not df.empty:
+                fig_horizontal = px.bar(
+                    df,
+                    x="Média",
+                    y="Matéria",
+                    color="Média",
+                    title="Comparativo Horizontal",
+                    template="plotly_white",
+                )
+                # Dica: Inverter o eixo Y para o maior/primeiro item ficar no topo
+                st.plotly_chart(fig_horizontal, use_container_width=True)
+            else:
+                st.warning("Nenhum dado encontrado.")
 
         # --- ABA 4: PIZZA ---
         with aba_pizza:
             st.subheader("Distribuição Percentual")
-            texto = st.text_input(
-                "Procurar aluno para gerar o gráfico (Deixe em branco para resultado geral)"
-            )
+
             dados = ct.dashboard_distribuicao_status()
-            df = pd.DataFrame(dados.items(), columns=["Resultado"])
+            df = pd.DataFrame(dados.items(), columns=["Resultado", "Quantidade"])
             fig_pizza = px.pie(
                 df,
-                names="Item",
+                names="Resultado",
                 values="Quantidade",
                 title="Proporção dos Dados",
                 hole=0.3,  # Cria um gráfico de rosca (opcional, mas fica mais moderno)
