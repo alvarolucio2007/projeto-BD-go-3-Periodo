@@ -506,15 +506,18 @@ class FrontEnd:
             )
             dados = ct.dashboard_quantidade_prova(texto)
             df = pd.DataFrame(dados.items(), columns=["Username", "Quantidade"])
-            fig_barra = px.bar(
-                df,
-                x="Username",
-                y="Quantidade",
-                color="Quantidade",
-                title="Quantidade por Categoria/Prova",
-                template="plotly_white",
-            )
-            st.plotly_chart(fig_barra, use_container_width=True)
+            if not df.empty:
+                fig_barra = px.bar(
+                    df,
+                    x="Username",
+                    y="Quantidade",
+                    color="Quantidade",
+                    title="Quantidade por Categoria/Prova",
+                    template="plotly_white",
+                )
+                st.plotly_chart(fig_barra, use_container_width=True)
+            else:
+                st.warning()
 
         # --- ABA 2: DISPERSÃO ---
         with aba_dispersao:
@@ -533,7 +536,13 @@ class FrontEnd:
                         "Provas": info.get("quantidade"),
                     }
                 )
+               
             df = pd.DataFrame(lista_formatada)
+            max_provas = int(df["Provas"].max()) + 1
+            if int(df["Provas"].min()) > 1:
+                min_provas = int(df["Provas"].min())
+            else:
+                min_provas = 0
             if not df.empty:
                 fig_dispersao = px.scatter(
                     df,
@@ -551,8 +560,8 @@ class FrontEnd:
                         "Provas": "Total de Provas Realizadas",
                     },
                     range_x=[0, 10.5],
+                    range_y=[min_provas, max_provas],
                 )
-
                 fig_dispersao.update_traces(
                     marker=dict(size=12, line=dict(width=1, color="DarkSlateGrey"))
                 )
