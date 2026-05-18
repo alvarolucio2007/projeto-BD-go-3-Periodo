@@ -5,7 +5,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 # Compila o binário principal (ajuste o path se o main.go estiver em outro lugar)
-RUN CGO_ENABLED=0 GOOS=linux go build -o main_app main.go
+RUN CGO_ENABLED=0 go build -o main_app main.go
 
 # Estágio 2: Execução
 FROM alpine:latest
