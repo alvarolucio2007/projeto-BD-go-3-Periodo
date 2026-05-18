@@ -14,7 +14,7 @@ class FrontEnd:
                 with st.form("form_login"):
                     user = st.text_input("Usuário")
                     pw = st.text_input("Senha", type="password")
-                    entrar = st.form_submit_button("Entrar", use_container_width=True)
+                    entrar = st.form_submit_button("Entrar", width="stretch")
 
                     if entrar:
                         try:
@@ -58,7 +58,7 @@ class FrontEnd:
             with col1:
                 username_busca = st.text_input("Username para busca", key="search_user")
             with col2:
-                btn_buscar = st.button("🔍 Buscar", use_container_width=True)
+                btn_buscar = st.button("🔍 Buscar", width="stretch")
 
             if btn_buscar:
                 try:
@@ -161,7 +161,7 @@ class FrontEnd:
                             df["Data da Prova"]
                         ).dt.strftime("%d/%m/%Y %H:%M")
 
-                    st.dataframe(df, use_container_width=True, hide_index=True)
+                    st.dataframe(df, width="stretch", hide_index=True)
                 else:
                     st.info("Nenhuma prova cadastrada.")
         # --- CREATE (CADASTRAR) ---
@@ -251,7 +251,7 @@ class FrontEnd:
                 )
             with col_btn:
                 st.write("##")  # Alinhamento vertical
-                btn_buscar = st.button("🔍 Buscar", use_container_width=True)
+                btn_buscar = st.button("🔍 Buscar", width="stretch")
 
             if btn_buscar:
                 try:
@@ -287,7 +287,7 @@ class FrontEnd:
                             )
                             if "Nota" in df.columns
                             else df,
-                            use_container_width=True,
+                            width="stretch",
                             hide_index=True,
                         )
                     else:
@@ -417,7 +417,7 @@ class FrontEnd:
                         df.style.highlight_max(
                             axis=0, subset=["Nota"], color="#2e7b32"
                         ),
-                        use_container_width=True,
+                        width="stretch",
                         hide_index=True,
                     )
 
@@ -515,7 +515,7 @@ class FrontEnd:
                     title="Quantidade por Categoria/Prova",
                     template="plotly_white",
                 )
-                st.plotly_chart(fig_barra, use_container_width=True)
+                st.plotly_chart(fig_barra, width="stretch")
             else:
                 st.warning()
 
@@ -536,7 +536,7 @@ class FrontEnd:
                         "Provas": info.get("quantidade"),
                     }
                 )
-               
+
             df = pd.DataFrame(lista_formatada)
             max_provas = int(df["Provas"].max()) + 1
             if int(df["Provas"].min()) > 1:
@@ -566,7 +566,7 @@ class FrontEnd:
                     marker=dict(size=12, line=dict(width=1, color="DarkSlateGrey"))
                 )
 
-                st.plotly_chart(fig_dispersao, use_container_width=True)
+                st.plotly_chart(fig_dispersao, width="stretch")
             else:
                 st.warning("Nenhum dado encontrado.")
 
@@ -598,7 +598,7 @@ class FrontEnd:
                     template="plotly_white",
                 )
                 # Dica: Inverter o eixo Y para o maior/primeiro item ficar no topo
-                st.plotly_chart(fig_horizontal, use_container_width=True)
+                st.plotly_chart(fig_horizontal, width="stretch")
             else:
                 st.warning("Nenhum dado encontrado.")
 
@@ -615,4 +615,4 @@ class FrontEnd:
                 title="Proporção dos Dados",
                 hole=0.3,  # Cria um gráfico de rosca (opcional, mas fica mais moderno)
             )
-            st.plotly_chart(fig_pizza, use_container_width=True)
+            st.plotly_chart(fig_pizza, width="stretch")
