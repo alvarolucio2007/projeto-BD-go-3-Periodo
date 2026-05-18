@@ -35,7 +35,7 @@ func LerQuantidadeNotaProvaAluno(nomeBusca string) (map[string]models.Estatistic
 	query := `SELECT 
     u.username,
     COUNT(n.id) AS total_provas,
-    COALESCE(AVG(n.nota), 0.0) AS media 
+    COALESCE(AVG(n.nota_prova), 0.0) AS media 
 		FROM usuarios u
 		LEFT JOIN notas n ON u.id = n.usuario_id
 		LEFT JOIN provas p ON p.id = n.prova_id
@@ -66,7 +66,7 @@ func LerMediaNotaMateria(nomeCategoria string) (map[string]models.EstatisticaAlu
 	// ah e também é gráfico de barras horizontal
 	query := `SELECT 
     p.materia_prova,
-    COALESCE(AVG(n.nota), 0.0) AS media_materia,
+    COALESCE(AVG(n.nota_prova), 0.0) AS media_materia,
 		COUNT(n.id) AS total_provas
 		FROM provas p
 		LEFT JOIN notas n ON p.id = n.prova_id
@@ -95,15 +95,23 @@ func LerMediaNotaMateria(nomeCategoria string) (map[string]models.EstatisticaAlu
 
 func LerDistribuicaoStatusAluno() (map[string]int64, error) { // Gráfico de pizza, bem básico...
 	query := `
+	WITH resumo_alunos AS (
+		SELECT 
+			usuario_id,
+			SUM(nota_prova) AS soma_total
+		FROM notas
+		GROUP BY usuario_id
+	)
 	SELECT
 		CASE
-			WHEN nota>=7 THEN 'Aprovado'
-			WHEN nota>=5 THEN 'Recuperação'
+			WHEN soma_total>=21 THEN 'Aprovado'
+			WHEN soma_total>=15 THEN 'Recuperação'
 			ELSE 'Reprovado'
 		END AS status,
-		COUNT(*)
-	FROM notas
-	GROUP BY status;`
+		COUNT(*) AS quantidade_alunos
+	FROM resumo_alunos
+	GROUP BY status;
+`
 	rows, err := DB.Query(query)
 	if err != nil {
 		return nil, err
