@@ -36,7 +36,7 @@ func (d *DashboardHandler) HandlerQuantidadeProvaAluno(c *gin.Context, hub *HubG
 			c.JSON(http.StatusOK, resRedis)
 			go func(client proto.DashboardServiceClient) {
 				bgCtx := context.Background()
-				res, err := client.QuantidadeProvaAluno(bgCtx, &proto.QuantidadeProvaAlunoRequest{NomeBusca: ""})
+				res, err := d.DashboardClient.QuantidadeProvaAluno(bgCtx, &proto.QuantidadeProvaAlunoRequest{NomeBusca: ""})
 				if err == nil {
 					_ = cache.AdicionarQuantidadeProvaAlunos(bgCtx, d.Rdb, res.Response)
 				}
@@ -44,7 +44,7 @@ func (d *DashboardHandler) HandlerQuantidadeProvaAluno(c *gin.Context, hub *HubG
 			return
 		}
 	}
-	res, err := hub.Dashboard.QuantidadeProvaAluno(ctx, &proto.QuantidadeProvaAlunoRequest{NomeBusca: username})
+	res, err := d.DashboardClient.QuantidadeProvaAluno(ctx, &proto.QuantidadeProvaAlunoRequest{NomeBusca: username})
 	if err != nil {
 		SendError(c, err)
 		return
@@ -65,7 +65,7 @@ func (d *DashboardHandler) HandlerQuantidadeNotaProvaAluno(c *gin.Context, hub *
 			c.JSON(http.StatusOK, resRedis)
 			go func(client proto.DashboardServiceClient) {
 				bgCtx := context.Background()
-				res, err := client.QuantidadeNotaProvaAluno(bgCtx, &proto.QuantidadeNotaProvaAlunoRequest{NomeBusca: ""})
+				res, err := d.DashboardClient.QuantidadeNotaProvaAluno(bgCtx, &proto.QuantidadeNotaProvaAlunoRequest{NomeBusca: ""})
 				if err == nil {
 					mapCerto := make(map[string]models.EstatisticaAluno)
 					for n, e := range res.Response {
@@ -103,7 +103,7 @@ func (d *DashboardHandler) HandlerMediaNotaMateria(c *gin.Context, hub *HubGeral
 			c.JSON(http.StatusOK, resRedis)
 			go func(client proto.DashboardServiceClient) {
 				bgCtx := context.Background()
-				res, err := client.MediaNotaMateria(bgCtx, &proto.MediaNotaMateriaRequest{NomeCategoria: ""})
+				res, err := d.DashboardClient.MediaNotaMateria(bgCtx, &proto.MediaNotaMateriaRequest{NomeCategoria: ""})
 				if err == nil {
 					mapCerto := make(map[string]models.EstatisticaAluno)
 					for n, e := range res.Response {
@@ -138,7 +138,7 @@ func (d *DashboardHandler) HandlerDistribuicaoStatusAluno(c *gin.Context, hub *H
 		c.JSON(http.StatusOK, resRedis)
 		go func(client proto.DashboardServiceClient) {
 			bgCtx := context.Background()
-			res, err := client.DistribuicaoStatusAluno(bgCtx, &proto.DistribuicaoStatusAlunoRequest{})
+			res, err := d.DashboardClient.DistribuicaoStatusAluno(bgCtx, &proto.DistribuicaoStatusAlunoRequest{})
 			if err == nil {
 				_ = cache.AdicionarDistribuicaoStatusAluno(bgCtx, d.Rdb, res.Response)
 			}
